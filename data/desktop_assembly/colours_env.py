@@ -398,7 +398,7 @@ def save_colours_demonstrations(nb_traces = 100, max_steps = 12):
             states, actions, _, length, done, eq = run_episode(env)
             ground_truth = determine_objectives(states) 
 
-            if (length == max_steps) and done :
+            if done :
                 
                 states = np.array(states)
                
@@ -407,7 +407,7 @@ def save_colours_demonstrations(nb_traces = 100, max_steps = 12):
                 np.save(f'features/{tn}_colours', states)
                 
                 #Save the groundtruth as a text file with each string on a new line
-                with open(f'groundTruth/{tn}_colours.txt', 'w') as f:
+                with open(f'groundTruth/{tn}_colours', 'w') as f:
                     for item in ground_truth:
                         f.write("%s\n" % item)
 
@@ -457,5 +457,5 @@ if __name__ == '__main__':
     # print(new_obs[:,:,0])
 
 
-    save_colours_demonstrations(100, 12)
+    save_colours_demonstrations(500, 12)
    
