@@ -302,10 +302,10 @@ if __name__ == '__main__':
         
     data_val = VideoDataset('data', args.dataset, args.n_frames, standardise=args.std_feats, random=False, action_class=args.activity)
     data_train = VideoDataset('data', args.dataset, args.n_frames, standardise=args.std_feats, random=True, action_class=args.activity)
-    data_test = VideoDataset('data', args.dataset, None, standardise=args.std_feats, random=False, action_class=args.activity)
+    data_test = VideoDataset('data', args.dataset, None, standardise=args.std_feats, random=True, action_class=args.activity)
     val_loader = DataLoader(data_val, batch_size=args.batch_size, shuffle=False, num_workers=15)
     train_loader = DataLoader(data_train, batch_size=args.batch_size, shuffle=True, num_workers=15)
-    test_loader = DataLoader(data_test, batch_size=1, shuffle=False, num_workers=15)
+    test_loader = DataLoader(data_test, batch_size=1, shuffle=True, num_workers=15)
 
     if args.ckpt is not None:
         ssl = VideoSSL.load_from_checkpoint(args.ckpt)
