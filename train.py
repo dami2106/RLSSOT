@@ -184,6 +184,21 @@ class VideoSSL(pl.LightningModule):
         self.f1.update(segments, gt, mask)
         self.miou.update(segments, gt, mask)
 
+        print("========================")
+        print("Calculating test metrics:")
+        print("Segments shape:", segments.shape)
+        print("GT shape:", gt.shape)
+        print("Mask shape:", mask.shape)
+        print()
+        print("Segments:", segments)
+        print("GT:", gt)
+        print("Mask:", mask)
+        print()
+        print("CLS", self.exclude_cls)
+        print("========================")
+
+        
+
         # log clustering metrics per video
         metrics = indep_eval_metrics(segments, gt, mask, ['mof', 'f1', 'miou'], exclude_cls=self.exclude_cls)
         self.log('test_mof_per', metrics['mof'])
@@ -213,6 +228,7 @@ class VideoSSL(pl.LightningModule):
         self.log('test_mof_full', mof)
         self.log('test_f1_full', f1)
         self.log('test_miou_full', miou)
+        
         if wandb.run is not None and self.visualize:
             for i, (mof, pred, gt, mask, fname) in enumerate(self.test_cache):
                 self.test_cache[i][0] = indep_eval_metrics(pred, gt, mask, ['mof'], exclude_cls=self.exclude_cls, pred_to_gt=pred_to_gt)['mof']

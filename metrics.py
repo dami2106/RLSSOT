@@ -122,6 +122,8 @@ def eval_f1(pred_labels, gt_labels, n_videos, exclude_cls=None, pred_to_gt=None,
 def indep_eval_metrics(pred_labels_batch, gt_labels_batch, mask, metrics=['mof', 'f1', 'miou'], exclude_cls=None, pred_to_gt=None):
     """
     Evaluates each video sequence in a batch independently and aggregates results. Handles multiple metrics at once
+    ** Used to get per metric, feed in a list of tensors for pred_labels_batch, gt_labels_batch, mask. 
+
     """
     B = len(pred_labels_batch)
 
