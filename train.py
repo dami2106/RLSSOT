@@ -234,7 +234,7 @@ class VideoSSL(pl.LightningModule):
                 self.test_cache[i][0] = indep_eval_metrics(pred, gt, mask, ['mof'], exclude_cls=self.exclude_cls, pred_to_gt=pred_to_gt)['mof']
             self.test_cache = sorted(self.test_cache, key=lambda x: x[0], reverse=True)
 
-            for i, (mof, pred, gt, mask, fname) in enumerate(self.test_cache[:10]):
+            for i, (mof, pred, gt, mask, fname) in enumerate(self.test_cache):
                 fig = plot_segmentation_gt(gt, pred, mask, exclude_cls=self.exclude_cls, pred_to_gt=pred_to_gt,
                                            gt_uniq=np.unique(self.mof.gt_labels), name=f'{fname[0]}')
                 wandb.log({f"test_segment_{i}": wandb.Image(fig), "trainer/global_step": self.trainer.global_step})
@@ -274,7 +274,7 @@ if __name__ == '__main__':
     parser.add_argument('--ub-actions', '-ua', action='store_true',
                         help='relaxes balanced assignment assumption over actions, i.e., each action is uniformly represented in a video')
     parser.add_argument('--lambda-frames-train', '-lft', type=float, default=0.05, help='penalty on balanced frames assumption for training')
-    parser.add_argument('--lambda-actions-train', '-lat', type=float, default=0.05, help='penalty on balanced actions assumption for training')
+    parser.add_argument('--lambda-actions-train', '-lat', type=float, default=0.11, help='penalty on balanced actions assumption for training')
     parser.add_argument('--lambda-frames-eval', '-lfe', type=float, default=0.05, help='penalty on balanced frames assumption for test')
     parser.add_argument('--lambda-actions-eval', '-lae', type=float, default=0.01, help='penalty on balanced actions assumption for test')
     parser.add_argument('--eps-train', '-et', type=float, default=0.07, help='entropy regularization for OT during training')
@@ -288,20 +288,20 @@ if __name__ == '__main__':
     # dataset params
     parser.add_argument('--base-path', '-p', type=str, default='data', help='base directory for dataset')
     parser.add_argument('--dataset', '-d', type=str, required=True, help='dataset to use for training/eval (Breakfast, YTI, FSeval, FS, desktop_assembly)')
-    parser.add_argument('--activity', '-ac', type=str, nargs='+', required=True, help='activity classes to select for dataset')
+    parser.add_argument('--activity', '-ac', type=str, default='all', nargs='+', required=True, help='activity classes to select for dataset')
     parser.add_argument('--exclude', '-x', type=int, default=None, help='classes to exclude from evaluation. use -1 for YTI')
-    parser.add_argument('--n-frames', '-f', type=int, default=256, help='number of frames sampled per video for train/val')
+    parser.add_argument('--n-frames', '-f', type=int, default=4, help='number of frames sampled per video for train/val')
     parser.add_argument('--std-feats', '-s', action='store_true', help='standardize features per video during preprocessing')
     
     # representation learning params
-    parser.add_argument('--n-epochs', '-ne', type=int, default=15, help='number of epochs for training')
+    parser.add_argument('--n-epochs', '-ne', type=int, default=30, help='number of epochs for training')
     parser.add_argument('--batch-size', '-bs', type=int, default=2, help='batch size')
     parser.add_argument('--learning-rate', '-lr', type=float, default=1e-3, help='learning rate')
     parser.add_argument('--weight-decay', '-wd', type=float, default=1e-4, help='weight decay for optimizer')
     parser.add_argument('--k-means', '-km', action='store_false', help='do not initialize clusters with kmeans default = True')
-    parser.add_argument('--layers', '-ls', default=[64, 128, 40], nargs='+', type=int, help='layer sizes for MLP (in, hidden, ..., out)')
-    parser.add_argument('--rho', type=float, default=0.1, help='Factor for global structure weighting term')
-    parser.add_argument('--n-clusters', '-c', type=int, default=8, help='number of actions/clusters')
+    parser.add_argument('--layers', '-ls', default=[11, 128, 40], nargs='+', type=int, help='layer sizes for MLP (in, hidden, ..., out)')
+    parser.add_argument('--rho', type=float, default=0.15, help='Factor for global structure weighting term')
+    parser.add_argument('--n-clusters', '-c', type=int, default=3, help='number of actions/clusters')
 
     # system/logging params
     parser.add_argument('--val-freq', '-vf', type=int, default=5, help='validation epoch frequency (epochs)')
