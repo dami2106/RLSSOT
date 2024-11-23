@@ -8,9 +8,9 @@ conda activate SOTA
 ALPHA_TRAIN=0.3               # Weighting of KOT term on frame features in OT during training
 ALPHA_EVAL=0.6                # Weighting of KOT term on frame features in OT during evaluation
 LAMBDA_FRAMES_TRAIN=0.05      # Penalty for balanced frame assumption during training
-LAMBDA_ACTIONS_TRAIN=0.11     # Penalty for balanced action assumption during training
+LAMBDA_ACTIONS_TRAIN=0.00     # Penalty for balanced action assumption during training
 LAMBDA_FRAMES_EVAL=0.05       # Penalty for balanced frame assumption during evaluation
-LAMBDA_ACTIONS_EVAL=0.01      # Penalty for balanced action assumption during evaluation
+LAMBDA_ACTIONS_EVAL=0.00      # Penalty for balanced action assumption during evaluation
 EPS_TRAIN=0.07                # Entropy regularization for OT during training
 EPS_EVAL=0.04                 # Entropy regularization for OT during evaluation
 RADIUS_GW=0.04                # Radius parameter for GW structure loss
