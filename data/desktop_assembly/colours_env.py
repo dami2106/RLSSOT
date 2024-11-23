@@ -457,5 +457,5 @@ if __name__ == '__main__':
     # print(new_obs[:,:,0])
 
 
-    save_colours_demonstrations(1000, 12)
+    save_colours_demonstrations(500, 12)
    
