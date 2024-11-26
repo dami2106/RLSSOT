@@ -4,6 +4,7 @@ from copy import deepcopy
 import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.init as init
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import pytorch_lightning as pl
@@ -55,20 +56,44 @@ class VideoSSL(pl.LightningModule):
         self.rho = rho
 
         # initialize MLP
-        layers = [nn.Sequential(nn.Linear(sz, sz1), nn.ReLU()) for sz, sz1 in zip(layer_sizes[:-2], layer_sizes[1:-1])]
-        layers += [nn.Linear(layer_sizes[-2], layer_sizes[-1])]
-        self.mlp = nn.Sequential(*layers)
+        # layers = [nn.Sequential(nn.Linear(sz, sz1), nn.ReLU()) for sz, sz1 in zip(layer_sizes[:-2], layer_sizes[1:-1])]
+        # layers += [nn.Linear(layer_sizes[-2], layer_sizes[-1])]
+        # self.mlp = nn.Sequential(*layers)
+
+        # layers = [nn.Sequential(nn.Linear(sz, sz1), nn.ReLU()) for sz, sz1 in zip(layer_sizes[:-2], layer_sizes[1:-1])]
+        # layers += [nn.Linear(layer_sizes[-2], layer_sizes[-1])]
+        # self.mlp = nn.Sequential(*layers)
+
+        # # Initialize weights to identity
+        # for layer in self.mlp:
+        #     if isinstance(layer, nn.Sequential):
+        #         for sublayer in layer:
+        #             if isinstance(sublayer, nn.Linear):
+        #                 self.initialize_identity(sublayer)
+        #     elif isinstance(layer, nn.Linear):
+        #         self.initialize_identity(layer)
 
         # initialize cluster centers/codebook
-        d = self.layer_sizes[-1]
+        # d = self.layer_sizes[-1]
+        # self.clusters = nn.parameter.Parameter(data=F.normalize(torch.randn(self.n_clusters, d), dim=-1), requires_grad=learn_clusters)
+
+        d = 11  # Use the raw feature dimensionality
         self.clusters = nn.parameter.Parameter(data=F.normalize(torch.randn(self.n_clusters, d), dim=-1), requires_grad=learn_clusters)
 
-        # initialize evaluation metrics
+            # initialize evaluation metrics
         self.mof = ClusteringMetrics(metric='mof')
         self.f1 = ClusteringMetrics(metric='f1')
         self.miou = ClusteringMetrics(metric='miou')
         self.save_hyperparameters()
         self.test_cache = []
+
+    @staticmethod
+    def initialize_identity(layer):
+        if layer.weight.shape[0] == layer.weight.shape[1]:  # Check for square matrices
+            init.eye_(layer.weight)  # Initialize weight as identity
+        else:
+            init.kaiming_uniform_(layer.weight)  # Use a standard initialization for non-square layers
+        init.constant_(layer.bias, 0)  # Initialize bias to zero
 
     def training_step(self, batch, batch_idx):
         features_raw, mask, gt, fname, n_subactions = batch
@@ -76,7 +101,8 @@ class VideoSSL(pl.LightningModule):
             self.clusters.data = F.normalize(self.clusters.data, dim=-1)
         D = self.layer_sizes[-1]
         B, T, _ = features_raw.shape
-        features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
+        # features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
+        features = F.normalize(features_raw, dim=-1)
         codes = torch.exp(features @ self.clusters.T[None, ...] / self.temp)
         codes = codes / codes.sum(dim=-1, keepdim=True)
         with torch.no_grad():  # pseudo-labels from OT
@@ -96,7 +122,9 @@ class VideoSSL(pl.LightningModule):
         D = self.layer_sizes[-1]
         B, T, _ = features_raw.shape
         # import pdb; pdb.set_trace()
-        features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
+        # features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
+        features = F.normalize(features_raw, dim=-1)
+
 
         # log clustering metrics over full epoch
         temp_prior = asot.temporal_prior(T, self.n_clusters, self.rho, features.device)
@@ -170,7 +198,9 @@ class VideoSSL(pl.LightningModule):
         features_raw, mask, gt, fname, n_subactions = batch
         D = self.layer_sizes[-1]
         B, T, _ = features_raw.shape
-        features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
+        # features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
+        features = F.normalize(features_raw, dim=-1)
+
 
         # log clustering metrics over full epoch
         temp_prior = asot.temporal_prior(T, self.n_clusters, self.rho, features.device)
@@ -250,15 +280,17 @@ class VideoSSL(pl.LightningModule):
     def fit_clusters(self, dataloader, K):
         with torch.no_grad():
             features_full = []
-            self.mlp.eval()
+            # self.mlp.eval()
             for features_raw, _, _, _, _ in dataloader:
                 B, T, _ = features_raw.shape
                 D = self.layer_sizes[-1]
-                features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
+                # features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
+                features = F.normalize(features_raw, dim=-1)
+
                 features_full.append(features)
             features_full = torch.cat(features_full, dim=0).reshape(-1, features.shape[2]).cpu().numpy()
             kmeans = KMeans(n_clusters=K).fit(features_full)
-            self.mlp.train()
+            # self.mlp.train()
         self.clusters.data = torch.from_numpy(kmeans.cluster_centers_).to(self.clusters.device)
         return None
 
