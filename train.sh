@@ -31,7 +31,7 @@ fi
 python3 train.py \
     --activity all \
     --dataset desktop_assembly \
-    --group testing_4_big_e_3 \
+    --group static_col_pos \
     --n-epochs 30 \
     --visualize \
     --n-clusters 3 \
