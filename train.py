@@ -55,7 +55,7 @@ class VideoSSL(pl.LightningModule):
         self.n_frames = n_frames
         self.rho = rho
 
-        self.inc_mlp = False
+        self.inc_mlp = True
 
         # initialize MLP
         if self.inc_mlp:
@@ -64,40 +64,17 @@ class VideoSSL(pl.LightningModule):
             self.mlp = nn.Sequential(*layers)
             d = self.layer_sizes[-1]
             self.clusters = nn.parameter.Parameter(data=F.normalize(torch.randn(self.n_clusters, d), dim=-1), requires_grad=learn_clusters)
-
-        # layers = [nn.Sequential(nn.Linear(sz, sz1), nn.ReLU()) for sz, sz1 in zip(layer_sizes[:-2], layer_sizes[1:-1])]
-        # layers += [nn.Linear(layer_sizes[-2], layer_sizes[-1])]
-        # self.mlp = nn.Sequential(*layers)
-
-        # # Initialize weights to identity
-        # for layer in self.mlp:
-        #     if isinstance(layer, nn.Sequential):
-        #         for sublayer in layer:
-        #             if isinstance(sublayer, nn.Linear):
-        #                 self.initialize_identity(sublayer)
-        #     elif isinstance(layer, nn.Linear):
-        #         self.initialize_identity(layer)
-
-        # initialize cluster centers/codebook
-
-        if not self.inc_mlp:
+        else:
             d = 15  # Use the raw feature dimensionality
             self.clusters = nn.parameter.Parameter(data=F.normalize(torch.randn(self.n_clusters, d), dim=-1), requires_grad=learn_clusters)
 
-            # initialize evaluation metrics
+
         self.mof = ClusteringMetrics(metric='mof')
         self.f1 = ClusteringMetrics(metric='f1')
         self.miou = ClusteringMetrics(metric='miou')
         self.save_hyperparameters()
         self.test_cache = []
 
-    @staticmethod
-    def initialize_identity(layer):
-        if layer.weight.shape[0] == layer.weight.shape[1]:  # Check for square matrices
-            init.eye_(layer.weight)  # Initialize weight as identity
-        else:
-            init.kaiming_uniform_(layer.weight)  # Use a standard initialization for non-square layers
-        init.constant_(layer.bias, 0)  # Initialize bias to zero
 
     def training_step(self, batch, batch_idx):
         features_raw, mask, gt, fname, n_subactions = batch
@@ -181,20 +158,20 @@ class VideoSSL(pl.LightningModule):
             wandb.log({f"val_OT_pred_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
             plt.close()
 
-            # cost_mat = 1. - features @ self.clusters.T
+            cost_mat = 1. - features @ self.clusters.T
             # bal_codes = asot.segment_asot(features, self.clusters, mask, eps=self.eval_eps, alpha=self.alpha_eval, radius=self.radius_gw,
             #                                 proj_type='const', ub_weight=self.ub_eval, n_iters=self.n_ot_eval, temp_prior=temp_prior)
             # nogw_codes = asot.segment_asot(features, self.clusters, mask, eps=self.eval_eps, alpha=0., radius=self.radius_gw,
             #                                 proj_type=self.ub_proj_type, ub_weight=self.ub_eval, n_iters=self.n_ot_eval, temp_prior=temp_prior)
-            # fig = plot_segmentation(segments[0], mask[0], name=f'{fname[0]}')
+            # fig = plot_segmentation_gt(segments[0], mask[0], name=f'{fname[0]}')
             # wandb.log({f"val_segment_{int(batch_idx / spacing)}": wandb.Image(fig), "trainer/global_step": self.trainer.global_step})
 
-            # fig = plot_matrix(segmentation[0].cpu().numpy().T, gt=None, colorbar=False, title=None, xlabel='Frame index', ylabel='Action index')
-            # wandb.log({f"pred_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
-            # fig = plot_matrix(cost_mat[0].cpu().numpy().T, gt=None, colorbar=False, title=None, xlabel='Frame index', ylabel='Action index')
-            # wandb.log({f"cost_mat_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
-            # fig = plot_matrix(1. - cost_mat[0].cpu().numpy().T, gt=None, colorbar=False, title=None, xlabel='Frame index', ylabel='Action index')
-            # wandb.log({f"aff_mat_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
+            fig = plot_matrix(segmentation[0].cpu().numpy().T, gt=None, colorbar=False, title=None, xlabel='Frame index', ylabel='Action index')
+            wandb.log({f"pred_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
+            fig = plot_matrix(cost_mat[0].cpu().numpy().T, gt=None, colorbar=False, title=None, xlabel='Frame index', ylabel='Action index')
+            wandb.log({f"cost_mat_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
+            fig = plot_matrix(1. - cost_mat[0].cpu().numpy().T, gt=None, colorbar=False, title=None, xlabel='Frame index', ylabel='Action index')
+            wandb.log({f"aff_mat_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
             # fig = plot_matrix(bal_codes[0].cpu().numpy().T, gt=None, colorbar=False, title=None, xlabel='Frame index', ylabel='Action index')
             # wandb.log({f"bal_pred_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
             # fig = plot_matrix(nogw_codes[0].cpu().numpy().T, gt=None, colorbar=False, title=None, xlabel='Frame index', ylabel='Action index')
