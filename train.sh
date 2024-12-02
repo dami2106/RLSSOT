@@ -31,7 +31,7 @@ fi
 python3 train.py \
     --activity all \
     --dataset desktop_assembly \
-    --group static_col_pos \
+    --group testets \
     --n-epochs 30 \
     --visualize \
     --n-clusters 3 \
@@ -42,7 +42,7 @@ python3 train.py \
     --wandb \
     --learning-rate 1e-3 \
     --weight-decay 1e-4 \
-    --layers 11 11 11 \
+    --layers 11 128 40 \
     --n-ot-train 25 1 \
     --n-ot-eval 25 1 \
     --alpha-train $ALPHA_TRAIN \

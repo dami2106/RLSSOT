@@ -36,13 +36,13 @@ class ColorsEnv(gym.Env):
     def setup_world(self):
         self.WORLD = np.zeros((self.SIZE, self.SIZE))
     
-        # coordinates = set()
-        coordinates = []    
+        coordinates = set()
+        # coordinates = []    
 
 
-        coordinates.append((0, 2))
-        coordinates.append((4, 4))
-        coordinates.append((2, 1))
+        # coordinates.append((0, 2))
+        # coordinates.append((4, 4))
+        # coordinates.append((2, 1))
 
         # #randomise the position of the colours
         # shuffle(coordinates)
@@ -50,21 +50,21 @@ class ColorsEnv(gym.Env):
 
 
 
-        while True:
-            x = randint(*(0, self.SIZE - 1))
-            y = randint(*(0, self.SIZE - 1))
-            if (x, y) not in coordinates:
-                coordinates.append((x, y))
-                break
-        
-        coordinates.reverse()
-
-
-        # while len(coordinates) < 4:
+        # while True:
         #     x = randint(*(0, self.SIZE - 1))
         #     y = randint(*(0, self.SIZE - 1))
-        #     coordinates.add((x, y))
-        # coordinates = list(coordinates)
+        #     if (x, y) not in coordinates:
+        #         coordinates.append((x, y))
+        #         break
+        
+        # coordinates.reverse()
+
+
+        while len(coordinates) < 4:
+            x = randint(*(0, self.SIZE - 1))
+            y = randint(*(0, self.SIZE - 1))
+            coordinates.add((x, y))
+        coordinates = list(coordinates)
         # coordinates.reverse()
 
         print("coords", coordinates)
@@ -401,14 +401,17 @@ def save_colours_demonstrations(nb_traces = 100, max_steps = 12):
 
             if done :
                 
+                #Convert actions to one-hot encoding
+                actions = np.array(actions)
+                actions = np.eye(4)[actions]
                 states = np.array(states)
-               
+                # states = np.concatenate((states, actions), axis=1)
 
-                #Save the states to a file
-                np.save(f'features/{tn}_colours', states)
+         
+                np.save(f'data/desktop_assembly/features/{tn}_colours', states)
                 
                 #Save the groundtruth as a text file with each string on a new line
-                with open(f'groundTruth/{tn}_colours', 'w') as f:
+                with open(f'data/desktop_assembly/groundTruth/{tn}_colours', 'w') as f:
                     for item in ground_truth:
                         f.write("%s\n" % item)
 

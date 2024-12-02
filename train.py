@@ -55,10 +55,15 @@ class VideoSSL(pl.LightningModule):
         self.n_frames = n_frames
         self.rho = rho
 
+        self.inc_mlp = False
+
         # initialize MLP
-        # layers = [nn.Sequential(nn.Linear(sz, sz1), nn.ReLU()) for sz, sz1 in zip(layer_sizes[:-2], layer_sizes[1:-1])]
-        # layers += [nn.Linear(layer_sizes[-2], layer_sizes[-1])]
-        # self.mlp = nn.Sequential(*layers)
+        if self.inc_mlp:
+            layers = [nn.Sequential(nn.Linear(sz, sz1), nn.ReLU()) for sz, sz1 in zip(layer_sizes[:-2], layer_sizes[1:-1])]
+            layers += [nn.Linear(layer_sizes[-2], layer_sizes[-1])]
+            self.mlp = nn.Sequential(*layers)
+            d = self.layer_sizes[-1]
+            self.clusters = nn.parameter.Parameter(data=F.normalize(torch.randn(self.n_clusters, d), dim=-1), requires_grad=learn_clusters)
 
         # layers = [nn.Sequential(nn.Linear(sz, sz1), nn.ReLU()) for sz, sz1 in zip(layer_sizes[:-2], layer_sizes[1:-1])]
         # layers += [nn.Linear(layer_sizes[-2], layer_sizes[-1])]
@@ -74,11 +79,10 @@ class VideoSSL(pl.LightningModule):
         #         self.initialize_identity(layer)
 
         # initialize cluster centers/codebook
-        # d = self.layer_sizes[-1]
-        # self.clusters = nn.parameter.Parameter(data=F.normalize(torch.randn(self.n_clusters, d), dim=-1), requires_grad=learn_clusters)
 
-        d = 11  # Use the raw feature dimensionality
-        self.clusters = nn.parameter.Parameter(data=F.normalize(torch.randn(self.n_clusters, d), dim=-1), requires_grad=learn_clusters)
+        if not self.inc_mlp:
+            d = 15  # Use the raw feature dimensionality
+            self.clusters = nn.parameter.Parameter(data=F.normalize(torch.randn(self.n_clusters, d), dim=-1), requires_grad=learn_clusters)
 
             # initialize evaluation metrics
         self.mof = ClusteringMetrics(metric='mof')
@@ -101,8 +105,10 @@ class VideoSSL(pl.LightningModule):
             self.clusters.data = F.normalize(self.clusters.data, dim=-1)
         D = self.layer_sizes[-1]
         B, T, _ = features_raw.shape
-        # features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
-        features = F.normalize(features_raw, dim=-1)
+        if self.inc_mlp:
+            features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
+        else:
+            features = F.normalize(features_raw, dim=-1)
         codes = torch.exp(features @ self.clusters.T[None, ...] / self.temp)
         codes = codes / codes.sum(dim=-1, keepdim=True)
         with torch.no_grad():  # pseudo-labels from OT
@@ -122,8 +128,10 @@ class VideoSSL(pl.LightningModule):
         D = self.layer_sizes[-1]
         B, T, _ = features_raw.shape
         # import pdb; pdb.set_trace()
-        # features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
-        features = F.normalize(features_raw, dim=-1)
+        if self.inc_mlp:
+            features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
+        else:
+            features = F.normalize(features_raw, dim=-1)
 
 
         # log clustering metrics over full epoch
@@ -198,8 +206,10 @@ class VideoSSL(pl.LightningModule):
         features_raw, mask, gt, fname, n_subactions = batch
         D = self.layer_sizes[-1]
         B, T, _ = features_raw.shape
-        # features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
-        features = F.normalize(features_raw, dim=-1)
+        if self.inc_mlp:
+            features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
+        else:
+            features = F.normalize(features_raw, dim=-1)
 
 
         # log clustering metrics over full epoch
@@ -284,8 +294,10 @@ class VideoSSL(pl.LightningModule):
             for features_raw, _, _, _, _ in dataloader:
                 B, T, _ = features_raw.shape
                 D = self.layer_sizes[-1]
-                # features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
-                features = F.normalize(features_raw, dim=-1)
+                if self.inc_mlp:
+                    features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
+                else:
+                    features = F.normalize(features_raw, dim=-1)
 
                 features_full.append(features)
             features_full = torch.cat(features_full, dim=0).reshape(-1, features.shape[2]).cpu().numpy()
