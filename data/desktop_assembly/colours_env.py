@@ -36,7 +36,7 @@ class ColorsEnv(gym.Env):
     def setup_world(self):
         self.WORLD = np.zeros((self.SIZE, self.SIZE))
 
-        randomised_everything = False
+        randomised_everything = True
 
         if randomised_everything:
             coordinates = set()
@@ -296,37 +296,35 @@ def run_episode(env, goals = [2, 3, 4]):
     obs = env.reset()
     shuffle(goals) #Randomise order of colours 
     done = False 
-    # ep_states = [get_3d_obs(obs.copy())]
-    ep_states = [get_simple_obs(obs.copy())]
+    ep_states = [get_3d_obs(obs.copy()).flatten()]
+    # ep_states = [obs.copy().flatten()]
+    # ep_states = [get_simple_obs(obs.copy())]
     ep_actions = []
     ep_rewards = []
     ep_length = 0
-    path_lengths = [0, 0, 0]
-    path_i = 0
+
 
     for goal in goals:
         path = find_shortest_path(obs, goal)
-        path_lengths[path_i] = len(path)
-
+   
         for action in path: 
             obs, reward, done, _ = env.step(action)
-            # ep_states.append(get_3d_obs(obs.copy()))
-            ep_states.append(get_simple_obs(obs.copy()))
+            # ep_states.append(obs.copy().flatten())
+            ep_states.append(get_3d_obs(obs.copy()).flatten())
+            # ep_states.append(get_simple_obs(obs.copy()))
             ep_actions.append(action)
             ep_rewards.append(reward)
             ep_length += 1
 
-        path_i += 1
+  
 
     ep_actions.append(-1)
-
-    equi_paths = (len(set(path_lengths)) == 1) and (path_lengths[0] == 3)
 
     # ep_states, ep_actions = add_in_pickup(ep_states, ep_actions)
 
     # ep_length = len(ep_states[:-1])
 
-    return ep_states[:-1], ep_actions[:-1], ep_rewards, ep_length, done, equi_paths
+    return ep_states[:-1], ep_actions[:-1], ep_rewards, ep_length, done
 
 
 """
@@ -391,7 +389,7 @@ def save_colours_demonstrations(nb_traces = 100, max_steps = 12):
     
     while tn < nb_traces:
         try: 
-            states, actions, _, length, done, eq = run_episode(env)
+            states, actions, _, length, done = run_episode(env)
             ground_truth = determine_objectives(states) 
 
             if done :
@@ -401,7 +399,7 @@ def save_colours_demonstrations(nb_traces = 100, max_steps = 12):
                 actions = np.eye(4)[actions]
                 states = np.array(states)
                 states = np.concatenate((states, actions), axis=1)
-
+                print(states.shape)
          
                 np.save(f'data/desktop_assembly/features/{tn}_colours', states)
                 
@@ -424,8 +422,10 @@ if __name__ == '__main__':
 
     # print(obs)
 
-    # ep_states, ep_actions, ep_rewards, ep_length, done, equi = run_episode(env)
-
+    # ep_states, ep_actions, ep_rewards, ep_length, done = run_episode(env)
+    # for state in ep_states:
+    #     print(state)
+    #     print()
     # new_states, new_acts = add_in_pickup(ep_states, ep_actions)
 
     # for s in ep_states:

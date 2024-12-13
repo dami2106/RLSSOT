@@ -18,7 +18,7 @@ RHO=0.15                      # Global structure weighting factor
 N_FRAMES=3                    # Number of frames sampled per video for train/val
 
 # Boolean for std-feats
-USE_STD_FEATS=true            # Set to true to enable standardization of features
+USE_STD_FEATS=false            # Set to true to enable standardization of features
 
 # Translate boolean to flag
 if [ "$USE_STD_FEATS" = true ]; then
@@ -31,7 +31,7 @@ fi
 python3 train.py \
     --activity all \
     --dataset desktop_assembly \
-    --group actions_static_colours_positions\
+    --group cnn_non_std_feat\
     --n-epochs 30 \
     --visualize \
     --n-clusters 3 \
@@ -42,7 +42,7 @@ python3 train.py \
     --wandb \
     --learning-rate 1e-3 \
     --weight-decay 1e-4 \
-    --layers 15 15 15 \
+    --layers 104 104 104 \
     --n-ot-train 25 1 \
     --n-ot-eval 25 1 \
     --alpha-train $ALPHA_TRAIN \

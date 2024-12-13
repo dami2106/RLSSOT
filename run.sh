@@ -25,7 +25,7 @@ python3 train.py \
     --wandb \  # Use WandB for logging
     --learning-rate 1e-3 \  # Learning rate for the optimizer
     --weight-decay 1e-4 \  # Weight decay for the optimizer
-    --layers 11 128 40 \  # Layer sizes for MLP (input, hidden, output)
+    --layers 104 104 104 \  # Layer sizes for MLP (input, hidden, output)
     --n-ot-train 25 1 \  # Number of outer and inner iterations for ASOT solver during training
     --n-ot-eval 25 1 \  # Number of outer and inner iterations for ASOT solver during evaluation
     #----------------- Customise Below -----------------#
