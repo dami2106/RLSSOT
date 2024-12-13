@@ -8,9 +8,9 @@ conda activate SOTA
 ALPHA_TRAIN=0.3               # Weighting of KOT term on frame features in OT during training
 ALPHA_EVAL=0.6                # Weighting of KOT term on frame features in OT during evaluation
 LAMBDA_FRAMES_TRAIN=0.05      # Penalty for balanced frame assumption during training
-LAMBDA_ACTIONS_TRAIN=0.05     # Penalty for balanced action assumption during training
+LAMBDA_ACTIONS_TRAIN=0.11     # Penalty for balanced action assumption during training
 LAMBDA_FRAMES_EVAL=0.05       # Penalty for balanced frame assumption during evaluation
-LAMBDA_ACTIONS_EVAL=0.005      # Penalty for balanced action assumption during evaluation
+LAMBDA_ACTIONS_EVAL=0.01      # Penalty for balanced action assumption during evaluation
 EPS_TRAIN=0.07                # Entropy regularization for OT during training
 EPS_EVAL=0.04                 # Entropy regularization for OT during evaluation
 RADIUS_GW=0.04                # Radius parameter for GW structure loss
@@ -31,7 +31,7 @@ fi
 python3 train.py \
     --activity all \
     --dataset desktop_assembly \
-    --group lambda_test_2\
+    --group actions_static_colours_positions\
     --n-epochs 30 \
     --visualize \
     --n-clusters 3 \
@@ -42,7 +42,7 @@ python3 train.py \
     --wandb \
     --learning-rate 1e-3 \
     --weight-decay 1e-4 \
-    --layers 11 11 11 \
+    --layers 15 15 15 \
     --n-ot-train 25 1 \
     --n-ot-eval 25 1 \
     --alpha-train $ALPHA_TRAIN \
@@ -57,4 +57,3 @@ python3 train.py \
     --rho $RHO \
     $STD_FEATS \
     --n-frames $N_FRAMES\
-    --ub-actions

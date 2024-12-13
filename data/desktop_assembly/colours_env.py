@@ -35,37 +35,32 @@ class ColorsEnv(gym.Env):
 
     def setup_world(self):
         self.WORLD = np.zeros((self.SIZE, self.SIZE))
-    
-        coordinates = set()
-        # coordinates = []    
 
+        randomised_everything = False
 
-        # coordinates.append((0, 2))
-        # coordinates.append((4, 4))
-        # coordinates.append((2, 1))
+        if randomised_everything:
+            coordinates = set()
+            while len(coordinates) < 4:
+                x = randint(*(0, self.SIZE - 1))
+                y = randint(*(0, self.SIZE - 1))
+                coordinates.add((x, y))
+            coordinates = list(coordinates)
 
-        # #randomise the position of the colours
-        # shuffle(coordinates)
-        # coordinates.append((2, 3))
-
-
-
-        # while True:
-        #     x = randint(*(0, self.SIZE - 1))
-        #     y = randint(*(0, self.SIZE - 1))
-        #     if (x, y) not in coordinates:
-        #         coordinates.append((x, y))
-        #         break
+        else:
+            coordinates = []    
+            coordinates.append((0, 2))
+            coordinates.append((4, 4))
+            coordinates.append((2, 1))
+            shuffle(coordinates)
+            while True:
+                x = randint(*(0, self.SIZE - 1))
+                y = randint(*(0, self.SIZE - 1))
+                if (x, y) not in coordinates:
+                    coordinates.append((x, y))
+                    break
         
-        # coordinates.reverse()
+            coordinates.reverse()
 
-
-        while len(coordinates) < 4:
-            x = randint(*(0, self.SIZE - 1))
-            y = randint(*(0, self.SIZE - 1))
-            coordinates.add((x, y))
-        coordinates = list(coordinates)
-        # coordinates.reverse()
 
         print("coords", coordinates)
 
@@ -405,7 +400,7 @@ def save_colours_demonstrations(nb_traces = 100, max_steps = 12):
                 actions = np.array(actions)
                 actions = np.eye(4)[actions]
                 states = np.array(states)
-                # states = np.concatenate((states, actions), axis=1)
+                states = np.concatenate((states, actions), axis=1)
 
          
                 np.save(f'data/desktop_assembly/features/{tn}_colours', states)
