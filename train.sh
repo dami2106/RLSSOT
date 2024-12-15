@@ -17,8 +17,11 @@ RADIUS_GW=0.04                # Radius parameter for GW structure loss
 RHO=0.15                      # Global structure weighting factor
 N_FRAMES=3                    # Number of frames sampled per video for train/val
 
+LEARNING_RATE=1e-1            # Learning rate for the optimizer
+WEIGHT_DECAY=1e-3             # Weight decay for the optimizer
+
 # Boolean for std-feats
-USE_STD_FEATS=false            # Set to true to enable standardization of features
+USE_STD_FEATS=true            # Set to true to enable standardization of features
 
 # Translate boolean to flag
 if [ "$USE_STD_FEATS" = true ]; then
@@ -31,7 +34,7 @@ fi
 python3 train.py \
     --activity all \
     --dataset desktop_assembly \
-    --group cnn_non_std_feat\
+    --group sweep_baseline_7\
     --n-epochs 30 \
     --visualize \
     --n-clusters 3 \
@@ -40,9 +43,9 @@ python3 train.py \
     --seed 0 \
     --batch-size 2 \
     --wandb \
-    --learning-rate 1e-3 \
-    --weight-decay 1e-4 \
-    --layers 104 104 104 \
+    --learning-rate $LEARNING_RATE \
+    --weight-decay $WEIGHT_DECAY \
+    --layers 11 11 11 \
     --n-ot-train 25 1 \
     --n-ot-eval 25 1 \
     --alpha-train $ALPHA_TRAIN \

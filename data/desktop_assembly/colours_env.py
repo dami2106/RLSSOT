@@ -296,9 +296,9 @@ def run_episode(env, goals = [2, 3, 4]):
     obs = env.reset()
     shuffle(goals) #Randomise order of colours 
     done = False 
-    ep_states = [get_3d_obs(obs.copy()).flatten()]
+    # ep_states = [get_3d_obs(obs.copy()).flatten()]
     # ep_states = [obs.copy().flatten()]
-    # ep_states = [get_simple_obs(obs.copy())]
+    ep_states = [get_simple_obs(obs.copy())]
     ep_actions = []
     ep_rewards = []
     ep_length = 0
@@ -310,8 +310,8 @@ def run_episode(env, goals = [2, 3, 4]):
         for action in path: 
             obs, reward, done, _ = env.step(action)
             # ep_states.append(obs.copy().flatten())
-            ep_states.append(get_3d_obs(obs.copy()).flatten())
-            # ep_states.append(get_simple_obs(obs.copy()))
+            # ep_states.append(get_3d_obs(obs.copy()).flatten())
+            ep_states.append(get_simple_obs(obs.copy()))
             ep_actions.append(action)
             ep_rewards.append(reward)
             ep_length += 1
@@ -398,7 +398,7 @@ def save_colours_demonstrations(nb_traces = 100, max_steps = 12):
                 actions = np.array(actions)
                 actions = np.eye(4)[actions]
                 states = np.array(states)
-                states = np.concatenate((states, actions), axis=1)
+                # states = np.concatenate((states, actions), axis=1)
                 print(states.shape)
          
                 np.save(f'data/desktop_assembly/features/{tn}_colours', states)
