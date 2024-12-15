@@ -19,9 +19,10 @@ def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, exclude_
         pred_[pred_ == pr_lab] = gt_lab
     n_frames = len(pred_)
 
-    # Handle gt_uniq
+    # add colors for predictions which do not match to a gt class
+
     if gt_uniq is None:
-        gt_uniq = np.unique(gt_)
+        gt_uniq = np.unique(gt_.cpu().numpy())
     pred_not_matched = np.setdiff1d(pred_opt, gt_uniq)
     if len(pred_not_matched) > 0:
         gt_uniq = np.concatenate((gt_uniq, pred_not_matched))
@@ -29,15 +30,14 @@ def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, exclude_
     n_class = len(gt_uniq)
     if n_class <= 20:
         cmap = plt.get_cmap('tab20')
-    else:
+    else:  # up to 40 classes
         cmap1 = plt.get_cmap('tab20')
         cmap2 = plt.get_cmap('tab20b')
-        cmap = lambda x: cmap1(x / n_class) if x < 20 else cmap2((x - 20) / n_class)
+        cmap = lambda x: cmap1(round(x * n_class / 20., 2)) if x <= 19. / n_class else cmap2(round((x - 20 / n_class) * n_class / 20, 2))
 
-    # Assign colors
     for i, label in enumerate(gt_uniq):
         if label == -1:
-            colors[label] = (0, 0, 0)  # Black for label -1
+            colors[label] = (0, 0, 0)
         else:
             colors[label] = cmap(i / n_class)
 
@@ -45,7 +45,8 @@ def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, exclude_
     plt.axis('off')
     plt.title(name, fontsize=45, pad=20)
 
-    # Plot GT segmentation
+    # plot gt segmentation
+
     ax = fig.add_subplot(2, 1, 1)
     ax.set_ylabel('GT', fontsize=45, rotation=0, labelpad=40, verticalalignment='center')
     ax.set_yticklabels([])
@@ -56,13 +57,12 @@ def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, exclude_
 
     for start, end in zip(gt_segment_boundaries[:-1], gt_segment_boundaries[1:]):
         label = gt_[start]
-        if label not in colors:
-            colors[label] = (0.5, 0.5, 0.5)  # Fallback color (gray)
         ax.axvspan(start / n_frames, end / n_frames, facecolor=colors[label], alpha=1.0)
         ax.axvline(start / n_frames, color='black', linewidth=3)
         ax.axvline(end / n_frames, color='black', linewidth=3)
 
-    # Plot predicted segmentation
+    # plot predicted segmentation after matching to gt labels w/Hungarian
+
     ax = fig.add_subplot(2, 1, 2)
     ax.set_ylabel('Ours', fontsize=45, rotation=0, labelpad=60, verticalalignment='center')
     ax.set_yticklabels([])
@@ -73,8 +73,6 @@ def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, exclude_
 
     for start, end in zip(pred_segment_boundaries[:-1], pred_segment_boundaries[1:]):
         label = pred_[start]
-        if label not in colors:
-            colors[label] = (0.5, 0.5, 0.5)  # Fallback color (gray)
         ax.axvspan(start / n_frames, end / n_frames, facecolor=colors[label], alpha=1.0)
         ax.axvline(start / n_frames, color='black', linewidth=3)
         ax.axvline(end / n_frames, color='black', linewidth=3)

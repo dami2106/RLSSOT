@@ -3,15 +3,16 @@ import subprocess
 import os
 import csv
 import re
+from tqdm import tqdm
 
 conda_env_name = "SOTA"
 os.system(f"source ~/anaconda3/etc/profile.d/conda.sh && conda activate {conda_env_name}")
 
 
 # Define ranges for hyperparameters to test
-ALPHA_VALUES = [0.1, 0.3, 0.5, 0.7, 1.0]  # Example values for ALPHA_TRAIN and ALPHA_EVAL
-LAMBDA_VALUES = [0.01, 0.05, 0.1, 0.2, 0.5, 0.8, 1.0]  # Example values for LAMBDA_*_TRAIN and LAMBDA_*_EVAL
-EPS_VALUES = [0.01, 0.03, 0.05, 0.07, 0.1]  # Example values for EPS_TRAIN and EPS_EVAL
+ALPHA_VALUES = [0.1, 0.3, 0.6, 1.0, 2.0]  # Example values for ALPHA_TRAIN and ALPHA_EVAL
+LAMBDA_VALUES = [0.01, 0.05, 0.1, 0.5, 0.8, 1.0, 2.0]  # Example values for LAMBDA_*_TRAIN and LAMBDA_*_EVAL
+EPS_VALUES = [0.01, 0.03, 0.06, 0.1, 1.0]  # Example values for EPS_TRAIN and EPS_EVAL
 
 
 # Base command
@@ -54,7 +55,7 @@ csv_file = "logs/hyperparameter_results.csv"
 
 # CSV headers
 csv_headers = [
-    "alpha-train", "alpha-eval", "lambda-frames-train", "lambda-actions-train",
+    "run_id", "alpha-train", "alpha-eval", "lambda-frames-train", "lambda-actions-train",
     "lambda-frames-eval", "lambda-actions-eval", "eps-train", "eps-eval",
     "radius-gw", "rho", "n-frames", "n-clusters", "learning-rate",
     "ub-frames", "ub-actions", "weight-decay", "Data", "Epochs", "MLP", "STD-Feats",
@@ -71,7 +72,7 @@ if not os.path.exists(csv_file):
 
 run_id = 0
 
-for alpha_t, alpha_e, lambda_f_t, lambda_a_t, lambda_f_e, lambda_a_e, eps_t, eps_e in combinations:
+for alpha_t, alpha_e, lambda_f_t, lambda_a_t, lambda_f_e, lambda_a_e, eps_t, eps_e in tqdm(combinations):
     # Add hyperparameters to the command
     command = base_command + [
         "--alpha-train", str(alpha_t),
@@ -105,6 +106,7 @@ for alpha_t, alpha_e, lambda_f_t, lambda_a_t, lambda_f_e, lambda_a_e, eps_t, eps
         
         # Extract metrics/results from the output (example placeholders)
         model_data = {
+            "run_id": run_id,
             "alpha-train": alpha_t,
             "alpha-eval": alpha_e,
             "lambda-frames-train": lambda_f_t,
@@ -143,5 +145,7 @@ for alpha_t, alpha_e, lambda_f_t, lambda_a_t, lambda_f_e, lambda_a_e, eps_t, eps
     with open(log_file, "w") as log:
         log.write(process.stdout)
         log.write(process.stderr)
+    
+    run_id += 1
 
 print("Hyperparameter tuning complete. Check 'hyperparameter_results.csv' and 'logs' directory for details.")

@@ -34,7 +34,7 @@ fi
 python3 train.py \
     --activity all \
     --dataset desktop_assembly \
-    --group sweep_baseline_7\
+    --group test_vis_fix\
     --n-epochs 30 \
     --visualize \
     --n-clusters 3 \
