@@ -4,6 +4,8 @@ import os
 import csv
 import re
 from tqdm import tqdm
+import random
+import string
 
 conda_env_name = "SOTA"
 os.system(f"source ~/anaconda3/etc/profile.d/conda.sh && conda activate {conda_env_name}")
@@ -13,6 +15,10 @@ os.system(f"source ~/anaconda3/etc/profile.d/conda.sh && conda activate {conda_e
 ALPHA_VALUES = [0.1, 0.3, 0.6, 1.0, 2.0]  # Example values for ALPHA_TRAIN and ALPHA_EVAL
 LAMBDA_VALUES = [0.01, 0.05, 0.1, 0.5, 0.8, 1.0, 2.0]  # Example values for LAMBDA_*_TRAIN and LAMBDA_*_EVAL
 EPS_VALUES = [0.01, 0.03, 0.06, 0.1, 1.0]  # Example values for EPS_TRAIN and EPS_EVAL
+CLUSTERS = [3, 4]
+
+def generate_random_string(length=15):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
 
 # Base command
@@ -20,12 +26,11 @@ base_command = [
     "python3", "train.py",
     "--activity", "all",
     "--dataset", "desktop_assembly",
-    "--group", "sweep_baseline_4",
+    "--group", generate_random_string(),
     "--n-epochs", "30",
     "--visualize",
-    "--n-clusters", "3",
     "--val-freq", "5",
-    "--gpu", "0",
+    "--gpu", "1",
     "--seed", "0",
     "--batch-size", "2",
     "--wandb",
@@ -36,16 +41,15 @@ base_command = [
     "--n-ot-eval", "25", "1",
     "--radius-gw", "0.04",
     "--rho", "0.15",
-    "--n-frames", "3",
-    "--std-feats", "",
+    "--n-frames", "3"
 ]
 
-# base_command.append("--std-feats")
+base_command.append("--std-feats")
 
 # # Create all combinations of hyperparameters
 combinations = itertools.product(ALPHA_VALUES, ALPHA_VALUES, \
                                 LAMBDA_VALUES, LAMBDA_VALUES, LAMBDA_VALUES, LAMBDA_VALUES,\
-                                EPS_VALUES, EPS_VALUES)
+                                EPS_VALUES, EPS_VALUES, CLUSTERS)
 
 # Directory to save logs
 os.makedirs("logs", exist_ok=True)
@@ -72,7 +76,7 @@ if not os.path.exists(csv_file):
 
 run_id = 0
 
-for alpha_t, alpha_e, lambda_f_t, lambda_a_t, lambda_f_e, lambda_a_e, eps_t, eps_e in tqdm(combinations):
+for alpha_t, alpha_e, lambda_f_t, lambda_a_t, lambda_f_e, lambda_a_e, eps_t, eps_e, n_clusters in tqdm(combinations):
     # Add hyperparameters to the command
     command = base_command + [
         "--alpha-train", str(alpha_t),
@@ -83,6 +87,7 @@ for alpha_t, alpha_e, lambda_f_t, lambda_a_t, lambda_f_e, lambda_a_e, eps_t, eps
         "--lambda-actions-eval", str(lambda_a_e),
         "--eps-train", str(eps_t),
         "--eps-eval", str(eps_e),
+        "--n-clusters", str(n_clusters),
     ]
     
     # Log file for the current combination
@@ -118,7 +123,7 @@ for alpha_t, alpha_e, lambda_f_t, lambda_a_t, lambda_f_e, lambda_a_e, eps_t, eps
             "radius-gw": 0.04,  # Fixed value
             "rho": 0.15,  # Fixed value
             "n-frames": 3,  # Fixed value
-            "n-clusters": 3,  # Fixed value
+            "n-clusters": n_clusters,  # Fixed value
             "learning-rate": 1e-1,  # Fixed value
             "ub-frames": "FALSE",  # Placeholder
             "ub-actions": "FALSE",  # Placeholder

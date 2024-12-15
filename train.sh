@@ -34,7 +34,7 @@ fi
 python3 train.py \
     --activity all \
     --dataset desktop_assembly \
-    --group test_vis_fix\
+    --group 3_cluster_test_km\
     --n-epochs 30 \
     --visualize \
     --n-clusters 3 \
