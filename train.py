@@ -65,7 +65,7 @@ class VideoSSL(pl.LightningModule):
             d = self.layer_sizes[-1]
             self.clusters = nn.parameter.Parameter(data=F.normalize(torch.randn(self.n_clusters, d), dim=-1), requires_grad=learn_clusters)
         else:
-            d = 15  # Use the raw feature dimensionality
+            d = 100  # Use the raw feature dimensionality
             self.clusters = nn.parameter.Parameter(data=F.normalize(torch.randn(self.n_clusters, d), dim=-1), requires_grad=learn_clusters)
 
 
