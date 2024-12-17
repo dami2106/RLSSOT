@@ -1,0 +1,3 @@
+[submodule "data/desktop_assembly/RL-Environment-Traces"]
+	path = data/desktop_assembly/RL-Environment-Traces
+	url = https://github.com/dami2106/RL-Environment-Traces.git
