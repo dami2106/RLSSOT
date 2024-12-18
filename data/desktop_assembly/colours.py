@@ -40,7 +40,7 @@ class ColorsEnv(gym.Env):
 
         if randomised_everything:
             coordinates = set()
-            while len(coordinates) < 5:
+            while len(coordinates) < 4:
                 x = randint(*(0, self.SIZE - 1))
                 y = randint(*(0, self.SIZE - 1))
                 coordinates.add((x, y))
@@ -64,7 +64,7 @@ class ColorsEnv(gym.Env):
 
         print("coords", coordinates)
 
-        objects = [1, 2, 2, 3, 4]
+        objects = [1, 2, 3, 4]
 
         for s, coord in zip(objects, coordinates):
             self.WORLD[coord[0], coord[1]] =  s
@@ -306,12 +306,12 @@ def get_simple_obs(obs):
     return state
 
 
-def run_episode(env, goals = [2, 3, 2, 4]):
+def run_episode(env, goals = [2, 3, 4]):
     obs = env.reset()
     # shuffle(goals) #Randomise order of colours 
     done = False 
-    ep_states = [get_3d_obs(obs.copy()).flatten()] 
-    # ep_states = [obs.copy().flatten()]
+    # ep_states = [get_3d_obs(obs.copy()).flatten()] 
+    ep_states = [obs.copy().flatten()]
     # ep_states = [get_simple_obs(obs.copy())]
     ep_actions = []
     ep_rewards = []
@@ -329,8 +329,8 @@ def run_episode(env, goals = [2, 3, 2, 4]):
    
         for action in path: 
             obs, reward, done, _ = env.step(action)
-            # ep_states.append(obs.copy().flatten())
-            ep_states.append(get_3d_obs(obs.copy()).flatten())
+            ep_states.append(obs.copy().flatten())
+            # ep_states.append(get_3d_obs(obs.copy()).flatten())
             # ep_states.append(get_simple_obs(obs.copy()))
             ep_actions.append(action)
             ep_rewards.append(reward)
@@ -421,7 +421,7 @@ def save_colours_demonstrations(nb_traces = 100, max_steps = 12):
                 actions = np.array(actions)
                 actions = np.eye(4)[actions]
                 states = np.array(states)
-                states = np.concatenate((states, actions), axis=1)
+                # states = np.concatenate((states, actions), axis=1)
                 print(states.shape)
          
                 np.save(f'data/desktop_assembly/features/{tn}_colours', states)
@@ -440,5 +440,11 @@ def save_colours_demonstrations(nb_traces = 100, max_steps = 12):
 if __name__ == '__main__':
     env = ColorsEnv('colours')
 
-    save_colours_demonstrations(100, 12)
-   
+    save_colours_demonstrations(500, 12)
+    # states, actions, _, length, done, ground_truth = run_episode(env)
+
+    # for s in states:
+    #     print(s.reshape(5, 5))
+    #     print()
+
+#    

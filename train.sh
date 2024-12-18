@@ -34,7 +34,7 @@ fi
 python3 train.py \
     --activity all \
     --dataset desktop_assembly \
-    --group duplicate_skill_test_4_static_collection_order\
+    --group std_obs_test_1_static_noact_4c\
     --n-epochs 30 \
     --visualize \
     --n-clusters 4 \
@@ -45,7 +45,7 @@ python3 train.py \
     --wandb \
     --learning-rate $LEARNING_RATE \
     --weight-decay $WEIGHT_DECAY \
-    --layers 104 104 104 \
+    --layers 25 25 25 \
     --n-ot-train 25 1 \
     --n-ot-eval 25 1 \
     --alpha-train $ALPHA_TRAIN \
