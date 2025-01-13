@@ -308,11 +308,11 @@ def get_simple_obs(obs):
 
 def run_episode(env, goals = [2, 3, 4]):
     obs = env.reset()
-    # shuffle(goals) #Randomise order of colours 
+    shuffle(goals) #Randomise order of colours 
     done = False 
     # ep_states = [get_3d_obs(obs.copy()).flatten()] 
-    ep_states = [obs.copy().flatten()]
-    # ep_states = [get_simple_obs(obs.copy())]
+    # ep_states = [obs.copy().flatten()]
+    ep_states = [get_simple_obs(obs.copy())]
     ep_actions = []
     ep_rewards = []
     ground_truth = []
@@ -329,9 +329,9 @@ def run_episode(env, goals = [2, 3, 4]):
    
         for action in path: 
             obs, reward, done, _ = env.step(action)
-            ep_states.append(obs.copy().flatten())
+            # ep_states.append(obs.copy().flatten())
             # ep_states.append(get_3d_obs(obs.copy()).flatten())
-            # ep_states.append(get_simple_obs(obs.copy()))
+            ep_states.append(get_simple_obs(obs.copy()))
             ep_actions.append(action)
             ep_rewards.append(reward)
             ground_truth.append(truth_mapping[goal])
