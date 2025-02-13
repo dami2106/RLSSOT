@@ -5,20 +5,20 @@ source ~/anaconda3/etc/profile.d/conda.sh
 conda activate SOTA
 
 # Hyperparameters as variables
-ALPHA_TRAIN=0.3               # Weighting of KOT term on frame features in OT during training
-ALPHA_EVAL=0.6                # Weighting of KOT term on frame features in OT during evaluation
+ALPHA_TRAIN=0.4               # Weighting of KOT term on frame features in OT during training
+ALPHA_EVAL=0.7                # Weighting of KOT term on frame features in OT during evaluation
 LAMBDA_FRAMES_TRAIN=0.05      # Penalty for balanced frame assumption during training
-LAMBDA_ACTIONS_TRAIN=0.11     # Penalty for balanced action assumption during training
+LAMBDA_ACTIONS_TRAIN=0.1   # Penalty for balanced action assumption during training
 LAMBDA_FRAMES_EVAL=0.05       # Penalty for balanced frame assumption during evaluation
 LAMBDA_ACTIONS_EVAL=0.01      # Penalty for balanced action assumption during evaluation
 EPS_TRAIN=0.07                # Entropy regularization for OT during training
 EPS_EVAL=0.04                 # Entropy regularization for OT during evaluation
 RADIUS_GW=0.04                # Radius parameter for GW structure loss
-RHO=0.15                      # Global structure weighting factor
+RHO=0.2                      # Global structure weighting factor
 N_FRAMES=3                    # Number of frames sampled per video for train/val
 
 LEARNING_RATE=1e-1            # Learning rate for the optimizer
-WEIGHT_DECAY=1e-3             # Weight decay for the optimizer
+WEIGHT_DECAY=1e-4             # Weight decay for the optimizer
 
 # Boolean for std-feats
 USE_STD_FEATS=true            # Set to true to enable standardization of features
@@ -34,7 +34,7 @@ fi
 python3 train.py \
     --activity all \
     --dataset desktop_assembly \
-    --group baseline_results_best_random\
+    --group standard_baseline_random_simple_np\
     --n-epochs 30 \
     --visualize \
     --n-clusters 3 \
@@ -60,3 +60,4 @@ python3 train.py \
     --rho $RHO \
     $STD_FEATS \
     --n-frames $N_FRAMES\
+    -ua \
