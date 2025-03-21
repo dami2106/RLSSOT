@@ -27,14 +27,14 @@ class VideoSSL(pl.LightningModule):
     def __init__(self, lr=1e-4, weight_decay=1e-4, layer_sizes=[64, 128, 40], n_clusters=20, alpha_train=0.3, alpha_eval=0.3,
                  n_ot_train=[50, 1], n_ot_eval=[50, 1], step_size=None, train_eps=0.06, eval_eps=0.01, ub_frames=False, ub_actions=True,
                  lambda_frames_train=0.05, lambda_actions_train=0.05, lambda_frames_eval=0.05, lambda_actions_eval=0.01,
-                 temp=0.1, radius_gw=0.04, learn_clusters=True, n_frames=256, rho=0.1, exclude_cls=None, visualize=False):
+                 temp=0.1, radius_gw=0.04, learn_clusters=True, n_frames=256, rho=0.1,  visualize=False):
         super().__init__()
         self.lr = lr
         self.weight_decay = weight_decay
         self.n_clusters = n_clusters
         self.learn_clusters = learn_clusters
         self.layer_sizes = layer_sizes
-        self.exclude_cls = exclude_cls
+
         self.visualize = visualize
 
         self.alpha_train = alpha_train
@@ -113,7 +113,7 @@ class VideoSSL(pl.LightningModule):
         self.miou.update(segments, gt, mask)
 
         # log clustering metrics per video
-        metrics = indep_eval_metrics(segments, gt, mask, ['mof', 'f1', 'miou'], exclude_cls=self.exclude_cls)
+        metrics = indep_eval_metrics(segments, gt, mask, ['mof', 'f1', 'miou'], )
         self.log('val_mof_per', metrics['mof'])
         self.log('val_f1_per', metrics['f1'])
         self.log('val_miou_per', metrics['miou'])
@@ -187,7 +187,7 @@ class VideoSSL(pl.LightningModule):
         self.miou.update(segments, gt, mask)
 
         # log clustering metrics per video
-        metrics = indep_eval_metrics(segments, gt, mask, ['mof', 'f1', 'miou'], exclude_cls=self.exclude_cls)
+        metrics = indep_eval_metrics(segments, gt, mask, ['mof', 'f1', 'miou'])
         self.log('test_mof_per', metrics['mof'])
         self.log('test_f1_per', metrics['f1'])
         self.log('test_miou_per', metrics['miou'])
@@ -198,9 +198,9 @@ class VideoSSL(pl.LightningModule):
         return None
     
     def on_validation_epoch_end(self):
-        mof, pred_to_gt = self.mof.compute(exclude_cls=self.exclude_cls)
-        f1, _ = self.f1.compute(exclude_cls=self.exclude_cls, pred_to_gt=pred_to_gt)
-        miou, _ = self.miou.compute(exclude_cls=self.exclude_cls, pred_to_gt=pred_to_gt)
+        mof, pred_to_gt = self.mof.compute()
+        f1, _ = self.f1.compute( pred_to_gt=pred_to_gt)
+        miou, _ = self.miou.compute(pred_to_gt=pred_to_gt)
         self.log('val_mof_full', mof)
         self.log('val_f1_full', f1)
         self.log('val_miou_full', miou)
@@ -209,19 +209,19 @@ class VideoSSL(pl.LightningModule):
         self.miou.reset()
 
     def on_test_epoch_end(self):
-        mof, pred_to_gt = self.mof.compute(exclude_cls=self.exclude_cls)
-        f1, _ = self.f1.compute(exclude_cls=self.exclude_cls, pred_to_gt=pred_to_gt)
-        miou, _  = self.miou.compute(exclude_cls=self.exclude_cls, pred_to_gt=pred_to_gt)
+        mof, pred_to_gt = self.mof.compute()
+        f1, _ = self.f1.compute(pred_to_gt=pred_to_gt)
+        miou, _  = self.miou.compute(pred_to_gt=pred_to_gt)
         self.log('test_mof_full', mof)
         self.log('test_f1_full', f1)
         self.log('test_miou_full', miou)
         if wandb.run is not None and self.visualize:
             for i, (mof, pred, gt, mask, fname) in enumerate(self.test_cache):
-                self.test_cache[i][0] = indep_eval_metrics(pred, gt, mask, ['mof'], exclude_cls=self.exclude_cls, pred_to_gt=pred_to_gt)['mof']
+                self.test_cache[i][0] = indep_eval_metrics(pred, gt, mask, ['mof'], pred_to_gt=pred_to_gt)['mof']
             self.test_cache = sorted(self.test_cache, key=lambda x: x[0], reverse=True)
 
             for i, (mof, pred, gt, mask, fname) in enumerate(self.test_cache):
-                fig = plot_segmentation_gt(gt, pred, mask, exclude_cls=self.exclude_cls, pred_to_gt=pred_to_gt,
+                fig = plot_segmentation_gt(gt, pred, mask, pred_to_gt=pred_to_gt,
                                            gt_uniq=np.unique(self.mof.gt_labels), name=f'{fname[0]}')
                 wandb.log({f"test_segment_{i}": wandb.Image(fig), "trainer/global_step": self.trainer.global_step})
                 plt.close()
@@ -238,6 +238,7 @@ class VideoSSL(pl.LightningModule):
             features_full = []
             self.mlp.eval()
             for features_raw, _, _, _, _ in dataloader:
+                print("features shape", features_raw.shape)
                 B, T, _ = features_raw.shape
                 D = self.layer_sizes[-1]
                 features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
@@ -309,31 +310,26 @@ if __name__ == '__main__':
     train_loader = DataLoader(data_train, batch_size=args.batch_size, num_workers=os.cpu_count(), shuffle=True)
     test_loader = DataLoader(data_test, batch_size=1, num_workers=os.cpu_count(), shuffle=False)
 
-    #Print details on the data
-    print("Data details")
-    print("Validation data")
-    print(data_val)
-    print("Training data")
-    print(data_train)
 
-    # if args.ckpt is not None:
-    #     ssl = VideoSSL.load_from_checkpoint(args.ckpt)
-    # else:
-    #     ssl = VideoSSL(layer_sizes=args.layers, n_clusters=args.n_clusters, alpha_train=args.alpha_train, alpha_eval=args.alpha_eval,
-    #                    ub_frames=args.ub_frames, ub_actions=args.ub_actions, lambda_frames_train=args.lambda_frames_train, lambda_frames_eval=args.lambda_frames_eval,
-    #                    lambda_actions_train=args.lambda_actions_train, lambda_actions_eval=args.lambda_actions_eval, step_size=args.step_size,
-    #                    train_eps=args.eps_train, eval_eps=args.eps_eval, radius_gw=args.radius_gw, n_ot_train=args.n_ot_train, n_ot_eval=args.n_ot_eval,
-    #                    n_frames=args.n_frames, lr=args.learning_rate, weight_decay=args.weight_decay, rho=args.rho, exclude_cls=args.exclude, visualize=args.visualize)
-    # activity_name = '_'.join(args.activity)
-    # name = f'{args.dataset}_{activity_name}_{args.group}_seed_{args.seed}'
-    # logger = pl.loggers.WandbLogger(name=name, project='video_ssl', save_dir='wandb') if args.wandb else None
-    # trainer = pl.Trainer(devices=[args.gpu], check_val_every_n_epoch=args.val_freq, max_epochs=args.n_epochs, log_every_n_steps=50, logger=logger)
+    if args.ckpt is not None:
+        ssl = VideoSSL.load_from_checkpoint(args.ckpt)
+    else:
+        ssl = VideoSSL(layer_sizes=args.layers, n_clusters=args.n_clusters, alpha_train=args.alpha_train, alpha_eval=args.alpha_eval,
+                       ub_frames=args.ub_frames, ub_actions=args.ub_actions, lambda_frames_train=args.lambda_frames_train, lambda_frames_eval=args.lambda_frames_eval,
+                       lambda_actions_train=args.lambda_actions_train, lambda_actions_eval=args.lambda_actions_eval, step_size=args.step_size,
+                       train_eps=args.eps_train, eval_eps=args.eps_eval, radius_gw=args.radius_gw, n_ot_train=args.n_ot_train, n_ot_eval=args.n_ot_eval,
+                       n_frames=args.n_frames, lr=args.learning_rate, weight_decay=args.weight_decay, rho=args.rho,  visualize=args.visualize)
+        
 
-    # if args.k_means and args.ckpt is None:
-    #     ssl.fit_clusters(train_loader, args.n_clusters)
+    name = f'{args.dataset}_{args.group}_seed_{args.seed}'
+    logger = pl.loggers.WandbLogger(name=name, project='video_ssl', save_dir='wandb') if args.wandb else None
+    trainer = pl.Trainer(devices=1, check_val_every_n_epoch=args.val_freq, max_epochs=args.n_epochs, log_every_n_steps=50, logger=logger)
 
-    # if not args.eval:
-    #     trainer.validate(ssl, val_loader)
-    #     trainer.fit(ssl, train_loader, val_loader)
+    if args.k_means and args.ckpt is None:
+        ssl.fit_clusters(train_loader, args.n_clusters)
 
-    # trainer.test(ssl, dataloaders=test_loader)
+    if not args.eval:
+        trainer.validate(ssl, val_loader)
+        trainer.fit(ssl, train_loader, val_loader)
+
+    trainer.test(ssl, dataloaders=test_loader)
