@@ -290,12 +290,11 @@ if __name__ == '__main__':
 
     # system/logging params
     parser.add_argument('--val-freq', '-vf', type=int, default=5, help='validation epoch frequency (epochs)')
-    parser.add_argument('--wandb', '-w', action='store_true', help='use wandb for logging')
     parser.add_argument('--visualize', '-v', action='store_true', help='generate visualizations during logging')
     parser.add_argument('--seed', type=int, default=0, help='Random seed initialization')
     parser.add_argument('--ckpt', type=str, help='path to checkpoint')
     parser.add_argument('--eval', action='store_true', help='run evaluation on test set only')
-    parser.add_argument('--group', type=str, default='base', help='wandb experiment group name')
+    
     args = parser.parse_args()
 
     pl.seed_everything(args.seed)
@@ -306,9 +305,9 @@ if __name__ == '__main__':
     
     
     
-    val_loader = DataLoader(data_val, batch_size=args.batch_size, num_workers=os.cpu_count(), shuffle=False)
-    train_loader = DataLoader(data_train, batch_size=args.batch_size, num_workers=os.cpu_count(), shuffle=True)
-    test_loader = DataLoader(data_test, batch_size=1, num_workers=os.cpu_count(), shuffle=False)
+    val_loader = DataLoader(data_val, batch_size=args.batch_size, num_workers=os.cpu_count(), shuffle=False, persistent_workers=True)
+    train_loader = DataLoader(data_train, batch_size=args.batch_size, num_workers=os.cpu_count(), shuffle=True, persistent_workers=True)
+    test_loader = DataLoader(data_test, batch_size=1, num_workers=os.cpu_count(), shuffle=False, persistent_workers=True)
 
 
     if args.ckpt is not None:

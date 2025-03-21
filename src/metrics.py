@@ -20,18 +20,16 @@ class ClusteringMetrics(Metric):
     def update(self, pred_labels, gt_labels, mask):
         self.pred_labels.extend(pred_labels.flatten()[mask.flatten()].tolist())
         self.gt_labels.extend(gt_labels.flatten()[mask.flatten()].tolist())
-        self.n_videos += pred_labels.shape[0]
+        # self.n_videos += pred_labels.shape[0]
+        self.n_videos = self.n_videos.clone() + pred_labels.shape[0]
 
     def compute(self,  pred_to_gt=None):
         metric, pred_to_gt = self.metric_fn(np.array(self.pred_labels), np.array(self.gt_labels), self.n_videos,  pred_to_gt)
         return metric, pred_to_gt
 
 
-def filter_exclusions(pred_labels, gt_labels, excl_cls):
-    if excl_cls is None:
-        return pred_labels, gt_labels
-    mask = gt_labels != excl_cls
-    return pred_labels[mask], gt_labels[mask]
+def filter_exclusions(pred_labels, gt_labels):
+    return pred_labels, gt_labels
 
 
 def pred_to_gt_match(pred_labels, gt_labels):

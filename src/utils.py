@@ -7,10 +7,10 @@ import wandb
 from metrics import pred_to_gt_match, filter_exclusions
 
 
-def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, exclude_cls=None, name=''):
+def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, name=''):
     colors = {}
 
-    pred_, gt_ = filter_exclusions(pred[mask].cpu().numpy(), gt[mask].cpu().numpy(), exclude_cls)
+    pred_, gt_ = filter_exclusions(pred[mask].cpu().numpy(), gt[mask].cpu().numpy())
     if pred_to_gt is None:
         pred_opt, gt_opt = pred_to_gt_match(pred_, gt_)
     else:
