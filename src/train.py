@@ -13,10 +13,12 @@ import matplotlib.pyplot as plt
 from scipy.spatial.distance import pdist, squareform
 from sklearn.cluster import KMeans
 
-from video_dataset import VideoDataset
+from dataset_loader import RLDataset
 import asot
 from utils import *
 from metrics import ClusteringMetrics, indep_eval_metrics
+
+import os 
 
 num_eps = 1e-11
 
@@ -250,8 +252,6 @@ class VideoSSL(pl.LightningModule):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Train representation learning pipeline")
 
-    # FUGW OT segmentation parameters
-    parser = argparse.ArgumentParser(description="Train representation learning pipeline")
 
     # FUGW OT segmentation parameters
     parser.add_argument('--alpha-train', '-at', type=float, default=0.4, help='weighting of KOT term on frame features in OT')
@@ -272,11 +272,8 @@ if __name__ == '__main__':
     parser.add_argument('--step-size', '-ss', type=float, default=None,
                         help='Step size/learning rate for ASOT solver. Worth setting manually if ub-frames && ub-actions')
 
-    # dataset params
-    parser.add_argument('--base-path', '-p', type=str, default='examples/data', help='base directory for dataset')
-    parser.add_argument('--dataset', '-d', type=str, required=False, default='desktop_assembly' ,help='dataset to use for training/eval (Breakfast, YTI, FSeval, FS, desktop_assembly)')
-    parser.add_argument('--activity', '-ac', type=str, nargs='+', required=False, default = 'all', help='activity classes to select for dataset')
-    parser.add_argument('--exclude', '-x', type=int, default=None, help='classes to exclude from evaluation. use -1 for YTI')
+
+    parser.add_argument('--dataset', '-d', type=str,  default='desktop_assembly' ,help='dataset to use for training/eval (Breakfast, YTI, FSeval, FS, desktop_assembly)')
     parser.add_argument('--n-frames', '-f', type=int, default=6, help='number of frames sampled per video for train/val')
     parser.add_argument('--std-feats', '-s', action='store_true', help='standardize features per video during preprocessing')
     
@@ -292,7 +289,6 @@ if __name__ == '__main__':
 
     # system/logging params
     parser.add_argument('--val-freq', '-vf', type=int, default=5, help='validation epoch frequency (epochs)')
-    parser.add_argument('--gpu', '-g', type=int, default=0, help='gpu id to use')
     parser.add_argument('--wandb', '-w', action='store_true', help='use wandb for logging')
     parser.add_argument('--visualize', '-v', action='store_true', help='generate visualizations during logging')
     parser.add_argument('--seed', type=int, default=0, help='Random seed initialization')
@@ -303,35 +299,41 @@ if __name__ == '__main__':
 
     pl.seed_everything(args.seed)
         
-    data_val = VideoDataset('examples/data', args.dataset, args.n_frames, standardise=args.std_feats, random=False, action_class=args.activity)
-    data_train = VideoDataset('examples/data', args.dataset, args.n_frames, standardise=args.std_feats, random=True, action_class=args.activity)
-    data_test = VideoDataset('examples/data', args.dataset, None, standardise=args.std_feats, random=False, action_class=args.activity)
+    data_val = RLDataset('data', args.dataset, args.n_frames, standardise=args.std_feats, random=False)
+    data_train = RLDataset('data', args.dataset, args.n_frames, standardise=args.std_feats, random=True)
+    data_test = RLDataset('data', args.dataset, None, standardise=args.std_feats, random=False)
     
-
     
-    import os 
     
     val_loader = DataLoader(data_val, batch_size=args.batch_size, num_workers=os.cpu_count(), shuffle=False)
     train_loader = DataLoader(data_train, batch_size=args.batch_size, num_workers=os.cpu_count(), shuffle=True)
     test_loader = DataLoader(data_test, batch_size=1, num_workers=os.cpu_count(), shuffle=False)
 
-    if args.ckpt is not None:
-        ssl = VideoSSL.load_from_checkpoint(args.ckpt)
-    else:
-        ssl = VideoSSL(layer_sizes=args.layers, n_clusters=args.n_clusters, alpha_train=args.alpha_train, alpha_eval=args.alpha_eval,
-                       ub_frames=args.ub_frames, ub_actions=args.ub_actions, lambda_frames_train=args.lambda_frames_train, lambda_frames_eval=args.lambda_frames_eval,
-                       lambda_actions_train=args.lambda_actions_train, lambda_actions_eval=args.lambda_actions_eval, step_size=args.step_size,
-                       train_eps=args.eps_train, eval_eps=args.eps_eval, radius_gw=args.radius_gw, n_ot_train=args.n_ot_train, n_ot_eval=args.n_ot_eval,
-                       n_frames=args.n_frames, lr=args.learning_rate, weight_decay=args.weight_decay, rho=args.rho, exclude_cls=args.exclude, visualize=args.visualize)
-    activity_name = '_'.join(args.activity)
-    name = f'{args.dataset}_{activity_name}_{args.group}_seed_{args.seed}'
-    logger = pl.loggers.WandbLogger(name=name, project='video_ssl', save_dir='wandb') if args.wandb else None
-    trainer = pl.Trainer(devices=[args.gpu], check_val_every_n_epoch=args.val_freq, max_epochs=args.n_epochs, log_every_n_steps=50, logger=logger)
+    #Print details on the data
+    print("Data details")
+    print("Validation data")
+    print(data_val)
+    print("Training data")
+    print(data_train)
 
-    if args.k_means and args.ckpt is None:
-        ssl.fit_clusters(train_loader, args.n_clusters)
+    # if args.ckpt is not None:
+    #     ssl = VideoSSL.load_from_checkpoint(args.ckpt)
+    # else:
+    #     ssl = VideoSSL(layer_sizes=args.layers, n_clusters=args.n_clusters, alpha_train=args.alpha_train, alpha_eval=args.alpha_eval,
+    #                    ub_frames=args.ub_frames, ub_actions=args.ub_actions, lambda_frames_train=args.lambda_frames_train, lambda_frames_eval=args.lambda_frames_eval,
+    #                    lambda_actions_train=args.lambda_actions_train, lambda_actions_eval=args.lambda_actions_eval, step_size=args.step_size,
+    #                    train_eps=args.eps_train, eval_eps=args.eps_eval, radius_gw=args.radius_gw, n_ot_train=args.n_ot_train, n_ot_eval=args.n_ot_eval,
+    #                    n_frames=args.n_frames, lr=args.learning_rate, weight_decay=args.weight_decay, rho=args.rho, exclude_cls=args.exclude, visualize=args.visualize)
+    # activity_name = '_'.join(args.activity)
+    # name = f'{args.dataset}_{activity_name}_{args.group}_seed_{args.seed}'
+    # logger = pl.loggers.WandbLogger(name=name, project='video_ssl', save_dir='wandb') if args.wandb else None
+    # trainer = pl.Trainer(devices=[args.gpu], check_val_every_n_epoch=args.val_freq, max_epochs=args.n_epochs, log_every_n_steps=50, logger=logger)
 
-    if not args.eval:
-        trainer.validate(ssl, val_loader)
-        trainer.fit(ssl, train_loader, val_loader)
-    trainer.test(ssl, dataloaders=test_loader)
+    # if args.k_means and args.ckpt is None:
+    #     ssl.fit_clusters(train_loader, args.n_clusters)
+
+    # if not args.eval:
+    #     trainer.validate(ssl, val_loader)
+    #     trainer.fit(ssl, train_loader, val_loader)
+
+    # trainer.test(ssl, dataloaders=test_loader)
