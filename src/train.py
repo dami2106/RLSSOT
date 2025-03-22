@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import pytorch_lightning as pl
-import wandb
+from pytorch_lightning.loggers import TensorBoardLogger
 
 import matplotlib.pyplot as plt
 from scipy.spatial.distance import pdist, squareform
@@ -27,7 +27,7 @@ class VideoSSL(pl.LightningModule):
     def __init__(self, lr=1e-4, weight_decay=1e-4, layer_sizes=[64, 128, 40], n_clusters=20, alpha_train=0.3, alpha_eval=0.3,
                  n_ot_train=[50, 1], n_ot_eval=[50, 1], step_size=None, train_eps=0.06, eval_eps=0.01, ub_frames=False, ub_actions=True,
                  lambda_frames_train=0.05, lambda_actions_train=0.05, lambda_frames_eval=0.05, lambda_actions_eval=0.01,
-                 temp=0.1, radius_gw=0.04, learn_clusters=True, n_frames=256, rho=0.1,  visualize=False):
+                 temp=0.1, radius_gw=0.04, learn_clusters=True, n_frames=256, rho=0.1, visualize=False):
         super().__init__()
         self.lr = lr
         self.weight_decay = weight_decay
@@ -72,6 +72,20 @@ class VideoSSL(pl.LightningModule):
         self.save_hyperparameters()
         self.test_cache = []
 
+    def save_figure_to_disk(self, fig, figure_name, global_step):
+        """
+        Saves the given matplotlib figure to the 'figures' folder inside the experiment folder.
+        """
+        # Get the base experiment directory from the logger if available.
+        if hasattr(self.logger, 'log_dir'):
+            base_dir = self.logger.log_dir
+        else:
+            base_dir = '.'
+        figures_dir = os.path.join(base_dir, 'figures')
+        os.makedirs(figures_dir, exist_ok=True)
+        fig_path = os.path.join(figures_dir, f"{figure_name}_step_{global_step}.png")
+        fig.savefig(fig_path)
+
     def training_step(self, batch, batch_idx):
         features_raw, mask, gt, fname, n_subactions = batch
         with torch.no_grad():
@@ -93,11 +107,10 @@ class VideoSSL(pl.LightningModule):
         self.log('train_loss', loss_ce)
         return loss_ce
 
-    def validation_step(self, batch, batch_idx):  # subsample videos
+    def validation_step(self, batch, batch_idx):
         features_raw, mask, gt, fname, n_subactions = batch
         D = self.layer_sizes[-1]
         B, T, _ = features_raw.shape
-        # import pdb; pdb.set_trace()
         features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
 
         # log clustering metrics over full epoch
@@ -113,7 +126,7 @@ class VideoSSL(pl.LightningModule):
         self.miou.update(segments, gt, mask)
 
         # log clustering metrics per video
-        metrics = indep_eval_metrics(segments, gt, mask, ['mof', 'f1', 'miou'], )
+        metrics = indep_eval_metrics(segments, gt, mask, ['mof', 'f1', 'miou'])
         self.log('val_mof_per', metrics['mof'])
         self.log('val_f1_per', metrics['f1'])
         self.log('val_miou_per', metrics['miou'])
@@ -127,48 +140,45 @@ class VideoSSL(pl.LightningModule):
         loss_ce = -((pseudo_labels * torch.log(codes + num_eps)) * mask[..., None]).sum(dim=[1, 2]).mean()
         self.log('val_loss', loss_ce)
 
-        # plot qualitative examples of pseduo-labelling and embeddings for 5 videos evenly spaced in dataset
+        # plot qualitative examples of pseudo-labelling and embeddings for 5 videos evenly spaced in dataset
         spacing =  int(self.trainer.num_val_batches[0] / 5)
-        if batch_idx % spacing == 0 and wandb.run is not None and self.visualize:
+        if batch_idx % spacing == 0 and self.visualize:
             plot_idx = int(batch_idx / spacing)
+            global_step = self.trainer.global_step
             gt_cpu = gt[0].cpu().numpy()
 
             fdists = squareform(pdist(features[0].cpu().numpy(), 'cosine'))
-            fig = plot_matrix(fdists, gt=gt_cpu, colorbar=False, title=fname[0], figsize=(5, 5), xlabel='Frame index', ylabel='Frame index')
-            wandb.log({f"val_pairwise_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
-            plt.close()
-            fig = plot_matrix(codes[0].cpu().numpy().T, gt=gt_cpu, colorbar=False, title=fname[0], figsize=(10, 5), xlabel='Frame index', ylabel='Action index')
-            wandb.log({f"val_P_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
-            plt.close()
-            fig = plot_matrix(pseudo_labels[0].cpu().numpy().T, gt=gt_cpu, colorbar=False, title=fname[0], figsize=(10, 5), xlabel='Frame index', ylabel='Action index')
-            wandb.log({f"val_OT_PL_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
-            plt.close()
-            fig = plot_matrix(segmentation[0].cpu().numpy().T, gt=gt_cpu, colorbar=False, title=fname[0], figsize=(10, 5), xlabel='Frame index', ylabel='Action index')
-            wandb.log({f"val_OT_pred_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
+            fig = plot_matrix(fdists, gt=gt_cpu, colorbar=False, title=fname[0], figsize=(5, 5),
+                              xlabel='Frame index', ylabel='Frame index')
+            if self.logger is not None and hasattr(self.logger, 'experiment'):
+                self.logger.experiment.add_figure(f"val_pairwise_{plot_idx}", fig, global_step)
+            self.save_figure_to_disk(fig, f"val_pairwise_{plot_idx}", global_step)
             plt.close()
 
-            # cost_mat = 1. - features @ self.clusters.T
-            # bal_codes = asot.segment_asot(features, self.clusters, mask, eps=self.eval_eps, alpha=self.alpha_eval, radius=self.radius_gw,
-            #                                 proj_type='const', ub_weight=self.ub_eval, n_iters=self.n_ot_eval, temp_prior=temp_prior)
-            # nogw_codes = asot.segment_asot(features, self.clusters, mask, eps=self.eval_eps, alpha=0., radius=self.radius_gw,
-            #                                 proj_type=self.ub_proj_type, ub_weight=self.ub_eval, n_iters=self.n_ot_eval, temp_prior=temp_prior)
-            # fig = plot_segmentation(segments[0], mask[0], name=f'{fname[0]}')
-            # wandb.log({f"val_segment_{int(batch_idx / spacing)}": wandb.Image(fig), "trainer/global_step": self.trainer.global_step})
+            fig = plot_matrix(codes[0].cpu().numpy().T, gt=gt_cpu, colorbar=False, title=fname[0], figsize=(10, 5),
+                             xlabel='Frame index', ylabel='Action index')
+            if self.logger is not None and hasattr(self.logger, 'experiment'):
+                self.logger.experiment.add_figure(f"val_P_{plot_idx}", fig, global_step)
+            self.save_figure_to_disk(fig, f"val_P_{plot_idx}", global_step)
+            plt.close()
 
-            # fig = plot_matrix(segmentation[0].cpu().numpy().T, gt=None, colorbar=False, title=None, xlabel='Frame index', ylabel='Action index')
-            # wandb.log({f"pred_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
-            # fig = plot_matrix(cost_mat[0].cpu().numpy().T, gt=None, colorbar=False, title=None, xlabel='Frame index', ylabel='Action index')
-            # wandb.log({f"cost_mat_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
-            # fig = plot_matrix(1. - cost_mat[0].cpu().numpy().T, gt=None, colorbar=False, title=None, xlabel='Frame index', ylabel='Action index')
-            # wandb.log({f"aff_mat_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
-            # fig = plot_matrix(bal_codes[0].cpu().numpy().T, gt=None, colorbar=False, title=None, xlabel='Frame index', ylabel='Action index')
-            # wandb.log({f"bal_pred_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
-            # fig = plot_matrix(nogw_codes[0].cpu().numpy().T, gt=None, colorbar=False, title=None, xlabel='Frame index', ylabel='Action index')
-            # wandb.log({f"nogw_{plot_idx}": fig, "trainer/global_step": self.trainer.global_step})
-            # plt.close()
+            fig = plot_matrix(pseudo_labels[0].cpu().numpy().T, gt=gt_cpu, colorbar=False, title=fname[0], figsize=(10, 5),
+                             xlabel='Frame index', ylabel='Action index')
+            if self.logger is not None and hasattr(self.logger, 'experiment'):
+                self.logger.experiment.add_figure(f"val_OT_PL_{plot_idx}", fig, global_step)
+            self.save_figure_to_disk(fig, f"val_OT_PL_{plot_idx}", global_step)
+            plt.close()
+
+            fig = plot_matrix(segmentation[0].cpu().numpy().T, gt=gt_cpu, colorbar=False, title=fname[0], figsize=(10, 5),
+                             xlabel='Frame index', ylabel='Action index')
+            if self.logger is not None and hasattr(self.logger, 'experiment'):
+                self.logger.experiment.add_figure(f"val_OT_pred_{plot_idx}", fig, global_step)
+            self.save_figure_to_disk(fig, f"val_OT_pred_{plot_idx}", global_step)
+            plt.close()
+
         return None
     
-    def test_step(self, batch, batch_idx):  # subsample videos
+    def test_step(self, batch, batch_idx):
         features_raw, mask, gt, fname, n_subactions = batch
         D = self.layer_sizes[-1]
         B, T, _ = features_raw.shape
@@ -199,7 +209,7 @@ class VideoSSL(pl.LightningModule):
     
     def on_validation_epoch_end(self):
         mof, pred_to_gt = self.mof.compute()
-        f1, _ = self.f1.compute( pred_to_gt=pred_to_gt)
+        f1, _ = self.f1.compute(pred_to_gt=pred_to_gt)
         miou, _ = self.miou.compute(pred_to_gt=pred_to_gt)
         self.log('val_mof_full', mof)
         self.log('val_f1_full', f1)
@@ -215,7 +225,7 @@ class VideoSSL(pl.LightningModule):
         self.log('test_mof_full', mof)
         self.log('test_f1_full', f1)
         self.log('test_miou_full', miou)
-        if wandb.run is not None and self.visualize:
+        if self.visualize:
             for i, (mof, pred, gt, mask, fname) in enumerate(self.test_cache):
                 self.test_cache[i][0] = indep_eval_metrics(pred, gt, mask, ['mof'], pred_to_gt=pred_to_gt)['mof']
             self.test_cache = sorted(self.test_cache, key=lambda x: x[0], reverse=True)
@@ -223,7 +233,9 @@ class VideoSSL(pl.LightningModule):
             for i, (mof, pred, gt, mask, fname) in enumerate(self.test_cache):
                 fig = plot_segmentation_gt(gt, pred, mask, pred_to_gt=pred_to_gt,
                                            gt_uniq=np.unique(self.mof.gt_labels), name=f'{fname[0]}')
-                wandb.log({f"test_segment_{i}": wandb.Image(fig), "trainer/global_step": self.trainer.global_step})
+                if self.logger is not None and hasattr(self.logger, 'experiment'):
+                    self.logger.experiment.add_figure(f"test_segment_{i}", fig, self.trainer.global_step)
+                self.save_figure_to_disk(fig, f"test_segment_{i}", self.trainer.global_step)
                 plt.close()
         self.test_cache = []
         self.mof.reset()
@@ -238,7 +250,6 @@ class VideoSSL(pl.LightningModule):
             features_full = []
             self.mlp.eval()
             for features_raw, _, _, _, _ in dataloader:
-                print("features shape", features_raw.shape)
                 B, T, _ = features_raw.shape
                 D = self.layer_sizes[-1]
                 features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
@@ -252,7 +263,6 @@ class VideoSSL(pl.LightningModule):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Train representation learning pipeline")
-
 
     # FUGW OT segmentation parameters
     parser.add_argument('--alpha-train', '-at', type=float, default=0.4, help='weighting of KOT term on frame features in OT')
@@ -273,10 +283,10 @@ if __name__ == '__main__':
     parser.add_argument('--step-size', '-ss', type=float, default=None,
                         help='Step size/learning rate for ASOT solver. Worth setting manually if ub-frames && ub-actions')
 
-
     parser.add_argument('--dataset', '-d', type=str,  default='desktop_assembly' ,help='dataset to use for training/eval (Breakfast, YTI, FSeval, FS, desktop_assembly)')
     parser.add_argument('--n-frames', '-f', type=int, default=6, help='number of frames sampled per video for train/val')
     parser.add_argument('--std-feats', '-s', action='store_true', help='standardize features per video during preprocessing')
+    parser.add_argument('--save-directory', '-sd', type=str, default='runs', help='directory to save model file, plots and results')
     
     # representation learning params
     parser.add_argument('--n-epochs', '-ne', type=int, default=15, help='number of epochs for training')
@@ -295,6 +305,9 @@ if __name__ == '__main__':
     parser.add_argument('--ckpt', type=str, help='path to checkpoint')
     parser.add_argument('--eval', action='store_true', help='run evaluation on test set only')
     
+    parser.add_argument('--run', type=str, default='test_run', help='experiment run name')
+    parser.add_argument('--log', action='store_true', help='whether or not to log to tensorboard')
+    
     args = parser.parse_args()
 
     pl.seed_everything(args.seed)
@@ -303,12 +316,9 @@ if __name__ == '__main__':
     data_train = RLDataset('data', args.dataset, args.n_frames, standardise=args.std_feats, random=True)
     data_test = RLDataset('data', args.dataset, None, standardise=args.std_feats, random=False)
     
-    
-    
     val_loader = DataLoader(data_val, batch_size=args.batch_size, num_workers=os.cpu_count(), shuffle=False, persistent_workers=True)
     train_loader = DataLoader(data_train, batch_size=args.batch_size, num_workers=os.cpu_count(), shuffle=True, persistent_workers=True)
     test_loader = DataLoader(data_test, batch_size=1, num_workers=os.cpu_count(), shuffle=False, persistent_workers=True)
-
 
     if args.ckpt is not None:
         ssl = VideoSSL.load_from_checkpoint(args.ckpt)
@@ -317,11 +327,15 @@ if __name__ == '__main__':
                        ub_frames=args.ub_frames, ub_actions=args.ub_actions, lambda_frames_train=args.lambda_frames_train, lambda_frames_eval=args.lambda_frames_eval,
                        lambda_actions_train=args.lambda_actions_train, lambda_actions_eval=args.lambda_actions_eval, step_size=args.step_size,
                        train_eps=args.eps_train, eval_eps=args.eps_eval, radius_gw=args.radius_gw, n_ot_train=args.n_ot_train, n_ot_eval=args.n_ot_eval,
-                       n_frames=args.n_frames, lr=args.learning_rate, weight_decay=args.weight_decay, rho=args.rho,  visualize=args.visualize)
+                       n_frames=args.n_frames, lr=args.learning_rate, weight_decay=args.weight_decay, rho=args.rho, visualize=args.visualize)
         
+    # Conditionally create the TensorBoard logger if logging is enabled.
+    if args.log:
+        name = f'{args.dataset}_{args.run}'
+        logger = TensorBoardLogger(save_dir=args.save_directory, name=name)
+    else:
+        logger = None
 
-    name = f'{args.dataset}_{args.group}_seed_{args.seed}'
-    logger = pl.loggers.WandbLogger(name=name, project='video_ssl', save_dir='wandb') if args.wandb else None
     trainer = pl.Trainer(devices=1, check_val_every_n_epoch=args.val_freq, max_epochs=args.n_epochs, log_every_n_steps=50, logger=logger)
 
     if args.k_means and args.ckpt is None:
