@@ -26,19 +26,46 @@ bash training.sh
 All necessary hyperparameters and flags are set within this script.
 
 ## 3. Dataset Format
+
+## 3. Dataset Format
+
+The expected dataset format follows the original ASOT structure and consists of:
+
+```
 data/                 
 ├─ dataset_name/                # e.g., rl_dataset/
-│  ├─ features/                 # per-timestep features (Each file should be 2-dimensional)
+│  ├─ features/                 # pre-extracted per-frame or per-timestep features
 │  │  ├─ traj1.npy              
 │  │  ├─ traj2.npy              
 │  │  ├─ ...                    
-│  ├─ groundTruth/              # per-timestep labels for evaluation
+│  ├─ groundTruth/              # optional: per-timestep labels for evaluation
 │  │  ├─ traj1                  
 │  │  ├─ traj2                  
 │  │  ├─ ...                    
 │  ├─ mapping/                 
-│  │  ├─ mapping.txt            # maps skills to IDs 
+│  │  ├─ mapping.txt            # maps action/class IDs to labels
+```
 
-You can define your own dataset_name (e.g., rl_dataset) and use the above structure to add new datasets.
+You can define your own `dataset_name` (e.g., `rl_dataset`) and use the above structure to add new datasets.
+
+## 4. Dependencies
+
+Install the following packages before running the training script:
+
+- `numpy`
+- `scipy`
+- `scikit-learn`
+- `matplotlib`
+- `pytorch`
+- `pytorch-lightning`
+- `wandb`
+
+## 5. Reference
+
+This code is based on the original ASOT model from the CVPR 2024 paper:
+
+- **Paper**: [Temporally Consistent Unbalanced Optimal Transport for Unsupervised Action Segmentation](http://arxiv.org/abs/2404.01518)
+- **Original Authors**: Ming Xu, Stephen Gould.
+- **Original Code**: [ASOT](https://github.com/mingu6/action_seg_ot)
 
 
