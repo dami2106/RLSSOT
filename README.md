@@ -27,23 +27,21 @@ All necessary hyperparameters and flags are set within this script.
 
 ## 3. Dataset Format
 
-## 3. Dataset Format
-
 The expected dataset format follows the original ASOT structure and consists of:
 
 ```
 data/                 
 ├─ dataset_name/                # e.g., rl_dataset/
-│  ├─ features/                 # pre-extracted per-frame or per-timestep features
+│  ├─ features/                 # per-timestep features (each feature is a 1xN vector)
 │  │  ├─ traj1.npy              
 │  │  ├─ traj2.npy              
 │  │  ├─ ...                    
-│  ├─ groundTruth/              # optional: per-timestep labels for evaluation
+│  ├─ groundTruth/              # per-timestep labels for evaluation
 │  │  ├─ traj1                  
 │  │  ├─ traj2                  
 │  │  ├─ ...                    
 │  ├─ mapping/                 
-│  │  ├─ mapping.txt            # maps action/class IDs to labels
+│  │  ├─ mapping.txt            # maps skill IDs to labels
 ```
 
 You can define your own `dataset_name` (e.g., `rl_dataset`) and use the above structure to add new datasets.
