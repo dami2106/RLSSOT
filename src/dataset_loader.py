@@ -9,14 +9,14 @@ from torch.utils.data import Dataset
 
 
 class RLDataset(Dataset):
-    def __init__(self, root_dir: str, dataset, n_frames, standardise=True, split: str = None, random=True, n_videos=None):
+    def __init__(self, root_dir: str, dataset, n_frames, standardise=True, split: str = None, random=True, n_videos=None, feature_type='features'):
         self.root_dir = root_dir
         self.dataset = dataset
         self.data_dir = path.join(root_dir, self.dataset)
         self.video_fnames = sorted([fname for fname in os.listdir(path.join(self.data_dir, 'groundTruth'))
                                     if len(fname.split('_')) > 1 or len(fname.split('-')) > 1])
 
-
+        self.feature_type = feature_type
 
         if n_videos is not None:
             self.video_fnames = self.video_fnames[::int(len(self.video_fnames) / n_videos)]
@@ -40,7 +40,7 @@ class RLDataset(Dataset):
         gt = [line.rstrip() for line in open(path.join(self.data_dir, 'groundTruth', video_fname))]
         inds, mask = self._partition_and_sample(self.n_frames, len(gt))
         gt = torch.Tensor([self.action_mapping[gt[ind]] for ind in inds]).long()
-        feat_fname = path.join(self.data_dir, 'features', video_fname)
+        feat_fname = path.join(self.data_dir, self.feature_type, video_fname)
         try:
             features = np.loadtxt(feat_fname + '.txt')[inds, :]
         except:

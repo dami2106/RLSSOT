@@ -22,24 +22,25 @@ N_OT_EVAL="25 1"
 STEP_SIZE=""
 
 # --- Dataset  parameters ---
-DATASET="make_stone_pick_small_pixels"
+DATASET="wsws_static/wsws_static_symbolic"
+FEATURE_NAME="symbolic_obs"
 STD_FEATS=false
 SAVE_DIRECTORY="runs"
 RUN="test_run"
-VAL_FREQ=5
+VAL_FREQ=100
 
 # --- General parameters ---
-N_EPOCHS=15
-BATCH_SIZE=8
-N_FRAMES=6
+N_EPOCHS=3
+BATCH_SIZE=2
+N_FRAMES=20
 LEARNING_RATE=1e-3
 WEIGHT_DECAY=1e-4
-LOG=true
-VISUALIZE=true
+LOG=false
+VISUALIZE=false
 SEED=0
 RHO=0.1
-N_CLUSTERS=5
-LAYERS="350 150 50"
+N_CLUSTERS=2
+LAYERS="1087 500 50"
 USE_KMEANS=true
 
 
@@ -69,7 +70,8 @@ CMD="python src/train.py \
   --n-clusters $N_CLUSTERS \
   --val-freq $VAL_FREQ \
   --seed $SEED \
-  --run $RUN"
+  --run $RUN \
+  --feature-name $FEATURE_NAME"
 
 # Append boolean flags if enabled
 if [ "$UB_FRAMES" = true ]; then

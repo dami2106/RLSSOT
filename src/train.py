@@ -284,6 +284,7 @@ if __name__ == '__main__':
                         help='Step size/learning rate for ASOT solver. Worth setting manually if ub-frames && ub-actions')
 
     parser.add_argument('--dataset', '-d', type=str,  default='desktop_assembly' ,help='dataset to use for training/eval (Breakfast, YTI, FSeval, FS, desktop_assembly)')
+    parser.add_argument('--feature-name',  type=str,  default='symbolic_obs' ,help='name of the features folder')
     parser.add_argument('--n-frames', '-f', type=int, default=6, help='number of frames sampled per video for train/val')
     parser.add_argument('--std-feats', '-s', action='store_true', help='standardize features per video during preprocessing')
     parser.add_argument('--save-directory', '-sd', type=str, default='runs', help='directory to save model file, plots and results')
@@ -312,9 +313,9 @@ if __name__ == '__main__':
 
     pl.seed_everything(args.seed)
         
-    data_val = RLDataset('data', args.dataset, args.n_frames, standardise=args.std_feats, random=False)
-    data_train = RLDataset('data', args.dataset, args.n_frames, standardise=args.std_feats, random=True)
-    data_test = RLDataset('data', args.dataset, None, standardise=args.std_feats, random=False)
+    data_val = RLDataset('Traces', args.dataset, args.n_frames, standardise=args.std_feats, random=False, feature_type=args.feature_name)
+    data_train = RLDataset('Traces', args.dataset, args.n_frames, standardise=args.std_feats, random=True, feature_type=args.feature_name)
+    data_test = RLDataset('Traces', args.dataset, None, standardise=args.std_feats, random=False, feature_type=args.feature_name)
     
     val_loader = DataLoader(data_val, batch_size=args.batch_size, num_workers=os.cpu_count(), shuffle=False, persistent_workers=True)
     train_loader = DataLoader(data_train, batch_size=args.batch_size, num_workers=os.cpu_count(), shuffle=True, persistent_workers=True)
