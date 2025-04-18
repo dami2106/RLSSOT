@@ -2,10 +2,10 @@
 
 # --- Configuration ---
 # Define the main task name (e.g., wsws_static)
-TASK_NAME="wsws_static"
+TASK_NAME="mixed_static"
 
 # Define the number of clusters
-CLUSTERS=2
+CLUSTERS=5
 
 
 # Exit immediately if a command exits with a non-zero status.
