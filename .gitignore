@@ -5,3 +5,4 @@ data/
 *.pyc
 /Traces
 ._*
+runs/*
