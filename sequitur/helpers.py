@@ -1,17 +1,6 @@
 import os 
 from collections import Counter
 
-#Give the directory of ground truth eg Cobblestone/groundTruth
-def get_sequence_list(trace_directory):
-    """
-    Get a list of sequences from the trace directory.
-    """
-    sequence_list = []
-    for filename in os.listdir(trace_directory):
-        with open(os.path.join(trace_directory, filename), 'r') as file:
-            sequence = file.read().strip().split()
-            sequence_list.append(sequence)
-    return sequence_list
 
 def load_mapping(file_path):
     mapping = {}
@@ -26,27 +15,25 @@ def load_mapping(file_path):
 
 
 
-def get_unique_sequence_list(trace_directory):
+def get_unique_sequence_list(trace_directory, skill_folder = "predicted_skills"):
     """
     Get a list of unique sequences from the trace directory.
     """
     sequence_list = []
 
-    mapping = load_mapping(f"{trace_directory}/mapping/mapping.txt")
 
-    for filename in os.listdir(f"{trace_directory}/groundTruth/"):
-        with open(os.path.join(f"{trace_directory}/groundTruth/", filename), 'r') as file:
+    for filename in os.listdir(f"{trace_directory}/{skill_folder}/"):
+        with open(os.path.join(f"{trace_directory}/{skill_folder}/", filename), 'r') as file:
             sequence = file.read().strip().split()
 
-            #Get unique elements in the sequence maintaining the order
-            seen = set()
-            unique_sequence = []
+            result = []
+            prev = None
             for item in sequence:
-                if item not in seen:
-                    seen.add(item)
-                    unique_sequence.append(item)
-            
-            sequence_list.append("".join([mapping[skill] for skill in unique_sequence]))
+                if item != prev:
+                    result.append(item)
+                    prev = item
+
+            sequence_list.append("".join([skill for skill in result]))
     
     counts = Counter(lst for lst in sequence_list)
 
@@ -54,3 +41,9 @@ def get_unique_sequence_list(trace_directory):
     
 
 
+if __name__ == "__main__":
+    trace_directory = "runs/stone_pick_random/stone_pick_random_pixels_stone_pick_random_pixels/version_0"
+    counts = get_unique_sequence_list(trace_directory)
+    print(counts)
+
+    

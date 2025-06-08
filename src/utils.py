@@ -171,4 +171,4 @@ def save_matching_mapping(pred_to_gt, out_dir="skill_orderings"):
         else:
             items = pred_to_gt
         for pred_label, gt_label in items:
-            f.write(f"{pred_label} -> {gt_label}\n")
+            f.write(f"{pred_label} {gt_label}\n")
