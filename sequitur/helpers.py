@@ -2,25 +2,15 @@ import os
 from collections import Counter
 
 
-def load_mapping(file_path):
-    mapping = {}
-    with open(file_path, 'r') as f:
-        for line in f:
-            if line.strip():  # Skip empty lines
-                key, value = line.strip().split(maxsplit=1)
-                mapping[int(key)] = value
-
-    reverse_mapping = {v: chr(ord('A') + k) for k, v in mapping.items()}
-    return reverse_mapping
-
-
-
-def get_unique_sequence_list(trace_directory, skill_folder = "predicted_skills"):
+def get_unique_sequence_list(trace_directory, skill_folder = "predicted_skills", mapping = None):
     """
     Get a list of unique sequences from the trace directory.
     """
     sequence_list = []
 
+    if mapping is not None:
+        # Reverse the mapping dictionary
+        mapping = {v: k for k, v in mapping.items()}
 
     for filename in os.listdir(f"{trace_directory}/{skill_folder}/"):
         with open(os.path.join(f"{trace_directory}/{skill_folder}/", filename), 'r') as file:
@@ -33,7 +23,12 @@ def get_unique_sequence_list(trace_directory, skill_folder = "predicted_skills")
                     result.append(item)
                     prev = item
 
-            sequence_list.append("".join([skill for skill in result]))
+
+            
+            if mapping is not None:
+                sequence_list.append("".join([mapping[skill] for skill in result]))
+            else:
+                sequence_list.append("".join([skill for skill in result]))
     
     counts = Counter(lst for lst in sequence_list)
 
@@ -42,8 +37,18 @@ def get_unique_sequence_list(trace_directory, skill_folder = "predicted_skills")
 
 
 if __name__ == "__main__":
-    trace_directory = "runs/stone_pick_random/stone_pick_random_pixels_stone_pick_random_pixels/version_0"
-    counts = get_unique_sequence_list(trace_directory)
+    # trace_directory = "runs/stone_pick_random/stone_pick_random_pixels_stone_pick_random_pixels/version_0"
+    trace_directory = "Traces/stone_pick_random/stone_pick_random_pixels"
+
+    mapping = {
+        'table': '0',
+        'wood': '1',
+        'wood_pickaxe': '2',
+        'stone': '3',
+        'stone_pickaxe': '4',
+    }
+
+    counts = get_unique_sequence_list(trace_directory, "groundTruth", mapping)
     print(counts)
 
     
