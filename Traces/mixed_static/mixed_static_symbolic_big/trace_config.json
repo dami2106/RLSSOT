@@ -1,0 +1,44 @@
+{
+    "parameters": {
+        "obs": "symbolic",
+        "samples": 500,
+        "path": "Traces/mixed_static/mixed_static_symbolic_big/",
+        "obj": "mixed",
+        "shuffle": false
+    },
+    "plans": [
+        {
+            "target": "TREE",
+            "actions": [
+                "DO"
+            ],
+            "skill": "wood"
+        },
+        {
+            "target": "TREE",
+            "actions": [
+                "DO"
+            ],
+            "skill": "wood"
+        },
+        {
+            "target": "GRASS",
+            "actions": [
+                "PLACE_TABLE"
+            ],
+            "skill": "table"
+        }
+    ],
+    "stats": {
+        "min_episode_length": 3,
+        "avg_episode_length": 14.992,
+        "max_episode_length": 51,
+        "ground_truth_distribution": {
+            "wood": 3815,
+            "table": 620,
+            "wooden_pickaxe": 765,
+            "stone": 1398,
+            "stone_sword": 398
+        }
+    }
+}

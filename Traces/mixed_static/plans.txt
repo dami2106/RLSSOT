@@ -1,0 +1,46 @@
+
+    planA = [
+        (bt.TREE, [at.DO], "wood"), 
+        (bt.TREE, [at.DO], "wood"), 
+        (bt.GRASS, [at.PLACE_TABLE], "table"),
+    ]
+
+    planB = [
+        (bt.TREE, [at.DO], "wood"), 
+    ]
+
+    planC = [
+    (bt.TREE, [at.DO], "wood"),        # wood count: 1
+    (bt.TREE, [at.DO], "wood"),        # wood count: 2
+
+]
+    
+    planD = [
+    (bt.TREE, [at.DO], "wood"),        # wood count: 1
+    (bt.TREE, [at.DO], "wood"),        # wood count: 2
+    (bt.GRASS, [at.PLACE_TABLE], "table"),  # Uses 2 wood; left: 1
+    (bt.TREE, [at.DO], "wood"),
+    (bt.CRAFTING_TABLE, [at.MAKE_WOOD_PICKAXE], "wooden_pickaxe"),  # Uses remaining wood
+]
+    
+    planE = [
+    (bt.TREE, [at.DO], "wood"),        # wood count: 1
+    (bt.TREE, [at.DO], "wood"),        # wood count: 2
+    (bt.GRASS, [at.PLACE_TABLE], "table"),  # Uses 2 wood; left: 1
+    (bt.TREE, [at.DO], "wood"),
+    (bt.CRAFTING_TABLE, [at.MAKE_WOOD_PICKAXE], "wooden_pickaxe"),  # Uses remaining wood
+    (bt.STONE, [at.DO], "stone"),      # stone count: 1
+    (bt.TREE, [at.DO], "wood"),
+    (bt.CRAFTING_TABLE, [at.MAKE_STONE_SWORD], "stone_sword"),  # Uses remaining wood
+]
+    
+    planF = [
+    (bt.TREE, [at.DO], "wood"),        # wood count: 1
+    (bt.TREE, [at.DO], "wood"),        # wood count: 2
+    (bt.GRASS, [at.PLACE_TABLE], "table"),  # Uses 2 wood; left: 1
+    (bt.TREE, [at.DO], "wood"),
+    (bt.CRAFTING_TABLE, [at.MAKE_WOOD_PICKAXE], "wooden_pickaxe"),  # Uses remaining wood
+    (bt.STONE, [at.DO], "stone"),
+    (bt.STONE, [at.DO], "stone"),
+    (bt.STONE, [at.DO], "stone"),
+]

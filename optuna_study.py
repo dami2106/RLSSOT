@@ -90,17 +90,13 @@ def objective(trial, args):
 # Entry point
 if __name__ == "__main__":
 
-    """
-    python optuna_study.py --dataset wsws_static/wsws_static_symbolic
-      --directory Traces/wsws_static/wsws_static_symbolic --feature-name symbolic_obs --clusters 2 --layers "1087 512 40"
-    """
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', type=str, required=True, help='Path of the dataset to use')
     parser.add_argument('--feature-name', type=str, default='pca_features', help='Name of the features folder')
     parser.add_argument('--clusters', type=int, default=3, help='Nb of clusters')
     parser.add_argument('--layers', '-ls',  type=str, help='layer sizes for MLP (in, hidden, ..., out)')
-    parser.add_argument('--trials',  default=1500, type=int, help='nb of trials')
+    parser.add_argument('--trials',  default=3000, type=int, help='nb of trials')
+    # parser.add_argument('--trials',  default=2000, type=int, help='nb of trials')
     args = parser.parse_args()
 
     directory = "Traces/" + args.dataset
@@ -121,3 +117,9 @@ if __name__ == "__main__":
     )
 
     save_study_progress(study, directory)
+
+    # Save best trial to best.csv
+    best_trial = study.best_trial
+    df_all = study.trials_dataframe()
+    df_best = df_all[df_all["number"] == best_trial.number]
+    df_best.to_csv(os.path.join(directory, 'best.csv'), index=False)

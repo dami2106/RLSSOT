@@ -3,5 +3,6 @@ lightning_logs/
 .DS_Store
 data/
 *.pyc
-/Traces
 ._*
+*.npy
+*.pkl

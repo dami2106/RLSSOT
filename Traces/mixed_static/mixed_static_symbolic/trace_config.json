@@ -1,0 +1,37 @@
+{
+    "parameters": {
+        "obs": "symbolic",
+        "samples": 100,
+        "path": "Traces/mixed_static/mixed_static_symbolic/",
+        "obj": "mixed",
+        "shuffle": false
+    },
+    "plans": [
+        {
+            "target": "TREE",
+            "actions": [
+                "DO"
+            ],
+            "skill": "wood"
+        },
+        {
+            "target": "TREE",
+            "actions": [
+                "DO"
+            ],
+            "skill": "wood"
+        }
+    ],
+    "stats": {
+        "min_episode_length": 3,
+        "avg_episode_length": 14.17,
+        "max_episode_length": 49,
+        "ground_truth_distribution": {
+            "wood": 743,
+            "table": 106,
+            "wooden_pickaxe": 152,
+            "stone": 245,
+            "stone_sword": 71
+        }
+    }
+}

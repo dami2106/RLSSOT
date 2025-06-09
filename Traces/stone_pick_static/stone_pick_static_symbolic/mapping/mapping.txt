@@ -1,0 +1,5 @@
+0 table
+1 wood
+2 wooden_pickaxe
+3 stone_pickaxe
+4 stone

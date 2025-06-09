@@ -1,0 +1,48 @@
+{
+    "parameters": {
+        "obs": "pixels",
+        "samples": 100,
+        "path": "Traces/wsws_static_pixels/",
+        "obj": "wood_stone_wood_stone",
+        "shuffle": false
+    },
+    "plans": [
+        {
+            "target": "TREE",
+            "actions": [
+                "DO"
+            ],
+            "skill": "wood"
+        },
+        {
+            "target": "STONE",
+            "actions": [
+                "DO"
+            ],
+            "skill": "stone"
+        },
+        {
+            "target": "TREE",
+            "actions": [
+                "DO"
+            ],
+            "skill": "wood"
+        },
+        {
+            "target": "STONE",
+            "actions": [
+                "DO"
+            ],
+            "skill": "stone"
+        }
+    ],
+    "stats": {
+        "min_episode_length": 12,
+        "avg_episode_length": 16.67,
+        "max_episode_length": 28,
+        "ground_truth_distribution": {
+            "wood": 644,
+            "stone": 923
+        }
+    }
+}

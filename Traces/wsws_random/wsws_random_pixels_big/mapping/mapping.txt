@@ -1,0 +1,2 @@
+0 wood
+1 stone

@@ -1,0 +1,79 @@
+{
+    "parameters": {
+        "obs": "pixels",
+        "samples": 100,
+        "path": "Traces/stone_pick_random/stone_pick_random_pixels/",
+        "obj": "stone_pick_random",
+        "shuffle": false
+    },
+    "plans": [
+        {
+            "target": "TREE",
+            "actions": [
+                "DO"
+            ],
+            "skill": "wood"
+        },
+        {
+            "target": "TREE",
+            "actions": [
+                "DO"
+            ],
+            "skill": "wood"
+        },
+        {
+            "target": "TREE",
+            "actions": [
+                "DO"
+            ],
+            "skill": "wood"
+        },
+        {
+            "target": "TREE",
+            "actions": [
+                "DO"
+            ],
+            "skill": "wood"
+        },
+        {
+            "target": "GRASS",
+            "actions": [
+                "PLACE_TABLE"
+            ],
+            "skill": "table"
+        },
+        {
+            "target": "TABLE",
+            "actions": [
+                "MAKE_WOOD_PICKAXE"
+            ],
+            "skill": "wood_pickaxe"
+        },
+        {
+            "target": "STONE",
+            "actions": [
+                "DO"
+            ],
+            "skill": "stone"
+        },
+        {
+            "target": "TABLE",
+            "actions": [
+                "MAKE_STONE_PICKAXE"
+            ],
+            "skill": "stone_pickaxe"
+        }
+    ],
+    "stats": {
+        "min_episode_length": 20,
+        "avg_episode_length": 32.64,
+        "max_episode_length": 65,
+        "ground_truth_distribution": {
+            "wood": 1455,
+            "table": 200,
+            "wood_pickaxe": 346,
+            "stone": 570,
+            "stone_pickaxe": 593
+        }
+    }
+}
