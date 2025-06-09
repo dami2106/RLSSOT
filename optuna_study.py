@@ -29,12 +29,12 @@ def objective(trial, args):
         "learning-rate": trial.suggest_float("learning-rate", 1e-5, 1e-1, log=True),
         "weight-decay": trial.suggest_float("weight-decay", 1e-8, 1e-3, log=True),
         "batch-size": trial.suggest_categorical("batch-size", [2, 8, 16]),
-        "n-epochs": trial.suggest_int("n-epochs", 5, 30),
+        "n-epochs": trial.suggest_int("n-epochs", 5, 40),
         "ub-frames": trial.suggest_categorical("ub-frames", [True, False]),
         "ub-actions": trial.suggest_categorical("ub-actions", [True, False]),
         "std-feats": trial.suggest_categorical("std-feats", [True, False]),
         "rho": trial.suggest_float("rho", 0.001, 0.3),
-        "n-frames": trial.suggest_int("n-frames", 5, 150),
+        "n-frames": trial.suggest_int("n-frames", 5, 2500),
     }
 
     # Fixed parameters (not part of tuning)

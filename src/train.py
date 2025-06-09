@@ -230,12 +230,32 @@ class VideoSSL(pl.LightningModule):
                 self.test_cache[i][0] = indep_eval_metrics(pred, gt, mask, ['mof'], pred_to_gt=pred_to_gt)['mof']
             self.test_cache = sorted(self.test_cache, key=lambda x: x[0], reverse=True)
 
+            # Determine output directory for predicted skills and segments
+            if hasattr(self.logger, 'log_dir'):
+                base_dir = self.logger.log_dir
+            else:
+                base_dir = '.'
+            skills_dir = os.path.join(base_dir, 'predicted_skills')
+            segments_dir = os.path.join(base_dir, 'segments')
+            os.makedirs(skills_dir, exist_ok=True)
+            os.makedirs(segments_dir, exist_ok=True)
+
+            # Save Hungarian matching mapping
+            save_matching_mapping(pred_to_gt, out_dir=skills_dir)
+
             for i, (mof, pred, gt, mask, fname) in enumerate(self.test_cache):
+                # Save skill ordering for each episode
+                # pred is a tensor of shape (1, T), get as 1D numpy array
+                skills = pred[0].cpu().numpy().tolist() if hasattr(pred, 'cpu') else np.array(pred).tolist()
+                save_skill_ordering(skills, fname[0], out_dir=skills_dir)
+
                 fig = plot_segmentation_gt(gt, pred, mask, pred_to_gt=pred_to_gt,
                                            gt_uniq=np.unique(self.mof.gt_labels), name=f'{fname[0]}')
                 if self.logger is not None and hasattr(self.logger, 'experiment'):
                     self.logger.experiment.add_figure(f"test_segment_{i}", fig, self.trainer.global_step)
-                self.save_figure_to_disk(fig, f"test_segment_{i}", self.trainer.global_step)
+                # Save to segments directory
+                fig_path = os.path.join(segments_dir, f"{fname[0]}_segment_step_{self.trainer.global_step}.png")
+                fig.savefig(fig_path)
                 plt.close()
         self.test_cache = []
         self.mof.reset()

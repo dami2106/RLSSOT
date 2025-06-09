@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 wandb/
 lightning_logs/
 .DS_Store
@@ -6,3 +7,13 @@ data/
 ._*
 *.npy
 *.pkl
+=======
+wandb/
+lightning_logs/
+.DS_Store
+data/
+*.pyc
+/Traces
+._*
+runs/*
+>>>>>>> 349a3e50916982fb0d9261b7bb9ab80f53f42471

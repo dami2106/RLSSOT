@@ -5,6 +5,7 @@ from scipy.spatial.distance import pdist, squareform
 import wandb
 
 from metrics import pred_to_gt_match, filter_exclusions
+import os
 
 
 def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, name=''):
@@ -138,3 +139,36 @@ def plot_matrix(mat, gt=None, colorbar=True, title=None, figsize=(10, 5), ylabel
     ax.set_aspect('auto')
     fig.tight_layout()
     return fig
+
+
+def save_skill_ordering(skills, fname, out_dir="skill_orderings"):
+    """
+    Save the skill ordering (skills at each time step) to a text file.
+    Args:
+        skills: 1D numpy array or list of skill indices (length = num_frames)
+        fname:  Name of the episode/file (used for naming the output file)
+        out_dir: Directory to save the text files
+    """
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, f"{fname}_skills.txt")
+    with open(out_path, "w") as f:
+        for skill in skills:
+            f.write(f"{skill}\n")
+
+
+def save_matching_mapping(pred_to_gt, out_dir="skill_orderings"):
+    """
+    Save the Hungarian matching (predicted to GT mapping) to a text file.
+    Args:
+        pred_to_gt: dict or list of (pred_label, gt_label) pairs
+        out_dir: Directory to save the mapping file
+    """
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, "mapping.txt")
+    with open(out_path, "w") as f:
+        if isinstance(pred_to_gt, dict):
+            items = pred_to_gt.items()
+        else:
+            items = pred_to_gt
+        for pred_label, gt_label in items:
+            f.write(f"{pred_label} {gt_label}\n")

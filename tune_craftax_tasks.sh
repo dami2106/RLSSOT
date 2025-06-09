@@ -2,7 +2,7 @@
 
 # --- Configuration ---
 # Define the main task name (e.g., wsws_static)
-TASK_NAME="stone_pick_random"
+TASK_NAME="mixed_static"
 
 # Define the number of clusters
 CLUSTERS=5
@@ -13,13 +13,12 @@ set -e
 
 # Define the subfolder suffixes to process
 # Note: These correspond to the *end* part of the subfolder names like task_name_pixels, task_name_symbolic, etc.
-SUBFOLDER_SUFFIXES=("pixels" "pixels_big")
-# SUBFOLDER_SUFFIXES=("pixels" "pixels_big" "symbolic" "symbolic_big")
+SUBFOLDER_SUFFIXES=("pixels" "pixels_big" "symbolic" "symbolic_big")
 
 echo "Starting tuning runs for task: $TASK_NAME with $CLUSTERS clusters"
 echo "=============================================================="
 
-# Loop through each subfolder suffix    
+# Loop through each subfolder suffix
 for SUFFIX in "${SUBFOLDER_SUFFIXES[@]}"; do
 
     # Construct the full subfolder name (e.g., wsws_static_symbolic)
