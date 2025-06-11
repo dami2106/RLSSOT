@@ -1,46 +1,46 @@
 #!/bin/bash
 
 # --- Hyperparameters and OT segmentation parameters ---
-ALPHA_TRAIN=0.1066986524  
-ALPHA_EVAL=0.3221712105
+ALPHA_TRAIN=0.4369905979
+ALPHA_EVAL=0.6641222536
 
-UB_FRAMES=true
+UB_FRAMES=false
 UB_ACTIONS=false
 
-LAMBDA_FRAMES_TRAIN=0.00347362612095007
-LAMBDA_ACTIONS_TRAIN=0.09589952526
-LAMBDA_FRAMES_EVAL=0.02880255701
-LAMBDA_ACTIONS_EVAL=0.05628788947
+LAMBDA_FRAMES_TRAIN=0.06282911576
+LAMBDA_ACTIONS_TRAIN=0.08017023198
+LAMBDA_FRAMES_EVAL=0.06461802557
+LAMBDA_ACTIONS_EVAL=0.06324252838
 
-EPS_TRAIN=0.02672349459
-EPS_EVAL=0.09752644267
-RADIUS_GW=0.02189334562
+EPS_TRAIN=0.004813310568
+EPS_EVAL=0.1837366929
+RADIUS_GW=0.01891132859
 
-# Number of OT iterations for training and evaluation && Step Size 
-N_OT_TRAIN="27 1"
-N_OT_EVAL="27 1"
-STEP_SIZE=""
+# # Number of OT iterations for training and evaluation && Step Size 
+# N_OT_TRAIN="27 1"
+# N_OT_EVAL="27 1"
+# STEP_SIZE=""
 
-# --- Dataset  parameters ---
-DATASET="stone_pick_random/stone_pick_random_pixels"
-FEATURE_NAME="pca_features"
+# --- Dataset parameters ---
+DATASET="stone_pick_static/stone_pick_static_pixels_big"
+FEATURE_NAME="pca_features_with_actions"
 STD_FEATS=false
 SAVE_DIRECTORY="runs"
-RUN="stone_pick_random_pixels"
-VAL_FREQ=5
+RUN="stone_pick_static_pixels_big_actions"
+VAL_FREQ=100
 
 # --- General parameters ---
-N_EPOCHS=25
+N_EPOCHS=16
 BATCH_SIZE=16
-N_FRAMES=27
-LEARNING_RATE=0.024354618433597
-WEIGHT_DECAY=0.0002227395217
+N_FRAMES=19
+LEARNING_RATE=0.0002476443857
+WEIGHT_DECAY=0.0000208
 LOG=true
 VISUALIZE=true
 SEED=0
-RHO=0.2996569434
+RHO=0.03433118079
 N_CLUSTERS=5
-LAYERS="300 150 40"
+LAYERS="667 300 40"
 # USE_KMEANS=true
 
 # --- Build the command ---
@@ -54,8 +54,6 @@ CMD="python src/train.py \
   --eps-train $EPS_TRAIN \
   --eps-eval $EPS_EVAL \
   --radius-gw $RADIUS_GW \
-  --n-ot-train $N_OT_TRAIN \
-  --n-ot-eval $N_OT_EVAL \
   --dataset $DATASET \
   --n-frames $N_FRAMES \
   --save-directory $SAVE_DIRECTORY \
@@ -84,9 +82,6 @@ if [ "$STD_FEATS" = true ]; then
   CMD="$CMD --std-feats"
 fi
 
-if [ -n "$STEP_SIZE" ]; then
-  CMD="$CMD --step-size $STEP_SIZE"
-fi
 
 # # The k-means flag is set to false when provided (i.e., disable initialization with kmeans)
 # if [ "$USE_KMEANS" = false ]; then
