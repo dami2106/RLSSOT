@@ -7,3 +7,5 @@ data/
 ._*
 runs/*
 run/
+Traces/*
+/Traces/*

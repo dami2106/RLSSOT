@@ -30,7 +30,7 @@ RUN="stone_pick_static_pixels_big_actions"
 VAL_FREQ=100
 
 # --- General parameters ---
-N_EPOCHS=16
+N_EPOCHS=12
 BATCH_SIZE=16
 N_FRAMES=19
 LEARNING_RATE=0.0002476443857
