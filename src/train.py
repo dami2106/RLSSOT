@@ -18,7 +18,7 @@ import asot
 from utils import *
 from metrics import ClusteringMetrics, indep_eval_metrics
 
-import os 
+import os
 
 num_eps = 1e-11
 
@@ -177,7 +177,7 @@ class VideoSSL(pl.LightningModule):
             plt.close()
 
         return None
-    
+
     def test_step(self, batch, batch_idx):
         features_raw, mask, gt, fname, n_subactions = batch
         D = self.layer_sizes[-1]
@@ -206,7 +206,7 @@ class VideoSSL(pl.LightningModule):
         self.test_cache.append([metrics['mof'], segments, gt, mask, fname])
 
         return None
-    
+
     def on_validation_epoch_end(self):
         mof, pred_to_gt = self.mof.compute()
         f1, _ = self.f1.compute(pred_to_gt=pred_to_gt)
@@ -233,9 +233,9 @@ class VideoSSL(pl.LightningModule):
             for idx, (m, pred, gt, mask, fname) in enumerate(self.test_cache):
                 val = indep_eval_metrics(
                     pred, gt, mask,
-                    ['mof'],
+                    ['miou'],
                     pred_to_gt=pred_to_gt
-                )['mof']
+                )['miou']
                 self.test_cache[idx][0] = val
 
             # 2) sort ALL episodes by MOF descending
@@ -288,7 +288,7 @@ class VideoSSL(pl.LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr, weight_decay=self.weight_decay)
-    
+
     def fit_clusters(self, dataloader, K):
         with torch.no_grad():
             features_full = []
@@ -332,7 +332,7 @@ if __name__ == '__main__':
     parser.add_argument('--n-frames', '-f', type=int, default=6, help='number of frames sampled per video for train/val')
     parser.add_argument('--std-feats', '-s', action='store_true', help='standardize features per video during preprocessing')
     parser.add_argument('--save-directory', '-sd', type=str, default='runs', help='directory to save model file, plots and results')
-    
+
     # representation learning params
     parser.add_argument('--n-epochs', '-ne', type=int, default=15, help='number of epochs for training')
     parser.add_argument('--batch-size', '-bs', type=int, default=8, help='batch size')
@@ -349,21 +349,21 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=0, help='Random seed initialization')
     parser.add_argument('--ckpt', type=str, help='path to checkpoint')
     parser.add_argument('--eval', action='store_true', help='run evaluation on test set only')
-    
+
     parser.add_argument('--run', type=str, default='test_run', help='experiment run name')
     parser.add_argument('--log', action='store_true', help='whether or not to log to tensorboard')
-    
+
     args = parser.parse_args()
 
     pl.seed_everything(args.seed)
-        
+
     data_val = RLDataset('Traces', args.dataset, args.n_frames, standardise=args.std_feats, random=False, feature_type=args.feature_name)
     data_train = RLDataset('Traces', args.dataset, args.n_frames, standardise=args.std_feats, random=True, feature_type=args.feature_name)
     data_test = RLDataset('Traces', args.dataset, None, standardise=args.std_feats, random=False, feature_type=args.feature_name)
-    
-    val_loader = DataLoader(data_val, batch_size=args.batch_size, num_workers=os.cpu_count(), shuffle=False, persistent_workers=True)
-    train_loader = DataLoader(data_train, batch_size=args.batch_size, num_workers=os.cpu_count(), shuffle=True, persistent_workers=True)
-    test_loader = DataLoader(data_test, batch_size=1, num_workers=os.cpu_count(), shuffle=False, persistent_workers=True)
+
+    val_loader = DataLoader(data_val, batch_size=args.batch_size,shuffle=False)
+    train_loader = DataLoader(data_train, batch_size=args.batch_size, shuffle=True)
+    test_loader = DataLoader(data_test, batch_size=1, shuffle=False)
 
     if args.ckpt is not None:
         ssl = VideoSSL.load_from_checkpoint(args.ckpt)
@@ -373,7 +373,7 @@ if __name__ == '__main__':
                        lambda_actions_train=args.lambda_actions_train, lambda_actions_eval=args.lambda_actions_eval, step_size=args.step_size,
                        train_eps=args.eps_train, eval_eps=args.eps_eval, radius_gw=args.radius_gw, n_ot_train=args.n_ot_train, n_ot_eval=args.n_ot_eval,
                        n_frames=args.n_frames, lr=args.learning_rate, weight_decay=args.weight_decay, rho=args.rho, visualize=args.visualize)
-        
+
     # Conditionally create the TensorBoard logger if logging is enabled.
     if args.log:
         name = f'{args.dataset}_{args.run}'

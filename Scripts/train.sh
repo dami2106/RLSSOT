@@ -16,11 +16,6 @@ EPS_TRAIN=0.004813310568
 EPS_EVAL=0.1837366929
 RADIUS_GW=0.01891132859
 
-# # Number of OT iterations for training and evaluation && Step Size 
-# N_OT_TRAIN="27 1"
-# N_OT_EVAL="27 1"
-# STEP_SIZE=""
-
 # --- Dataset parameters ---
 DATASET="stone_pick_static/stone_pick_static_pixels_big"
 FEATURE_NAME="pca_features_with_actions"
@@ -34,14 +29,13 @@ N_EPOCHS=12
 BATCH_SIZE=16
 N_FRAMES=19
 LEARNING_RATE=0.0002476443857
-WEIGHT_DECAY=0.0000208
+WEIGHT_DECAY=4E-17
 LOG=true
 VISUALIZE=true
 SEED=0
 RHO=0.03433118079
 N_CLUSTERS=5
 LAYERS="667 300 40"
-# USE_KMEANS=true
 
 # --- Build the command ---
 CMD="python src/train.py \
@@ -81,12 +75,6 @@ fi
 if [ "$STD_FEATS" = true ]; then
   CMD="$CMD --std-feats"
 fi
-
-
-# # The k-means flag is set to false when provided (i.e., disable initialization with kmeans)
-# if [ "$USE_KMEANS" = false ]; then
-#   CMD="$CMD --k-means"
-# fi
 
 if [ "$VISUALIZE" = true ]; then
   CMD="$CMD --visualize"
