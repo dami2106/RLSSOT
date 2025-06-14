@@ -42,25 +42,29 @@ def main():
             if not os.path.isdir(subdir_path):
                 continue
 
-            # Iterate over scripts in each subfolder
+            # Iterate over shell scripts in each subfolder
             for filename in os.listdir(subdir_path):
-                if not filename.endswith('.py'):
+                if not filename.endswith('.sh'):
                     continue
                 script_path = os.path.join(subdir_path, filename)
                 print(f'Running {script_path}...')
+                os.chmod(script_path, 0o755)
 
-                try:
-                    # Run the script and capture both stdout and stderr
-                    result = subprocess.run(
-                        ['python', script_path],
-                        capture_output=True,
-                        text=True,
-                        check=True
-                    )
-                    output = result.stdout + result.stderr
-                except subprocess.CalledProcessError as e:
-                    print(f'Error running {script_path}: {e}')
-                    output = (e.stdout or '') + (e.stderr or '')
+                print(f"Script path is {script_path}")
+
+                # Run the shell script without raising on non-zero exit
+                result = subprocess.run(
+                    ['bash', script_path],
+                    capture_output=True,
+                    text=True
+                )
+
+                # Warn if script exited with error
+                if result.returncode != 0:
+                    print(f'Warning: {script_path} exited with status {result.returncode}')
+
+                # Combine stdout and stderr for parsing
+                output = (result.stdout or '') + (result.stderr or '')
 
                 # Parse the metrics from the output
                 metrics = parse_metrics(output)
