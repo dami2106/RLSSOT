@@ -1,0 +1,30 @@
+alpha_eval: 0.9025090024
+alpha_train: 0.9237159548
+eval_eps: 0.2916239587
+lambda_actions_eval: 0.02355696592
+lambda_actions_train: 0.02690486685
+lambda_frames_eval: 0.006919545113
+lambda_frames_train: 0.01801636946
+layer_sizes:
+- 1087
+- 512
+- 50
+learn_clusters: true
+lr: 0.001117079078
+n_clusters: 2
+n_frames: 119
+n_ot_eval:
+- 25
+- 1
+n_ot_train:
+- 25
+- 1
+radius_gw: 0.09063594657
+rho: 0.03794636316
+step_size: null
+temp: 0.1
+train_eps: 0.06056375528
+ub_actions: false
+ub_frames: false
+visualize: true
+weight_decay: 1.33e-06

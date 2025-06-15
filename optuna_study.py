@@ -17,24 +17,24 @@ def objective(trial, args):
     """Objective function to optimize hyperparameters"""
     # Define hyperparameter search space
     params = {
-        "alpha-train": trial.suggest_float("alpha-train", 0.01, 1),
-        "alpha-eval": trial.suggest_float("alpha-eval", 0.01, 1),
-        "lambda-frames-train": trial.suggest_float("lambda-frames-train", 0.001, 0.1),
-        "lambda-actions-train": trial.suggest_float("lambda-actions-train", 0.001, 0.1),
-        "lambda-frames-eval": trial.suggest_float("lambda-frames-eval", 0.001, 0.1),
-        "lambda-actions-eval": trial.suggest_float("lambda-actions-eval", 0.001, 0.1),
-        "eps-train": trial.suggest_float("eps-train", 0.0001, 0.3),
-        "eps-eval": trial.suggest_float("eps-eval", 0.0001, 0.3),
-        "radius-gw": trial.suggest_float("radius-gw", 0.001, 0.1),
-        "learning-rate": trial.suggest_float("learning-rate", 1e-5, 1e-1, log=True),
-        "weight-decay": trial.suggest_float("weight-decay", 1e-8, 1e-3, log=True),
-        "batch-size": trial.suggest_categorical("batch-size", [2, 8, 16]),
-        "n-epochs": trial.suggest_int("n-epochs", 5, 40),
+        "alpha-train": trial.suggest_float("alpha-train", 0.01, 1, step = 0.01),
+        "alpha-eval": trial.suggest_float("alpha-eval", 0.01, 1, step = 0.01),
+        "lambda-frames-train": trial.suggest_float("lambda-frames-train", 0.01, 0.1, step = 0.01),
+        "lambda-actions-train": trial.suggest_float("lambda-actions-train", 0.01, 0.1, step = 0.01),
+        "lambda-frames-eval": trial.suggest_float("lambda-frames-eval", 0.01, 0.1, step = 0.01),
+        "lambda-actions-eval": trial.suggest_float("lambda-actions-eval", 0.01, 0.1, step = 0.01),
+        "eps-train": trial.suggest_float("eps-train", 0.001, 0.5, step = 0.001),
+        "eps-eval": trial.suggest_float("eps-eval", 0.001, 0.5, step = 0.001),
+        "radius-gw": trial.suggest_float("radius-gw", 0.001, 0.1, step = 0.001),
+        "learning-rate": trial.suggest_categorical("learning-rate", [1e-5, 1e-4, 1e-3, 1e-2, 1e-1]),
+        "weight-decay": trial.suggest_categorical("weight-decay", [1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1]),
+        "batch-size": trial.suggest_categorical("batch-size", [2, 16]),
+        "n-epochs": trial.suggest_int("n-epochs", 5, 50, step = 5),
         "ub-frames": trial.suggest_categorical("ub-frames", [True, False]),
         "ub-actions": trial.suggest_categorical("ub-actions", [True, False]),
         "std-feats": trial.suggest_categorical("std-feats", [True, False]),
-        "rho": trial.suggest_float("rho", 0.001, 0.3),
-        "n-frames": trial.suggest_int("n-frames", 5, 2500),
+        "rho": trial.suggest_float("rho", 0.001, 0.3, step = 0.001),
+        "n-frames": trial.suggest_int("n-frames", 5, 500, step = 5),
     }
 
     # Fixed parameters (not part of tuning)
@@ -95,8 +95,7 @@ if __name__ == "__main__":
     parser.add_argument('--feature-name', type=str, default='pca_features', help='Name of the features folder')
     parser.add_argument('--clusters', type=int, default=3, help='Nb of clusters')
     parser.add_argument('--layers', '-ls',  type=str, help='layer sizes for MLP (in, hidden, ..., out)')
-    parser.add_argument('--trials',  default=3000, type=int, help='nb of trials')
-    # parser.add_argument('--trials',  default=2000, type=int, help='nb of trials')
+    parser.add_argument('--trials',  default=1600, type=int, help='nb of trials')
     args = parser.parse_args()
 
     directory = "Traces/" + args.dataset
