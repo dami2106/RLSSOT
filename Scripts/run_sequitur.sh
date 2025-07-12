@@ -1,0 +1,1 @@
+python sequitur/sequitur.py --predicted-dir cobblestone_fine_old --dataset-dir Traces/cobblestone_finegrained_1_100/ --threshold 2

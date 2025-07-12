@@ -26,11 +26,11 @@ def get_unique_sequence_list(trace_directory, skill_folder = "predicted_skills",
 
             
             if mapping is not None:
-                sequence_list.append("".join([mapping[skill] for skill in result]))
+                sequence_list.append(tuple(mapping[skill] for skill in result))
             else:
-                sequence_list.append("".join([skill for skill in result]))
+                sequence_list.append(tuple(skill for skill in result))
     
-    counts = Counter(lst for lst in sequence_list)
+    counts = Counter(sequence_list)
 
     return counts
     

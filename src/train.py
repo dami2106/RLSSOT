@@ -229,7 +229,7 @@ class VideoSSL(pl.LightningModule):
         self.log('test_miou_full', miou)
 
         if self.visualize:
-            # 1) compute per-episode MOF, store in slot 0
+            # 1) compute per-episode MIOU, store in slot 0
             for idx, (m, pred, gt, mask, fname) in enumerate(self.test_cache):
                 val = indep_eval_metrics(
                     pred, gt, mask,

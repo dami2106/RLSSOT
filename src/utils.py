@@ -156,12 +156,12 @@ def save_skill_ordering(skills, fname, out_dir="skill_orderings"):
             f.write(f"{skill}\n")
 
 
-def save_matching_mapping(pred_to_gt, out_dir="skill_orderings"):
+def save_matching_mapping(pred_to_gt, out_dir="mapping"):
     """
     Save the Hungarian matching (predicted to GT mapping) to a text file.
     Args:
         pred_to_gt: dict or list of (pred_label, gt_label) pairs
-        out_dir: Directory to save the mapping file
+        out_dir: Directory to save the mapping file (default: 'mapping' next to 'skill_orderings')
     """
     os.makedirs(out_dir, exist_ok=True)
     out_path = os.path.join(out_dir, "mapping.txt")

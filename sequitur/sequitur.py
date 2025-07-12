@@ -80,12 +80,14 @@ def visualize_tree(tree_dict, filename_base, fmt="png", root_label=None, label_m
 def build_htn_trees(sequences):
     """
     Build HTN trees for each sequence in the list.
+    sequences: list of lists of symbols (not strings)
     """
     # Create a single parser instance
     parser = Parser()
 
     # Feed each sequence to the parser incrementally
     for seq in sequences:
+        # seq is now a list of symbols, not a string
         parser.feed(seq)
         parser.feed([Mark()])
 
@@ -121,8 +123,8 @@ def build_htn_trees(sequences):
 def construct_hierarchy(args, dataset_dir, hierarchy_output_dir, skill_folder, mapping, vis_mapping):
   
     sequence_dict = get_unique_sequence_list(dataset_dir, skill_folder, mapping)
-    sequences = [seq for seq, count in sequence_dict.items() if count >= args.threshold]
-    sequences = list(sequence_dict)
+    sequences = [list(seq) for seq, count in sequence_dict.items() if count >= args.threshold]
+    sequences = [list(seq) for seq in sequence_dict]
 
     grammar, trees = build_htn_trees(sequences)
 
