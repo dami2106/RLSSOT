@@ -1,41 +1,41 @@
 #!/bin/bash
 
 # --- Hyperparameters and OT segmentation parameters ---
-ALPHA_TRAIN=0.25
-ALPHA_EVAL=0.34
+ALPHA_TRAIN=0.6
+ALPHA_EVAL=0.26
 
-UB_FRAMES=false
+UB_FRAMES=true
 UB_ACTIONS=false
 
-LAMBDA_FRAMES_TRAIN=0.01
-LAMBDA_ACTIONS_TRAIN=0.05
-LAMBDA_FRAMES_EVAL=0.09
-LAMBDA_ACTIONS_EVAL=0.07
+LAMBDA_FRAMES_TRAIN=0.06
+LAMBDA_ACTIONS_TRAIN=0.09
+LAMBDA_FRAMES_EVAL=0.08
+LAMBDA_ACTIONS_EVAL=0.1
 
-EPS_TRAIN=0.05
-EPS_EVAL=0.013
-RADIUS_GW=0.026
+EPS_TRAIN=0.015
+EPS_EVAL=0.027
+RADIUS_GW=0.007
 
 # --- Dataset parameters ---
-DATASET="cobblestone_finegrained_1_100"
-FEATURE_NAME="features"
+DATASET="wsws_static/wsws_static_pixels_big"
+FEATURE_NAME="pca_features"
 STD_FEATS=true
 SAVE_DIRECTORY="runs"
-RUN="cobblestone_finegrained_1_100"
+RUN="wsws_static_pixels_big"
 VAL_FREQ=5
 
 # --- General parameters ---
-N_EPOCHS=25
+N_EPOCHS=50
 BATCH_SIZE=16
-N_FRAMES=505
-LEARNING_RATE=0.001
-WEIGHT_DECAY=1.0e-08
+N_FRAMES=20
+LEARNING_RATE=0.1
+WEIGHT_DECAY=0.001
 LOG=true
 VISUALIZE=true
 SEED=0
-RHO=0.061
-N_CLUSTERS=29
-LAYERS="512 256 40"
+RHO=0.113
+N_CLUSTERS=2
+LAYERS="650 300 40"
 
 # --- Build the command ---
 CMD="python src/train.py \

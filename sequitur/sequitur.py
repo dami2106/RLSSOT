@@ -1,8 +1,7 @@
 from sksequitur import Parser, Grammar, Production, Mark
 from graphviz import Digraph
 import argparse
-from helpers import get_unique_sequence_list
-import argparse
+from helpers import get_unique_sequence_list, get_all_sequences_list
 import json
 from pathlib import Path
 import os
@@ -36,7 +35,6 @@ def build_subtree(grammar, prod):
         else:
             subtree["children"].append({"symbol": tok})
     return subtree
-
 
 def visualize_tree(tree_dict, filename_base, fmt="png", root_label=None, label_mapping=None):
     """
@@ -76,9 +74,7 @@ def visualize_tree(tree_dict, filename_base, fmt="png", root_label=None, label_m
     recurse(tree_dict, parent_id=None, is_root=True)
 
     outpath = dot.render(filename_base, cleanup=True)
-    print(f"Written {outpath}")
-
-
+    # print(f"Written {outpath}")
 
 def build_htn_trees(sequences):
     """
@@ -121,13 +117,11 @@ def build_htn_trees(sequences):
 
     return grammar, trees
 
-
-
 def construct_hierarchy(args, dataset_dir, hierarchy_output_dir, skill_folder, mapping, vis_mapping):
   
-    sequence_dict = get_unique_sequence_list(dataset_dir, skill_folder, mapping)
-    sequences = [list(seq) for seq, count in sequence_dict.items() if count >= args.threshold]
-    sequences = [list(seq) for seq in sequence_dict]
+    # Get all episode traces (not just unique)
+    sequence_list = get_all_sequences_list(dataset_dir, skill_folder, mapping)
+    sequences = [list(seq) for seq in sequence_list]
 
     grammar, trees = build_htn_trees(sequences)
 
@@ -156,6 +150,16 @@ def construct_hierarchy(args, dataset_dir, hierarchy_output_dir, skill_folder, m
     
     print(f"Structure metrics saved to {metrics_path}")
     
+    # Count unique trees (using their JSON representation)
+    tree_jsons = [json.dumps(tree, sort_keys=True) for tree in trees]
+    unique_tree_jsons = set(tree_jsons)
+    num_unique_trees = len(unique_tree_jsons)
+    print(f"Number of unique trees in {skill_folder}: {num_unique_trees} (out of {len(trees)} total)")
+    # Save this info to a file
+    unique_count_path = hierarchy_output_dir / 'unique_tree_count.txt'
+    with unique_count_path.open('w') as f:
+        f.write(f"Number of unique trees: {num_unique_trees} (out of {len(trees)} total)\n")
+
     return trees
 
 def compute_all_similarity_metrics(gt_trees, pred_trees, output_dir):
@@ -178,131 +182,6 @@ def compute_all_similarity_metrics(gt_trees, pred_trees, output_dir):
     
     print(f"Similarity metrics saved to {similarity_path}")
     return similarity_metrics_dict
-
-def perform_stable_marriage_matching(similarity_metrics_dict, gt_count, pred_count, output_dir):
-    """
-    Perform matching between ground truth and predicted trees.
-    Uses similarity metrics to create optimal matches.
-    Handles cases where there are different numbers of trees on each side.
-    """
-    print(f"Ground truth trees: {gt_count}, Predicted trees: {pred_count}")
-    
-    # Calculate the maximum tree edit distance for normalization
-    max_tree_edit_distance = 0
-    for pair_key, metrics in similarity_metrics_dict.items():
-        max_tree_edit_distance = max(max_tree_edit_distance, metrics["tree_edit_distance"])
-    
-    print(f"Maximum tree edit distance found: {max_tree_edit_distance}")
-    
-    # If we have equal numbers, we can use stable marriage
-    if gt_count == pred_count:
-        # Create preference lists for both sides
-        gt_preferences = {}
-        pred_preferences = {}
-        
-        # Initialize preference dictionaries
-        for gt_idx in range(gt_count):
-            gt_preferences[f"gt_{gt_idx}"] = []
-        for pred_idx in range(pred_count):
-            pred_preferences[f"pred_{pred_idx}"] = []
-        
-        # Build preference lists based on similarity metrics
-        for gt_idx in range(gt_count):
-            for pred_idx in range(pred_count):
-                pair_key = f"(seq_tree_{gt_idx}_gt, seq_tree_{pred_idx}_pred)"
-                if pair_key in similarity_metrics_dict:
-                    metrics = similarity_metrics_dict[pair_key]
-                    # Create a composite score (higher is better)
-                    # Use dynamic max_tree_edit_distance for normalization
-                    normalized_ted = 1.0 - (metrics["tree_edit_distance"] / max_tree_edit_distance) if max_tree_edit_distance > 0 else 0.0
-                    composite_score = (
-                        metrics["jaccard_index"] * 0.4 +
-                        metrics["subtree_overlap"] * 0.4 +
-                        normalized_ted * 0.2
-                    )
-                    
-                    gt_preferences[f"gt_{gt_idx}"].append((f"pred_{pred_idx}", composite_score))
-                    pred_preferences[f"pred_{pred_idx}"].append((f"gt_{gt_idx}", composite_score))
-        
-        # Sort preferences by score (descending)
-        for gt_key in gt_preferences:
-            gt_preferences[gt_key].sort(key=lambda x: x[1], reverse=True)
-            gt_preferences[gt_key] = [pred_key for pred_key, _ in gt_preferences[gt_key]]
-        
-        for pred_key in pred_preferences:
-            pred_preferences[pred_key].sort(key=lambda x: x[1], reverse=True)
-            pred_preferences[pred_key] = [gt_key for gt_key, _ in pred_preferences[pred_key]]
-        
-        # Perform stable marriage matching
-        matching = StableMarriage(gt_preferences, pred_preferences)
-        matches = matching.solve()
-        
-    else:
-        # Use greedy matching for unequal numbers
-        print("Using greedy matching due to unequal tree counts")
-        matches = perform_greedy_matching(similarity_metrics_dict, gt_count, pred_count, max_tree_edit_distance)
-    
-    # Convert matches to a more readable format
-    matching_results = {}
-    for gt_key, pred_key in matches.items():
-        gt_idx = int(gt_key.split('_')[1])
-        pred_idx = int(pred_key.split('_')[1])
-        pair_key = f"(seq_tree_{gt_idx}_gt, seq_tree_{pred_idx}_pred)"
-        
-        if pair_key in similarity_metrics_dict:
-            matching_results[pair_key] = {
-                "similarity_metrics": similarity_metrics_dict[pair_key],
-                "gt_index": gt_idx,
-                "pred_index": pred_idx
-            }
-    
-    # Save matching results to JSON file
-    matching_path = output_dir / 'stable_marriage_matching.json'
-    with matching_path.open('w') as f:
-        json.dump(matching_results, f, indent=2)
-    
-    print(f"Matching results saved to {matching_path}")
-    print(f"Found {len(matches)} optimal matches")
-    
-    return matching_results
-
-def perform_greedy_matching(similarity_metrics_dict, gt_count, pred_count, max_tree_edit_distance):
-    """
-    Perform greedy matching between ground truth and predicted trees.
-    This handles cases where there are different numbers of trees.
-    """
-    # Create a list of all possible pairs with their scores
-    pairs = []
-    for gt_idx in range(gt_count):
-        for pred_idx in range(pred_count):
-            pair_key = f"(seq_tree_{gt_idx}_gt, seq_tree_{pred_idx}_pred)"
-            if pair_key in similarity_metrics_dict:
-                metrics = similarity_metrics_dict[pair_key]
-                # Create a composite score (higher is better)
-                # Use dynamic max_tree_edit_distance for normalization
-                normalized_ted = 1.0 - (metrics["tree_edit_distance"] / max_tree_edit_distance) if max_tree_edit_distance > 0 else 0.0
-                composite_score = (
-                    metrics["jaccard_index"] * 0.4 +
-                    metrics["subtree_overlap"] * 0.4 +
-                    normalized_ted * 0.2
-                )
-                pairs.append((f"gt_{gt_idx}", f"pred_{pred_idx}", composite_score))
-    
-    # Sort pairs by score (descending)
-    pairs.sort(key=lambda x: x[2], reverse=True)
-    
-    # Greedy matching: take the best available pair at each step
-    matches = {}
-    used_gt = set()
-    used_pred = set()
-    
-    for gt_key, pred_key, score in pairs:
-        if gt_key not in used_gt and pred_key not in used_pred:
-            matches[gt_key] = pred_key
-            used_gt.add(gt_key)
-            used_pred.add(pred_key)
-    
-    return matches
 
 
 def main():
@@ -358,10 +237,61 @@ def main():
     gt_trees = construct_hierarchy(args, dataset_dir, gt_hierarchy_output_dir, 'groundTruth', gt_mapping, gt_mapping)
 
     matched_trees = construct_hierarchy(args, predicted_dir, matched_hierarchy_output_dir, 'predicted_skills', None, pred_mapping)
-
     similarity_metrics_dict = compute_all_similarity_metrics(gt_trees, pred_trees, output_dir)
 
-    perform_stable_marriage_matching(similarity_metrics_dict, len(gt_trees), len(pred_trees), output_dir)
+    # --- Compute average structure metrics for each set and save to summary file ---
+    def compute_average_metrics(metrics_json_path):
+        with open(metrics_json_path, 'r') as f:
+            metrics_dict = json.load(f)
+        # metrics_dict: {tree_id: {metric: value, ...}, ...}
+        if not metrics_dict:
+            return {}
+        # Get all metric names
+        metric_names = list(next(iter(metrics_dict.values())).keys())
+        sums = {k: 0.0 for k in metric_names}
+        count = 0
+        for tree_metrics in metrics_dict.values():
+            for k in metric_names:
+                sums[k] += tree_metrics.get(k, 0.0)
+            count += 1
+        avgs = {k: (sums[k] / count if count > 0 else 0.0) for k in metric_names}
+        return avgs
+
+    gt_metrics_path = gt_hierarchy_output_dir / 'structure_metrics.json'
+    pred_metrics_path = pred_hierarchy_output_dir / 'structure_metrics.json'
+    matched_metrics_path = matched_hierarchy_output_dir / 'structure_metrics.json'
+
+    # Read unique tree counts
+    def read_unique_tree_count(path):
+        try:
+            with open(path, 'r') as f:
+                return f.readline().strip()
+        except Exception:
+            return 'Number of unique trees: N/A'
+
+    gt_unique_count = read_unique_tree_count(gt_hierarchy_output_dir / 'unique_tree_count.txt')
+    pred_unique_count = read_unique_tree_count(pred_hierarchy_output_dir / 'unique_tree_count.txt')
+    matched_unique_count = read_unique_tree_count(matched_hierarchy_output_dir / 'unique_tree_count.txt')
+
+    gt_avg = compute_average_metrics(gt_metrics_path)
+    pred_avg = compute_average_metrics(pred_metrics_path)
+    matched_avg = compute_average_metrics(matched_metrics_path)
+
+    summary_path = output_dir / 'structure_metrics_summary.txt'
+    with summary_path.open('w') as f:
+        f.write('Ground Truth Average Structure Metrics:\n')
+        f.write(f'  {gt_unique_count}\n')
+        for k, v in gt_avg.items():
+            f.write(f'  {k}: {v:.4f}\n')
+        f.write('\nPredicted Average Structure Metrics:\n')
+        f.write(f'  {pred_unique_count}\n')
+        for k, v in pred_avg.items():
+            f.write(f'  {k}: {v:.4f}\n')
+        f.write('\nMatched Average Structure Metrics:\n')
+        f.write(f'  {matched_unique_count}\n')
+        for k, v in matched_avg.items():
+            f.write(f'  {k}: {v:.4f}\n')
+    print(f"Average structure metrics summary saved to {summary_path}")
 
 
 if __name__ == '__main__':
