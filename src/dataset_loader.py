@@ -5,7 +5,12 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 
+SEED = 0
 
+np.random.seed(SEED)
+torch.manual_seed(SEED)
+torch.cuda.manual_seed(SEED)
+torch.cuda.manual_seed_all(SEED)
 
 
 class RLDataset(Dataset):

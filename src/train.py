@@ -22,6 +22,16 @@ import os
 
 num_eps = 1e-11
 
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+torch.use_deterministic_algorithms(True, warn_only=True)  # PyTorch >=1.8
+
+SEED = 0
+
+np.random.seed(SEED)
+torch.manual_seed(SEED)
+torch.cuda.manual_seed(SEED)
+torch.cuda.manual_seed_all(SEED)
 
 class VideoSSL(pl.LightningModule):
     def __init__(self, lr=1e-4, weight_decay=1e-4, layer_sizes=[64, 128, 40], n_clusters=20, alpha_train=0.3, alpha_eval=0.3,
@@ -55,6 +65,7 @@ class VideoSSL(pl.LightningModule):
         self.temp = temp
         self.n_frames = n_frames
         self.rho = rho
+
 
         # initialize MLP
         layers = [nn.Sequential(nn.Linear(sz, sz1), nn.ReLU()) for sz, sz1 in zip(layer_sizes[:-2], layer_sizes[1:-1])]
@@ -93,8 +104,13 @@ class VideoSSL(pl.LightningModule):
         D = self.layer_sizes[-1]
         B, T, _ = features_raw.shape
         features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
+
+
         codes = torch.exp(features @ self.clusters.T[None, ...] / self.temp)
         codes = codes / codes.sum(dim=-1, keepdim=True)
+
+
+
         with torch.no_grad():  # pseudo-labels from OT
             temp_prior = asot.temporal_prior(T, self.n_clusters, self.rho, features.device)
             cost_matrix = 1. - features @ self.clusters.T.unsqueeze(0)

@@ -1,1 +1,1 @@
-python sequitur/sequitur.py --predicted-dir cobblestone_fine_old --dataset-dir Traces/cobblestone_finegrained_1_100/ --threshold 2
+python sequitur/sequitur.py --predicted-dir runs/wsws_static/wsws_static_pixels_big_wsws_static_pixels_big_551/version_0 --dataset-dir Traces/wsws_static/wsws_static_pixels_big --threshold 2
