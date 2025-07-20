@@ -8,22 +8,29 @@ from metrics import pred_to_gt_match, filter_exclusions
 import os
 
 
-def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, name=''):
+def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, exclude_cls=None, name=''):
     colors = {}
 
-    pred_, gt_ = filter_exclusions(pred[mask].cpu().numpy(), gt[mask].cpu().numpy())
+    pred_, gt_ = filter_exclusions(pred[mask].cpu().numpy(), gt[mask].cpu().numpy(), exclude_cls)
+    # Keep original predicted labels for boundary detection
+    pred_orig = pred_.copy()
+    
     if pred_to_gt is None:
         pred_opt, gt_opt = pred_to_gt_match(pred_, gt_)
     else:
         pred_opt, gt_opt = zip(*pred_to_gt.items())
+    
+    # Create mapping dictionary from pred labels to GT labels
+    pred_to_gt_dict = {}
     for pr_lab, gt_lab in zip(pred_opt, gt_opt):
+        pred_to_gt_dict[pr_lab] = gt_lab
         pred_[pred_ == pr_lab] = gt_lab
     n_frames = len(pred_)
 
     # add colors for predictions which do not match to a gt class
 
     if gt_uniq is None:
-        gt_uniq = np.unique(gt_.cpu().numpy())
+        gt_uniq = np.unique(gt_)
     pred_not_matched = np.setdiff1d(pred_opt, gt_uniq)
     if len(pred_not_matched) > 0:
         gt_uniq = np.concatenate((gt_uniq, pred_not_matched))
@@ -49,7 +56,7 @@ def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, name='')
     # plot gt segmentation
 
     ax = fig.add_subplot(2, 1, 1)
-    ax.set_ylabel('TRUTH', fontsize=30, rotation=0, labelpad=40, verticalalignment='center')
+    ax.set_ylabel('GT', fontsize=45, rotation=0, labelpad=40, verticalalignment='center')
     ax.set_yticklabels([])
     ax.set_xticklabels([])
 
@@ -65,16 +72,20 @@ def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, name='')
     # plot predicted segmentation after matching to gt labels w/Hungarian
 
     ax = fig.add_subplot(2, 1, 2)
-    ax.set_ylabel('ASOT', fontsize=30, rotation=0, labelpad=60, verticalalignment='center')
+    ax.set_ylabel('Ours', fontsize=45, rotation=0, labelpad=60, verticalalignment='center')
     ax.set_yticklabels([])
     ax.set_xticklabels([])
 
-    pred_segment_boundaries = np.where(pred_[1:] - pred_[:-1])[0] + 1
-    pred_segment_boundaries = np.concatenate(([0], pred_segment_boundaries, [len(pred_)]))
+    # Use original predicted labels for boundary detection, but mapped colors
+    pred_segment_boundaries = np.where(pred_orig[1:] - pred_orig[:-1])[0] + 1
+    pred_segment_boundaries = np.concatenate(([0], pred_segment_boundaries, [len(pred_orig)]))
 
     for start, end in zip(pred_segment_boundaries[:-1], pred_segment_boundaries[1:]):
-        label = pred_[start]
-        ax.axvspan(start / n_frames, end / n_frames, facecolor=colors[label], alpha=1.0)
+        # Get the original predicted label and map it to GT label for color
+        orig_label = pred_orig[start]
+        # Map the original predicted label to the corresponding GT label
+        mapped_label = pred_to_gt_dict[orig_label]
+        ax.axvspan(start / n_frames, end / n_frames, facecolor=colors[mapped_label], alpha=1.0)
         ax.axvline(start / n_frames, color='black', linewidth=3)
         ax.axvline(end / n_frames, color='black', linewidth=3)
 
@@ -139,8 +150,6 @@ def plot_matrix(mat, gt=None, colorbar=True, title=None, figsize=(10, 5), ylabel
     ax.set_aspect('auto')
     fig.tight_layout()
     return fig
-
-
 def save_skill_ordering(skills, fname, out_dir="skill_orderings"):
     """
     Save the skill ordering (skills at each time step) to a text file.

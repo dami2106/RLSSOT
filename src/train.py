@@ -61,6 +61,7 @@ class VideoSSL(pl.LightningModule):
         self.lambda_actions_train = lambda_actions_train
         self.lambda_frames_eval = lambda_frames_eval
         self.lambda_actions_eval = lambda_actions_eval
+        self.exclude_cls = None # whether to exclude -1 class from evaluation
 
         self.temp = temp
         self.n_frames = n_frames
@@ -245,56 +246,104 @@ class VideoSSL(pl.LightningModule):
         self.log('test_miou_full', miou)
 
         if self.visualize:
-            # 1) compute per-episode MIOU, store in slot 0
-            for idx, (m, pred, gt, mask, fname) in enumerate(self.test_cache):
-                val = indep_eval_metrics(
-                    pred, gt, mask,
-                    ['miou'],
-                    pred_to_gt=pred_to_gt
-                )['miou']
-                self.test_cache[idx][0] = val
+            for i, (mof, pred, gt, mask, fname) in enumerate(self.test_cache):
+                self.test_cache[i][0] = indep_eval_metrics(pred, gt, mask, ['mof'], exclude_cls=self.exclude_cls, pred_to_gt=pred_to_gt)['mof']
 
-            # 2) sort ALL episodes by MOF descending
-            self.test_cache.sort(key=lambda x: x[0], reverse=True)
+                
 
-            # 3) prepare output dirs
-            base_dir     = getattr(self.logger, 'log_dir', '.')
-            skills_dir   = os.path.join(base_dir, 'predicted_skills')
-            segments_dir = os.path.join(base_dir, 'segments')
-            os.makedirs(skills_dir,   exist_ok=True)
-            os.makedirs(segments_dir, exist_ok=True)
 
-            # save the overall matching once
-            save_matching_mapping(pred_to_gt, out_dir=skills_dir)
+            self.test_cache = sorted(self.test_cache, key=lambda x: x[0], reverse=True)
 
-            # 4) now save ALL episodes in sorted order
-            for rank, (mof_val, pred, gt, mask, fname) in enumerate(self.test_cache):
-                # save per-episode skill ordering
+            saved_matching_mapping = False
+
+            for i, (mof, pred, gt, mask, fname) in enumerate(self.test_cache):
+                print("fname:", fname[0], "Mof:", self.test_cache[i][0])
+                print("Predicted: ", pred)
+                print("Ground truth:", gt)
+                print("Mask:", mask)
+                print("gt_uniq:", np.unique(self.mof.gt_labels))
+                print("Predicted to GT mapping:", pred_to_gt)
+                print("=" * 10)
+                fig = plot_segmentation_gt(gt, pred, mask, exclude_cls=self.exclude_cls, pred_to_gt=pred_to_gt,
+                                           gt_uniq=np.unique(self.mof.gt_labels), name=f'{fname[0]}')
+                
+
+                base_dir = getattr(self.logger, 'log_dir', '.')
+                segments_dir = os.path.join(base_dir, 'segments')
+                skills_dir   = os.path.join(base_dir, 'predicted_skills')
+                os.makedirs(segments_dir, exist_ok=True)
+                os.makedirs(skills_dir, exist_ok=True)
+
+                if not saved_matching_mapping:
+                    save_matching_mapping(pred_to_gt)
+                    saved_matching_mapping = True
+
                 skills = (
                     pred[0].cpu().numpy().tolist()
                     if hasattr(pred, 'cpu')
                     else np.array(pred).tolist()
                 )
                 save_skill_ordering(skills, fname[0], out_dir=skills_dir)
+                
 
-                # plot segmentation
-                fig = plot_segmentation_gt(
-                    gt, pred, mask,
-                    pred_to_gt=pred_to_gt,
-                    gt_uniq=np.unique(self.mof.gt_labels),
-                    name=fname[0]
-                )
-                # optional wandb/logger hook
-                if self.logger is not None and hasattr(self.logger, 'experiment'):
-                    self.logger.experiment.add_figure(
-                        f"test_segment_{rank}", fig, self.trainer.global_step
-                    )
 
-                # save with zero-padded rank so files list in order
-                filename = f"{rank:04d}_{fname[0]}_step_{self.trainer.global_step}.png"
+                filename = f"{i:04d}_{fname[0]}_step_{self.trainer.global_step}.png"
                 fig_path = os.path.join(segments_dir, filename)
                 fig.savefig(fig_path)
-                plt.close(fig)
+
+                plt.close()
+
+
+        # if self.visualize:
+        #     # 1) compute per-episode MIOU, store in slot 0
+        #     for idx, (m, pred, gt, mask, fname) in enumerate(self.test_cache):
+        #         val = indep_eval_metrics(
+        #             pred, gt, mask,
+        #             ['miou'],
+        #             pred_to_gt=pred_to_gt
+        #         )['miou']
+        #         self.test_cache[idx][0] = val
+
+        #     # 2) sort ALL episodes by miou descending
+        #     self.test_cache.sort(key=lambda x: x[0], reverse=True)
+
+        #     # 3) prepare output dirs
+        #     base_dir     = getattr(self.logger, 'log_dir', '.')
+        #     skills_dir   = os.path.join(base_dir, 'predicted_skills')
+        #     segments_dir = os.path.join(base_dir, 'segments')
+        #     os.makedirs(skills_dir,   exist_ok=True)
+        #     os.makedirs(segments_dir, exist_ok=True)
+
+        #     # save the overall matching once
+
+        #     # 4) now save ALL episodes in sorted order
+        #     for rank, (mof_val, pred, gt, mask, fname) in enumerate(self.test_cache):
+        #         # save per-episode skill ordering
+        #         skills = (
+        #             pred[0].cpu().numpy().tolist()
+        #             if hasattr(pred, 'cpu')
+        #             else np.array(pred).tolist()
+        #         )
+        #         save_skill_ordering(skills, fname[0], out_dir=skills_dir)
+
+        #         # plot segmentation
+        #         fig = plot_segmentation_gt(
+        #             gt, pred, mask,
+        #             # pred_to_gt=pred_to_gt,
+        #             # gt_uniq=np.unique(self.mof.gt_labels),
+        #             name=fname[0]
+        #         )
+        #         # optional wandb/logger hook
+        #         if self.logger is not None and hasattr(self.logger, 'experiment'):
+        #             self.logger.experiment.add_figure(
+        #                 f"test_segment_{rank}", fig, self.trainer.global_step
+        #             )
+
+        #         # save with zero-padded rank so files list in order
+        #         filename = f"{rank:04d}_{fname[0]}_step_{self.trainer.global_step}.png"
+        #         fig_path = os.path.join(segments_dir, filename)
+        #         fig.savefig(fig_path)
+        #         plt.close(fig)
 
         # reset for next epoch
         self.test_cache = []

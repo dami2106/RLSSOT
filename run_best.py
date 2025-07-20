@@ -4,7 +4,7 @@ import csv
 import re
 
 
-TASK_NAME="wsws_static"
+TASK_NAME="wsws_random"
 DATASET_SIZE="pixels_big"
 CLUSTER_SIZE="2"
 

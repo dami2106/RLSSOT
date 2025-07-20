@@ -3,8 +3,12 @@ import subprocess
 import csv
 import re
 
+TASK = "wsws_random"
+DATASET = "pixels_big"
+CLUSTERS = 2
+
 # Load and sort CSV
-df = pd.read_csv('Traces/wsws_static/wsws_static_pixels_big/optuna_results.csv')
+df = pd.read_csv(f'Traces/{TASK}/{TASK}_{DATASET}/optuna_results.csv')
 df = df.sort_values(by='value', ascending=False)
 
 def build_cli(row):
@@ -25,15 +29,16 @@ def build_cli(row):
         f"--radius-gw {row['params_radius-gw']}",
         f"--rho {row['params_rho']}",
         f"--weight-decay {row['params_weight-decay']}",
-        "--dataset wsws_static/wsws_static_pixels_big",
+        f"--dataset {TASK}/{TASK}_{DATASET}",
         "--feature-name pca_features",
         "--save-directory runs",
-        "--run wsws_static_pixels_big",
+        f"--run {TASK}_{DATASET}_{row['number']}",
         "--val-freq 5",
         "--layers 650 300 40",
         "--seed 0",
         "--visualize",
         "--log",
+        f"--n-clusters {CLUSTERS}",
     ]
     # Add boolean flags
     if row['params_ub-frames']: args.append("--ub-frames")
@@ -44,8 +49,7 @@ def build_cli(row):
 def is_within_5pct(expected, actual):
     return abs(actual - expected) <= 0.05 * expected
 
-# Prepare output CSV
-output_csv = "rerun_results.csv"
+output_csv = f"{TASK}_{DATASET}_rerun_results.csv"
 with open(output_csv, "w", newline='') as f:
     writer = csv.writer(f)
     writer.writerow(["number", "expected_value", "actual_value"])
@@ -64,8 +68,10 @@ with open(output_csv, "w", newline='') as f:
 
         
 
-        pattern = r"(\btest_\w+\b)\s+([\d\.]+)"
+        pattern = r"\b(test_\w+)\b[^\d\-]*([0-9]*\.?[0-9]+)"
+        print(result.stdout)
         matches = re.findall(pattern, result.stdout)
+        print(matches)
         metrics = {metric: float(value) for metric, value in matches}
 
         test_miou_full = metrics.get("test_miou_full", 0)
@@ -78,7 +84,7 @@ with open(output_csv, "w", newline='') as f:
             print(f"Match found for config {row['number']}: {actual_value}")
             # Run 2 more times for consistency
             consistent_values = [actual_value]
-            for i in range(2):
+            for i in range(4):
                 print(f"Repeat run {i+2} for config {row['number']}")
                 repeat_result = subprocess.run(f"python src/train.py {cli}", shell=True, capture_output=True, text=True)
                 if repeat_result.returncode != 0:
@@ -92,5 +98,23 @@ with open(output_csv, "w", newline='') as f:
                     repeat_value = float((0.8 * repeat_full) + (0.2 * repeat_per))
                 writer.writerow([row['number'], row['value'], repeat_value])
                 consistent_values.append(repeat_value)
-            found_consistent = True
-            break
+            
+            # Check if all 3 runs are consistent with each other
+            all_consistent = True
+            for val in consistent_values:
+                if val == -1:  # Skip error values
+                    all_consistent = False
+                    break
+                for other_val in consistent_values:
+                    if other_val != -1 and not is_within_5pct(val, other_val):
+                        all_consistent = False
+                        break
+                if not all_consistent:
+                    break
+            
+            if all_consistent:
+                print(f"All 3 runs are consistent for config {row['number']}: {consistent_values}")
+                found_consistent = True
+                break
+            else:
+                print(f"Runs not consistent for config {row['number']}: {consistent_values}, continuing to next config")
