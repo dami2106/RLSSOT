@@ -4,9 +4,9 @@ import csv
 import re
 
 
-TASK_NAME="wsws_random"
+TASK_NAME="mixed_static"
 DATASET_SIZE="pixels_big"
-CLUSTER_SIZE="2"
+CLUSTER_SIZE="5"
 
 # Load and sort CSV
 df = pd.read_csv(f'Traces/{TASK_NAME}/{TASK_NAME}_{DATASET_SIZE}/best.csv')

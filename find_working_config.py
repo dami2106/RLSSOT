@@ -3,9 +3,9 @@ import subprocess
 import csv
 import re
 
-TASK = "wsws_random"
+TASK = "mixed_static"
 DATASET = "pixels_big"
-CLUSTERS = 2
+CLUSTERS = 5
 
 # Load and sort CSV
 df = pd.read_csv(f'Traces/{TASK}/{TASK}_{DATASET}/optuna_results.csv')

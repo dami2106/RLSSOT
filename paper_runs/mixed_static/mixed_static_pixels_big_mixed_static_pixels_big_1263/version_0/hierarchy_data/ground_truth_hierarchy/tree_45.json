@@ -1,0 +1,16 @@
+{
+  "production": 0,
+  "children": [
+    {
+      "production": 4,
+      "children": [
+        {
+          "symbol": "1"
+        },
+        {
+          "symbol": "0"
+        }
+      ]
+    }
+  ]
+}

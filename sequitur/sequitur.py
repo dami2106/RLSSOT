@@ -188,7 +188,7 @@ def main():
     parser = argparse.ArgumentParser(description='Build HTN hierarchy from sequences')
     parser.add_argument('--predicted-dir', type=Path, required=True, help='Path to input data directory')
     parser.add_argument('--dataset-dir', type=Path, default='Traces/stone_pick_random/stone_pick_random_pixels', help='Name of the folder containing the skill sequences')
-    parser.add_argument('--threshold', type=int, default=2, help='Minimum frequency of a sequence to be considered (number of times it appears in the data)')
+    # parser.add_argument('--threshold', type=int, default=2, help='Minimum frequency of a sequence to be considered (number of times it appears in the data)')
     args = parser.parse_args()
     
     predicted_dir = args.predicted_dir.resolve()

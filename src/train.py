@@ -271,11 +271,13 @@ class VideoSSL(pl.LightningModule):
                 base_dir = getattr(self.logger, 'log_dir', '.')
                 segments_dir = os.path.join(base_dir, 'segments')
                 skills_dir   = os.path.join(base_dir, 'predicted_skills')
+                mapping_dir = os.path.join(base_dir, 'mapping')
                 os.makedirs(segments_dir, exist_ok=True)
                 os.makedirs(skills_dir, exist_ok=True)
+                os.makedirs(mapping_dir, exist_ok=True)
 
                 if not saved_matching_mapping:
-                    save_matching_mapping(pred_to_gt)
+                    save_matching_mapping(pred_to_gt, out_dir=mapping_dir)
                     saved_matching_mapping = True
 
                 skills = (

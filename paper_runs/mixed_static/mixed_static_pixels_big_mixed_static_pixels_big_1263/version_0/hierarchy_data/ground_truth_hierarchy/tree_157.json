@@ -1,0 +1,8 @@
+{
+  "production": 0,
+  "children": [
+    {
+      "symbol": "1"
+    }
+  ]
+}

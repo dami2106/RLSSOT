@@ -1,1 +1,1 @@
-python sequitur/sequitur.py --predicted-dir runs/wsws_random/wsws_random_pixels_big_wsws_random_pixels_big_1550/version_0 --dataset-dir Traces/wsws_random/wsws_random_pixels_big --threshold 2
+python sequitur/sequitur.py --predicted-dir runs/mixed_static/mixed_static_pixels_big_mixed_static_pixels_big_1263/version_0 --dataset-dir Traces/mixed_static/mixed_static_pixels_big
