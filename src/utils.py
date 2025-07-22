@@ -83,9 +83,9 @@ def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, exclude_
     for start, end in zip(pred_segment_boundaries[:-1], pred_segment_boundaries[1:]):
         # Get the original predicted label and map it to GT label for color
         orig_label = pred_orig[start]
-        # Map the original predicted label to the corresponding GT label
-        mapped_label = pred_to_gt_dict[orig_label]
-        ax.axvspan(start / n_frames, end / n_frames, facecolor=colors[mapped_label], alpha=1.0)
+        # Map the original predicted label to the corresponding GT label, or fallback to itself
+        mapped_label = pred_to_gt_dict.get(orig_label, orig_label)
+        ax.axvspan(start / n_frames, end / n_frames, facecolor=colors.get(mapped_label, (0, 0, 0)), alpha=1.0)
         ax.axvline(start / n_frames, color='black', linewidth=3)
         ax.axvline(end / n_frames, color='black', linewidth=3)
 
