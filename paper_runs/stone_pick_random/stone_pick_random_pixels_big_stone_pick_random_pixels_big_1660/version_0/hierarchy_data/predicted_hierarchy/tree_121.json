@@ -1,0 +1,43 @@
+{
+  "production": 0,
+  "children": [
+    {
+      "production": 21,
+      "children": [
+        {
+          "production": 24,
+          "children": [
+            {
+              "symbol": "0"
+            },
+            {
+              "production": 16,
+              "children": [
+                {
+                  "symbol": "2"
+                },
+                {
+                  "symbol": "1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "symbol": "0"
+        }
+      ]
+    },
+    {
+      "production": 23,
+      "children": [
+        {
+          "symbol": "2"
+        },
+        {
+          "symbol": "4"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Number of unique trees: 47 (out of 500 total)

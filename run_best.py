@@ -4,7 +4,7 @@ import csv
 import re
 
 
-TASK_NAME="mixed_static"
+TASK_NAME="stone_pick_random"
 DATASET_SIZE="pixels_big"
 CLUSTER_SIZE="5"
 
