@@ -3,7 +3,7 @@ import subprocess
 import csv
 import re
 
-TASK = "mixed_static"
+TASK = "stone_pick_random"
 DATASET = "pixels_big"
 CLUSTERS = 5
 
