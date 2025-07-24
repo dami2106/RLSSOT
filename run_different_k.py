@@ -3,14 +3,15 @@ import subprocess
 import csv
 import re
 
-TASK_NAME = "wsws_static"
 DATASET_SIZE = "pixels_big"
-CLUSTER_SIZES = [3]  # Example list, change as needed
 
-# Load and sort CSV
-df = pd.read_csv(f'Traces/{TASK_NAME}/{TASK_NAME}_{DATASET_SIZE}/best.csv')
+runs = {
+    "wsws_static": [3, 4], #Optimal is 2 
+    "wsws_random": [3, 4], #Optimal is 2
+    "mixed_static": [3, 4, 6, 7], #Optimal is 5
+}
 
-def build_cli(row, cluster_size):
+def build_cli(row, task_name, cluster_size):
     args = [
         f"--alpha-eval {row['params_alpha-eval']}",
         f"--alpha-train {row['params_alpha-train']}",
@@ -27,10 +28,10 @@ def build_cli(row, cluster_size):
         f"--radius-gw {row['params_radius-gw']}",
         f"--rho {row['params_rho']}",
         f"--weight-decay {row['params_weight-decay']}",
-        f"--dataset {TASK_NAME}/{TASK_NAME}_{DATASET_SIZE}",
+        f"--dataset {task_name}/{task_name}_{DATASET_SIZE}",
         "--feature-name pca_features",
         "--save-directory runs",
-        f"--run {TASK_NAME}_{DATASET_SIZE}_{row['number']}_k{cluster_size}",
+        f"--run {task_name}_{DATASET_SIZE}_{row['number']}_k{cluster_size}",
         "--val-freq 5",
         "--layers 650 300 40",
         "--seed 0",
@@ -45,32 +46,35 @@ def build_cli(row, cluster_size):
 
 pattern = r"\b(test_\w+)\b[^\d\-]*([0-9]*\.?[0-9]+)"
 
-results = []
+all_results = []
 
-for cluster_k in CLUSTER_SIZES:
-    row = df.iloc[0]  # Use the best row (or change as needed)
-    cli = build_cli(row, cluster_k)
-    print(f"Running with cluster_k={cluster_k}")
-    result = subprocess.run(f"python src/train.py {cli}", shell=True, capture_output=True, text=True)
+for task_name, cluster_sizes in runs.items():
+    # Load and sort CSV for each task
+    df = pd.read_csv(f'Traces/{task_name}/{task_name}_{DATASET_SIZE}/best.csv')
+    for cluster_k in cluster_sizes:
+        row = df.iloc[0]  # Use the best row (or change as needed)
+        cli = build_cli(row, task_name, cluster_k)
+        print(f"Running {task_name} with cluster_k={cluster_k}")
+        result = subprocess.run(f"python src/train.py {cli}", shell=True, capture_output=True, text=True)
 
-    if result.returncode != 0:
-        print(f"Error running command for cluster_k={cluster_k}: {result.stderr}")
-        continue
+        if result.returncode != 0:
+            print(f"Error running command for {task_name} cluster_k={cluster_k}: {result.stderr}")
+            continue
 
+        matches = re.findall(pattern, result.stdout)
+        metrics = {metric: float(value) for metric, value in matches}
+        all_results.append({
+            "task_name": task_name,
+            "cluster_k": cluster_k,
+            "f1_per": metrics.get("test_f1_per", 0),
+            "f1_full": metrics.get("test_f1_full", 0),
+            "miou_per": metrics.get("test_miou_per", 0),
+            "miou_full": metrics.get("test_miou_full", 0),
+            "mof_per": metrics.get("test_mof_per", 0),
+            "mof_full": metrics.get("test_mof_full", 0),
+        })
 
-    matches = re.findall(pattern, result.stdout)
-    metrics = {metric: float(value) for metric, value in matches}
-    results.append({
-        "cluster_k": cluster_k,
-        "f1_per": metrics.get("test_f1_per", 0),
-        "f1_full": metrics.get("test_f1_full", 0),
-        "miou_per": metrics.get("test_miou_per", 0),
-        "miou_full": metrics.get("test_miou_full", 0),
-        "mof_per": metrics.get("test_mof_per", 0),
-        "mof_full": metrics.get("test_mof_full", 0),
-    })
-
-out_csv = f"{TASK_NAME}_{DATASET_SIZE}_{'_'.join(map(str, CLUSTER_SIZES))}.csv"
-df_out = pd.DataFrame(results)
+out_csv = f"all_tasks_{DATASET_SIZE}.csv"
+df_out = pd.DataFrame(all_results)
 df_out.to_csv(out_csv, index=False)
 print(f"Results saved to {out_csv}")
