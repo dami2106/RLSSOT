@@ -1,1 +1,1 @@
-python sequitur/sequitur.py --predicted-dir runs/stone_pick_random/stone_pick_random_pixels_big_stone_pick_random_pixels_big_1660/version_0 --dataset-dir Traces/stone_pick_random/stone_pick_random_pixels_big
+python sequitur/sequitur.py --predicted-dir paper_runs/stone_pick_static/stone_pick_static_pixels_big_stone_pick_static_pixels_big_555/version_0 --dataset-dir Traces/stone_pick_static/stone_pick_static_pixels_big

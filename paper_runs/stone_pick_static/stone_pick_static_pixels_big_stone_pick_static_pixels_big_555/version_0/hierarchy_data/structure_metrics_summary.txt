@@ -1,0 +1,26 @@
+Ground Truth Average Structure Metrics:
+  Number of unique trees: 1 (out of 500 total)
+  depth: 3.0000
+  size: 9.0000
+  avg_branching: 4.0000
+  max_branching: 7.0000
+  reuse: 0.7778
+  modularity: 0.0000
+
+Predicted Average Structure Metrics:
+  Number of unique trees: 36 (out of 500 total)
+  depth: 6.0200
+  size: 13.4360
+  avg_branching: 1.8543
+  max_branching: 2.0060
+  reuse: 0.8747
+  modularity: 0.4945
+
+Matched Average Structure Metrics:
+  Number of unique trees: 36 (out of 500 total)
+  depth: 6.0200
+  size: 13.4360
+  avg_branching: 1.8543
+  max_branching: 2.0060
+  reuse: 0.8747
+  modularity: 0.4945

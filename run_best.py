@@ -4,7 +4,7 @@ import csv
 import re
 
 
-TASK_NAME="stone_pick_random"
+TASK_NAME="stone_pick_static"
 DATASET_SIZE="pixels_big"
 CLUSTER_SIZE="5"
 
@@ -50,6 +50,8 @@ def is_within_5pct(expected, actual):
     return abs(actual - expected) <= 0.05 * expected
 
 found_consistent = False
+
+print("Runni9ng")
 
 for idx, row in df.iterrows():
     cli = build_cli(row)

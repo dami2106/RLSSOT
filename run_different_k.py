@@ -9,7 +9,7 @@ runs = {
     # "wsws_static": [3, 4], #Optimal is 2 
     # "wsws_random": [3, 4], #Optimal is 2
     # "mixed_static": [3, 4, 6, 7], #Optimal is 5
-    "stone_pick_random": [3, 4, 6, 7],  # Optimal is 5
+    "stone_pick_static": [3, 4, 6, 7],  # Optimal is 5
 }
 
 def build_cli(row, task_name, cluster_size):

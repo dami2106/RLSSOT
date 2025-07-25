@@ -1,0 +1,30 @@
+alpha_eval: 0.22
+alpha_train: 0.59
+eval_eps: 0.02
+lambda_actions_eval: 0.09
+lambda_actions_train: 0.06
+lambda_frames_eval: 0.0999999999999999
+lambda_frames_train: 0.0999999999999999
+layer_sizes:
+- 650
+- 300
+- 40
+learn_clusters: true
+lr: 0.01
+n_clusters: 7
+n_frames: 110
+n_ot_eval:
+- 25
+- 1
+n_ot_train:
+- 25
+- 1
+radius_gw: 0.006
+rho: 0.117
+step_size: null
+temp: 0.1
+train_eps: 0.009
+ub_actions: false
+ub_frames: true
+visualize: true
+weight_decay: 0.01
