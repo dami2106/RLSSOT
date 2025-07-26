@@ -3,9 +3,9 @@ import subprocess
 import csv
 import re
 
-TASK = "stone_pick_static"
-DATASET = "pixels_big"
-CLUSTERS = 5
+TASK = "minecraft"
+DATASET = "cobblestone_mapped"
+CLUSTERS = 14
 
 # Load and sort CSV
 df = pd.read_csv(f'Traces/{TASK}/{TASK}_{DATASET}/optuna_results.csv')
@@ -30,11 +30,11 @@ def build_cli(row):
         f"--rho {row['params_rho']}",
         f"--weight-decay {row['params_weight-decay']}",
         f"--dataset {TASK}/{TASK}_{DATASET}",
-        "--feature-name pca_features",
+        "--feature-name features",
         "--save-directory runs",
         f"--run {TASK}_{DATASET}_{row['number']}",
         "--val-freq 5",
-        "--layers 650 300 40",
+        "--layers 512 256 40",
         "--seed 0",
         "--visualize",
         "--log",
