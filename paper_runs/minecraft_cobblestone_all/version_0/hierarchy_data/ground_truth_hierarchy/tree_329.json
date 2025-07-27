@@ -1,0 +1,99 @@
+{
+  "production": 0,
+  "children": [
+    {
+      "production": 116,
+      "children": [
+        {
+          "production": 184,
+          "children": [
+            {
+              "production": 100,
+              "children": [
+                {
+                  "production": 37,
+                  "children": [
+                    {
+                      "symbol": "18"
+                    },
+                    {
+                      "symbol": "20"
+                    }
+                  ]
+                },
+                {
+                  "production": 236,
+                  "children": [
+                    {
+                      "production": 225,
+                      "children": [
+                        {
+                          "symbol": "23"
+                        },
+                        {
+                          "symbol": "30"
+                        }
+                      ]
+                    },
+                    {
+                      "production": 238,
+                      "children": [
+                        {
+                          "production": 235,
+                          "children": [
+                            {
+                              "production": 240,
+                              "children": [
+                                {
+                                  "symbol": "36"
+                                },
+                                {
+                                  "symbol": "42"
+                                }
+                              ]
+                            },
+                            {
+                              "symbol": "33"
+                            }
+                          ]
+                        },
+                        {
+                          "symbol": "43"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "symbol": "11"
+            }
+          ]
+        },
+        {
+          "production": 92,
+          "children": [
+            {
+              "symbol": "8"
+            },
+            {
+              "symbol": "14"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 11,
+      "children": [
+        {
+          "symbol": "32"
+        },
+        {
+          "symbol": "21"
+        }
+      ]
+    }
+  ]
+}

@@ -4,9 +4,9 @@ import csv
 import re
 import os
 
-TASK_NAME = "wsws_random"
-DATASET_SIZE = "pixels_big"
-CLUSTER_SIZE = "2"
+TASK_NAME = "minecraft"
+DATASET_SIZE = "cobblestone_mapped"
+CLUSTER_SIZE = "14"
 
 df = pd.read_csv(f'Traces/{TASK_NAME}/{TASK_NAME}_{DATASET_SIZE}/best.csv')
 
@@ -32,7 +32,7 @@ def build_cli(row):
         "--save-directory runs",
         f"--run {TASK_NAME}_{DATASET_SIZE}_{row['number']}",
         "--val-freq 5",
-        "--layers 650 300 40",
+        "--layers 512 256 40",
         "--seed 0",
         "--visualize",
         "--log",
@@ -50,7 +50,7 @@ headers = ["run_num"]
 for idx, row in df.iterrows():
     cli = build_cli(row)
     print(f"Trying config number {row['number']} with expected value {row['value']}")
-    for i in range(1, 5):
+    for i in range(2):
         result = subprocess.run(f"python src/train.py {cli}", shell=True, capture_output=True, text=True)
         pattern = r"\b(test_\w+)\b[^\d\-]*([0-9]*\.?[0-9]+)"
         matches = re.findall(pattern, result.stdout)

@@ -6,86 +6,87 @@ import wandb
 
 from metrics import pred_to_gt_match, filter_exclusions
 import os
+import numpy as np
+import matplotlib.pyplot as plt
 
+import numpy as np
+import matplotlib.pyplot as plt
 
 def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, exclude_cls=None, name=''):
     colors = {}
 
     pred_, gt_ = filter_exclusions(pred[mask].cpu().numpy(), gt[mask].cpu().numpy(), exclude_cls)
-    # Keep original predicted labels for boundary detection
     pred_orig = pred_.copy()
     
     if pred_to_gt is None:
         pred_opt, gt_opt = pred_to_gt_match(pred_, gt_)
     else:
         pred_opt, gt_opt = zip(*pred_to_gt.items())
-    
-    # Create mapping dictionary from pred labels to GT labels
-    pred_to_gt_dict = {}
-    for pr_lab, gt_lab in zip(pred_opt, gt_opt):
-        pred_to_gt_dict[pr_lab] = gt_lab
-        pred_[pred_ == pr_lab] = gt_lab
+
+    pred_to_gt_dict = {pr_lab: gt_lab for pr_lab, gt_lab in zip(pred_opt, gt_opt)}
+    pred_ = np.vectorize(pred_to_gt_dict.get)(pred_)
+
     n_frames = len(pred_)
-
-    # add colors for predictions which do not match to a gt class
-
     if gt_uniq is None:
         gt_uniq = np.unique(gt_)
     pred_not_matched = np.setdiff1d(pred_opt, gt_uniq)
     if len(pred_not_matched) > 0:
         gt_uniq = np.concatenate((gt_uniq, pred_not_matched))
 
+    gt_uniq = np.unique(gt_uniq)
     n_class = len(gt_uniq)
-    if n_class <= 20:
-        cmap = plt.get_cmap('tab20')
-    else:  # up to 40 classes
-        cmap1 = plt.get_cmap('tab20')
-        cmap2 = plt.get_cmap('tab20b')
-        cmap = lambda x: cmap1(round(x * n_class / 20., 2)) if x <= 19. / n_class else cmap2(round((x - 20 / n_class) * n_class / 20, 2))
+
+    # Colormap and hatching
+    cmap_base = plt.get_cmap('tab20')
+    cmap_extra = plt.get_cmap('tab20b')
+    hatch_patterns = ['/', '\\', '|', '-', '+', 'x', 'o', '.', '*']
+    use_hatching = n_class > 40
 
     for i, label in enumerate(gt_uniq):
         if label == -1:
-            colors[label] = (0, 0, 0)
+            colors[label] = ((0, 0, 0), None)
         else:
-            colors[label] = cmap(i / n_class)
+            base_color = (
+                cmap_base(i / 20) if i < 20 else
+                cmap_extra((i - 20) / 20)
+            )
+            hatch = hatch_patterns[i // 40 % len(hatch_patterns)] if use_hatching else None
+            colors[label] = (base_color, hatch)
 
     fig = plt.figure(figsize=(16, 4))
     plt.axis('off')
     plt.title(name, fontsize=45, pad=20)
 
-    # plot gt segmentation
-
+    # --- GT plot ---
     ax = fig.add_subplot(2, 1, 1)
     ax.set_ylabel('GT', fontsize=45, rotation=0, labelpad=40, verticalalignment='center')
     ax.set_yticklabels([])
     ax.set_xticklabels([])
 
-    gt_segment_boundaries = np.where(gt_[1:] - gt_[:-1])[0] + 1
+    gt_segment_boundaries = np.where(gt_[1:] != gt_[:-1])[0] + 1
     gt_segment_boundaries = np.concatenate(([0], gt_segment_boundaries, [len(gt_)]))
 
     for start, end in zip(gt_segment_boundaries[:-1], gt_segment_boundaries[1:]):
         label = gt_[start]
-        ax.axvspan(start / n_frames, end / n_frames, facecolor=colors[label], alpha=1.0)
+        color, hatch = colors.get(label, ((0, 0, 0), None))
+        ax.axvspan(start / n_frames, end / n_frames, facecolor=color, hatch=hatch, alpha=1.0)
         ax.axvline(start / n_frames, color='black', linewidth=3)
         ax.axvline(end / n_frames, color='black', linewidth=3)
 
-    # plot predicted segmentation after matching to gt labels w/Hungarian
-
+    # --- Pred plot ---
     ax = fig.add_subplot(2, 1, 2)
     ax.set_ylabel('Ours', fontsize=45, rotation=0, labelpad=60, verticalalignment='center')
     ax.set_yticklabels([])
     ax.set_xticklabels([])
 
-    # Use original predicted labels for boundary detection, but mapped colors
-    pred_segment_boundaries = np.where(pred_orig[1:] - pred_orig[:-1])[0] + 1
+    pred_segment_boundaries = np.where(pred_orig[1:] != pred_orig[:-1])[0] + 1
     pred_segment_boundaries = np.concatenate(([0], pred_segment_boundaries, [len(pred_orig)]))
 
     for start, end in zip(pred_segment_boundaries[:-1], pred_segment_boundaries[1:]):
-        # Get the original predicted label and map it to GT label for color
         orig_label = pred_orig[start]
-        # Map the original predicted label to the corresponding GT label, or fallback to itself
         mapped_label = pred_to_gt_dict.get(orig_label, orig_label)
-        ax.axvspan(start / n_frames, end / n_frames, facecolor=colors.get(mapped_label, (0, 0, 0)), alpha=1.0)
+        color, hatch = colors.get(mapped_label, ((0, 0, 0), None))
+        ax.axvspan(start / n_frames, end / n_frames, facecolor=color, hatch=hatch, alpha=1.0)
         ax.axvline(start / n_frames, color='black', linewidth=3)
         ax.axvline(end / n_frames, color='black', linewidth=3)
 

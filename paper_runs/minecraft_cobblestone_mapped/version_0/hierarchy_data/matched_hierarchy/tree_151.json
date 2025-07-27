@@ -1,0 +1,171 @@
+{
+  "production": 0,
+  "children": [
+    {
+      "production": 434,
+      "children": [
+        {
+          "production": 312,
+          "children": [
+            {
+              "production": 102,
+              "children": [
+                {
+                  "production": 38,
+                  "children": [
+                    {
+                      "production": 84,
+                      "children": [
+                        {
+                          "symbol": "6"
+                        },
+                        {
+                          "symbol": "13"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "4"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "0"
+                }
+              ]
+            },
+            {
+              "production": 178,
+              "children": [
+                {
+                  "production": 853,
+                  "children": [
+                    {
+                      "symbol": "7"
+                    },
+                    {
+                      "symbol": "12"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "9"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "production": 383,
+          "children": [
+            {
+              "production": 32,
+              "children": [
+                {
+                  "production": 10,
+                  "children": [
+                    {
+                      "production": 485,
+                      "children": [
+                        {
+                          "production": 849,
+                          "children": [
+                            {
+                              "symbol": "11"
+                            },
+                            {
+                              "symbol": "9"
+                            }
+                          ]
+                        },
+                        {
+                          "symbol": "11"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "9"
+                    }
+                  ]
+                },
+                {
+                  "production": 485,
+                  "children": [
+                    {
+                      "production": 849,
+                      "children": [
+                        {
+                          "symbol": "11"
+                        },
+                        {
+                          "symbol": "9"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "11"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "production": 59,
+              "children": [
+                {
+                  "production": 822,
+                  "children": [
+                    {
+                      "symbol": "5"
+                    },
+                    {
+                      "symbol": "3"
+                    }
+                  ]
+                },
+                {
+                  "production": 822,
+                  "children": [
+                    {
+                      "symbol": "5"
+                    },
+                    {
+                      "symbol": "3"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 347,
+      "children": [
+        {
+          "production": 20,
+          "children": [
+            {
+              "production": 848,
+              "children": [
+                {
+                  "symbol": "2"
+                },
+                {
+                  "symbol": "8"
+                }
+              ]
+            },
+            {
+              "symbol": "1"
+            }
+          ]
+        },
+        {
+          "symbol": "10"
+        }
+      ]
+    }
+  ]
+}

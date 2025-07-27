@@ -1,0 +1,94 @@
+{
+  "production": 0,
+  "children": [
+    {
+      "production": 99,
+      "children": [
+        {
+          "production": 95,
+          "children": [
+            {
+              "production": 141,
+              "children": [
+                {
+                  "production": 139,
+                  "children": [
+                    {
+                      "production": 14,
+                      "children": [
+                        {
+                          "symbol": "4"
+                        },
+                        {
+                          "symbol": "3"
+                        }
+                      ]
+                    },
+                    {
+                      "production": 142,
+                      "children": [
+                        {
+                          "symbol": "2"
+                        },
+                        {
+                          "symbol": "12"
+                        },
+                        {
+                          "symbol": "1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "symbol": "10"
+                }
+              ]
+            },
+            {
+              "production": 135,
+              "children": [
+                {
+                  "symbol": "0"
+                },
+                {
+                  "symbol": "13"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "production": 134,
+          "children": [
+            {
+              "symbol": "6"
+            },
+            {
+              "symbol": "7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 38,
+      "children": [
+        {
+          "production": 134,
+          "children": [
+            {
+              "symbol": "6"
+            },
+            {
+              "symbol": "7"
+            }
+          ]
+        },
+        {
+          "symbol": "9"
+        }
+      ]
+    }
+  ]
+}

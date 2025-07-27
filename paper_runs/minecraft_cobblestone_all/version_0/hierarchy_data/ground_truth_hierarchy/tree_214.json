@@ -1,0 +1,88 @@
+{
+  "production": 0,
+  "children": [
+    {
+      "production": 123,
+      "children": [
+        {
+          "symbol": "29"
+        },
+        {
+          "production": 122,
+          "children": [
+            {
+              "production": 141,
+              "children": [
+                {
+                  "symbol": "28"
+                },
+                {
+                  "symbol": "12"
+                }
+              ]
+            },
+            {
+              "production": 103,
+              "children": [
+                {
+                  "production": 142,
+                  "children": [
+                    {
+                      "production": 237,
+                      "children": [
+                        {
+                          "production": 238,
+                          "children": [
+                            {
+                              "production": 235,
+                              "children": [
+                                {
+                                  "production": 240,
+                                  "children": [
+                                    {
+                                      "symbol": "36"
+                                    },
+                                    {
+                                      "symbol": "42"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "symbol": "33"
+                                }
+                              ]
+                            },
+                            {
+                              "symbol": "43"
+                            }
+                          ]
+                        },
+                        {
+                          "symbol": "11"
+                        }
+                      ]
+                    },
+                    {
+                      "production": 198,
+                      "children": [
+                        {
+                          "symbol": "14"
+                        },
+                        {
+                          "symbol": "32"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "symbol": "21"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

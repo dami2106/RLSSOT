@@ -4,8 +4,8 @@ import csv
 import re
 
 TASK = "minecraft"
-DATASET = "cobblestone_mapped"
-CLUSTERS = 14
+DATASET = "cobblestone_all"
+CLUSTERS = 44
 
 # Load and sort CSV
 df = pd.read_csv(f'Traces/{TASK}/{TASK}_{DATASET}/optuna_results.csv')

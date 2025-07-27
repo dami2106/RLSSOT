@@ -1,0 +1,1428 @@
+{
+  "production": 0,
+  "children": [
+    {
+      "production": 2550,
+      "children": [
+        {
+          "production": 2355,
+          "children": [
+            {
+              "production": 1703,
+              "children": [
+                {
+                  "production": 430,
+                  "children": [
+                    {
+                      "symbol": "3"
+                    },
+                    {
+                      "symbol": "4"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "3"
+                }
+              ]
+            },
+            {
+              "production": 402,
+              "children": [
+                {
+                  "production": 87,
+                  "children": [
+                    {
+                      "symbol": "4"
+                    },
+                    {
+                      "symbol": "3"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "4"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "production": 2152,
+          "children": [
+            {
+              "production": 383,
+              "children": [
+                {
+                  "production": 300,
+                  "children": [
+                    {
+                      "symbol": "43"
+                    },
+                    {
+                      "symbol": "4"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "43"
+                }
+              ]
+            },
+            {
+              "production": 411,
+              "children": [
+                {
+                  "production": 382,
+                  "children": [
+                    {
+                      "production": 35,
+                      "children": [
+                        {
+                          "production": 947,
+                          "children": [
+                            {
+                              "production": 70,
+                              "children": [
+                                {
+                                  "symbol": "4"
+                                },
+                                {
+                                  "symbol": "43"
+                                }
+                              ]
+                            },
+                            {
+                              "symbol": "4"
+                            }
+                          ]
+                        },
+                        {
+                          "symbol": "43"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "4"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "43"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 2551,
+      "children": [
+        {
+          "production": 838,
+          "children": [
+            {
+              "production": 530,
+              "children": [
+                {
+                  "symbol": "4"
+                },
+                {
+                  "symbol": "31"
+                }
+              ]
+            },
+            {
+              "symbol": "4"
+            }
+          ]
+        },
+        {
+          "production": 1730,
+          "children": [
+            {
+              "symbol": "43"
+            },
+            {
+              "symbol": "31"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 855,
+      "children": [
+        {
+          "symbol": "4"
+        },
+        {
+          "symbol": "14"
+        }
+      ]
+    },
+    {
+      "production": 1441,
+      "children": [
+        {
+          "production": 166,
+          "children": [
+            {
+              "production": 530,
+              "children": [
+                {
+                  "symbol": "4"
+                },
+                {
+                  "symbol": "31"
+                }
+              ]
+            },
+            {
+              "symbol": "43"
+            }
+          ]
+        },
+        {
+          "symbol": "4"
+        }
+      ]
+    },
+    {
+      "production": 2339,
+      "children": [
+        {
+          "production": 622,
+          "children": [
+            {
+              "symbol": "14"
+            },
+            {
+              "symbol": "31"
+            }
+          ]
+        },
+        {
+          "production": 123,
+          "children": [
+            {
+              "symbol": "32"
+            },
+            {
+              "symbol": "14"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 1708,
+      "children": [
+        {
+          "production": 1411,
+          "children": [
+            {
+              "production": 42,
+              "children": [
+                {
+                  "symbol": "31"
+                },
+                {
+                  "symbol": "14"
+                }
+              ]
+            },
+            {
+              "production": 123,
+              "children": [
+                {
+                  "symbol": "32"
+                },
+                {
+                  "symbol": "14"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "production": 827,
+          "children": [
+            {
+              "production": 561,
+              "children": [
+                {
+                  "production": 123,
+                  "children": [
+                    {
+                      "symbol": "32"
+                    },
+                    {
+                      "symbol": "14"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "32"
+                }
+              ]
+            },
+            {
+              "symbol": "14"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 2522,
+      "children": [
+        {
+          "production": 2493,
+          "children": [
+            {
+              "production": 2468,
+              "children": [
+                {
+                  "production": 1820,
+                  "children": [
+                    {
+                      "production": 1375,
+                      "children": [
+                        {
+                          "production": 1315,
+                          "children": [
+                            {
+                              "production": 123,
+                              "children": [
+                                {
+                                  "symbol": "32"
+                                },
+                                {
+                                  "symbol": "14"
+                                }
+                              ]
+                            },
+                            {
+                              "production": 41,
+                              "children": [
+                                {
+                                  "symbol": "11"
+                                },
+                                {
+                                  "symbol": "14"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "symbol": "11"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "14"
+                    }
+                  ]
+                },
+                {
+                  "production": 388,
+                  "children": [
+                    {
+                      "production": 41,
+                      "children": [
+                        {
+                          "symbol": "11"
+                        },
+                        {
+                          "symbol": "14"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "11"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "production": 225,
+              "children": [
+                {
+                  "symbol": "14"
+                },
+                {
+                  "symbol": "11"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "production": 2644,
+          "children": [
+            {
+              "production": 597,
+              "children": [
+                {
+                  "production": 225,
+                  "children": [
+                    {
+                      "symbol": "14"
+                    },
+                    {
+                      "symbol": "11"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "14"
+                }
+              ]
+            },
+            {
+              "symbol": "11"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 1317,
+      "children": [
+        {
+          "production": 225,
+          "children": [
+            {
+              "symbol": "14"
+            },
+            {
+              "symbol": "11"
+            }
+          ]
+        },
+        {
+          "symbol": "29"
+        }
+      ]
+    },
+    {
+      "production": 742,
+      "children": [
+        {
+          "production": 346,
+          "children": [
+            {
+              "production": 744,
+              "children": [
+                {
+                  "symbol": "11"
+                },
+                {
+                  "symbol": "18"
+                }
+              ]
+            },
+            {
+              "symbol": "35"
+            }
+          ]
+        },
+        {
+          "production": 650,
+          "children": [
+            {
+              "symbol": "18"
+            },
+            {
+              "symbol": "35"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 693,
+      "children": [
+        {
+          "production": 779,
+          "children": [
+            {
+              "symbol": "17"
+            },
+            {
+              "symbol": "8"
+            }
+          ]
+        },
+        {
+          "symbol": "17"
+        }
+      ]
+    },
+    {
+      "production": 2552,
+      "children": [
+        {
+          "production": 1170,
+          "children": [
+            {
+              "symbol": "18"
+            },
+            {
+              "symbol": "8"
+            }
+          ]
+        },
+        {
+          "symbol": "34"
+        }
+      ]
+    },
+    {
+      "symbol": "5"
+    },
+    {
+      "production": 2553,
+      "children": [
+        {
+          "production": 1066,
+          "children": [
+            {
+              "production": 92,
+              "children": [
+                {
+                  "production": 629,
+                  "children": [
+                    {
+                      "symbol": "34"
+                    },
+                    {
+                      "symbol": "1"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "20"
+                }
+              ]
+            },
+            {
+              "production": 1814,
+              "children": [
+                {
+                  "symbol": "42"
+                },
+                {
+                  "symbol": "20"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "production": 747,
+          "children": [
+            {
+              "production": 653,
+              "children": [
+                {
+                  "symbol": "42"
+                },
+                {
+                  "symbol": "29"
+                }
+              ]
+            },
+            {
+              "symbol": "20"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 903,
+      "children": [
+        {
+          "production": 2041,
+          "children": [
+            {
+              "production": 582,
+              "children": [
+                {
+                  "symbol": "5"
+                },
+                {
+                  "symbol": "2"
+                }
+              ]
+            },
+            {
+              "symbol": "5"
+            }
+          ]
+        },
+        {
+          "production": 1791,
+          "children": [
+            {
+              "production": 1449,
+              "children": [
+                {
+                  "production": 1741,
+                  "children": [
+                    {
+                      "symbol": "2"
+                    },
+                    {
+                      "symbol": "5"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "2"
+                }
+              ]
+            },
+            {
+              "production": 445,
+              "children": [
+                {
+                  "production": 431,
+                  "children": [
+                    {
+                      "symbol": "0"
+                    },
+                    {
+                      "symbol": "2"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "0"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 2505,
+      "children": [
+        {
+          "production": 1621,
+          "children": [
+            {
+              "production": 318,
+              "children": [
+                {
+                  "symbol": "7"
+                },
+                {
+                  "symbol": "0"
+                }
+              ]
+            },
+            {
+              "symbol": "7"
+            }
+          ]
+        },
+        {
+          "production": 3741,
+          "children": [
+            {
+              "production": 1476,
+              "children": [
+                {
+                  "symbol": "0"
+                },
+                {
+                  "symbol": "7"
+                }
+              ]
+            },
+            {
+              "symbol": "33"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 2554,
+      "children": [
+        {
+          "production": 1794,
+          "children": [
+            {
+              "production": 587,
+              "children": [
+                {
+                  "symbol": "24"
+                },
+                {
+                  "symbol": "19"
+                }
+              ]
+            },
+            {
+              "production": 394,
+              "children": [
+                {
+                  "production": 377,
+                  "children": [
+                    {
+                      "symbol": "10"
+                    },
+                    {
+                      "symbol": "19"
+                    }
+                  ]
+                },
+                {
+                  "production": 377,
+                  "children": [
+                    {
+                      "symbol": "10"
+                    },
+                    {
+                      "symbol": "19"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "production": 958,
+          "children": [
+            {
+              "symbol": "10"
+            },
+            {
+              "symbol": "27"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 611,
+      "children": [
+        {
+          "production": 394,
+          "children": [
+            {
+              "production": 377,
+              "children": [
+                {
+                  "symbol": "10"
+                },
+                {
+                  "symbol": "19"
+                }
+              ]
+            },
+            {
+              "production": 377,
+              "children": [
+                {
+                  "symbol": "10"
+                },
+                {
+                  "symbol": "19"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1424,
+          "children": [
+            {
+              "symbol": "27"
+            },
+            {
+              "symbol": "19"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 18,
+      "children": [
+        {
+          "symbol": "24"
+        },
+        {
+          "symbol": "16"
+        }
+      ]
+    },
+    {
+      "symbol": "25"
+    },
+    {
+      "production": 2555,
+      "children": [
+        {
+          "production": 2990,
+          "children": [
+            {
+              "production": 2351,
+              "children": [
+                {
+                  "symbol": "6"
+                },
+                {
+                  "symbol": "26"
+                }
+              ]
+            },
+            {
+              "production": 2351,
+              "children": [
+                {
+                  "symbol": "6"
+                },
+                {
+                  "symbol": "26"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "production": 2351,
+          "children": [
+            {
+              "symbol": "6"
+            },
+            {
+              "symbol": "26"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 1639,
+      "children": [
+        {
+          "symbol": "25"
+        },
+        {
+          "symbol": "38"
+        }
+      ]
+    },
+    {
+      "production": 2527,
+      "children": [
+        {
+          "production": 2207,
+          "children": [
+            {
+              "symbol": "26"
+            },
+            {
+              "symbol": "9"
+            }
+          ]
+        },
+        {
+          "production": 2207,
+          "children": [
+            {
+              "symbol": "26"
+            },
+            {
+              "symbol": "9"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 1147,
+      "children": [
+        {
+          "production": 943,
+          "children": [
+            {
+              "production": 2232,
+              "children": [
+                {
+                  "production": 160,
+                  "children": [
+                    {
+                      "production": 63,
+                      "children": [
+                        {
+                          "symbol": "36"
+                        },
+                        {
+                          "symbol": "15"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "36"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "15"
+                }
+              ]
+            },
+            {
+              "symbol": "36"
+            }
+          ]
+        },
+        {
+          "symbol": "15"
+        }
+      ]
+    },
+    {
+      "production": 1163,
+      "children": [
+        {
+          "production": 63,
+          "children": [
+            {
+              "symbol": "36"
+            },
+            {
+              "symbol": "15"
+            }
+          ]
+        },
+        {
+          "production": 710,
+          "children": [
+            {
+              "symbol": "37"
+            },
+            {
+              "symbol": "15"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 2556,
+      "children": [
+        {
+          "production": 1991,
+          "children": [
+            {
+              "production": 454,
+              "children": [
+                {
+                  "production": 1540,
+                  "children": [
+                    {
+                      "symbol": "37"
+                    },
+                    {
+                      "symbol": "41"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "40"
+                }
+              ]
+            },
+            {
+              "symbol": "21"
+            }
+          ]
+        },
+        {
+          "production": 2450,
+          "children": [
+            {
+              "production": 2056,
+              "children": [
+                {
+                  "production": 2098,
+                  "children": [
+                    {
+                      "production": 136,
+                      "children": [
+                        {
+                          "symbol": "30"
+                        },
+                        {
+                          "symbol": "21"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "30"
+                    }
+                  ]
+                },
+                {
+                  "production": 116,
+                  "children": [
+                    {
+                      "symbol": "21"
+                    },
+                    {
+                      "symbol": "30"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "production": 738,
+              "children": [
+                {
+                  "production": 116,
+                  "children": [
+                    {
+                      "symbol": "21"
+                    },
+                    {
+                      "symbol": "30"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "21"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 2450,
+      "children": [
+        {
+          "production": 2056,
+          "children": [
+            {
+              "production": 2098,
+              "children": [
+                {
+                  "production": 136,
+                  "children": [
+                    {
+                      "symbol": "30"
+                    },
+                    {
+                      "symbol": "21"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "30"
+                }
+              ]
+            },
+            {
+              "production": 116,
+              "children": [
+                {
+                  "symbol": "21"
+                },
+                {
+                  "symbol": "30"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "production": 738,
+          "children": [
+            {
+              "production": 116,
+              "children": [
+                {
+                  "symbol": "21"
+                },
+                {
+                  "symbol": "30"
+                }
+              ]
+            },
+            {
+              "symbol": "21"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 2557,
+      "children": [
+        {
+          "production": 2259,
+          "children": [
+            {
+              "production": 1232,
+              "children": [
+                {
+                  "production": 1090,
+                  "children": [
+                    {
+                      "production": 2098,
+                      "children": [
+                        {
+                          "production": 136,
+                          "children": [
+                            {
+                              "symbol": "30"
+                            },
+                            {
+                              "symbol": "21"
+                            }
+                          ]
+                        },
+                        {
+                          "symbol": "30"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "39"
+                    }
+                  ]
+                },
+                {
+                  "production": 2072,
+                  "children": [
+                    {
+                      "symbol": "30"
+                    },
+                    {
+                      "symbol": "39"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "production": 429,
+              "children": [
+                {
+                  "production": 222,
+                  "children": [
+                    {
+                      "production": 139,
+                      "children": [
+                        {
+                          "symbol": "23"
+                        },
+                        {
+                          "symbol": "39"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "23"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "39"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "production": 2558,
+          "children": [
+            {
+              "production": 2532,
+              "children": [
+                {
+                  "production": 2117,
+                  "children": [
+                    {
+                      "production": 786,
+                      "children": [
+                        {
+                          "production": 570,
+                          "children": [
+                            {
+                              "production": 429,
+                              "children": [
+                                {
+                                  "production": 222,
+                                  "children": [
+                                    {
+                                      "production": 139,
+                                      "children": [
+                                        {
+                                          "symbol": "23"
+                                        },
+                                        {
+                                          "symbol": "39"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "symbol": "23"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "symbol": "39"
+                                }
+                              ]
+                            },
+                            {
+                              "symbol": "23"
+                            }
+                          ]
+                        },
+                        {
+                          "symbol": "39"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "23"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "39"
+                }
+              ]
+            },
+            {
+              "production": 2532,
+              "children": [
+                {
+                  "production": 2117,
+                  "children": [
+                    {
+                      "production": 786,
+                      "children": [
+                        {
+                          "production": 570,
+                          "children": [
+                            {
+                              "production": 429,
+                              "children": [
+                                {
+                                  "production": 222,
+                                  "children": [
+                                    {
+                                      "production": 139,
+                                      "children": [
+                                        {
+                                          "symbol": "23"
+                                        },
+                                        {
+                                          "symbol": "39"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "symbol": "23"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "symbol": "39"
+                                }
+                              ]
+                            },
+                            {
+                              "symbol": "23"
+                            }
+                          ]
+                        },
+                        {
+                          "symbol": "39"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "23"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "39"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 2558,
+      "children": [
+        {
+          "production": 2532,
+          "children": [
+            {
+              "production": 2117,
+              "children": [
+                {
+                  "production": 786,
+                  "children": [
+                    {
+                      "production": 570,
+                      "children": [
+                        {
+                          "production": 429,
+                          "children": [
+                            {
+                              "production": 222,
+                              "children": [
+                                {
+                                  "production": 139,
+                                  "children": [
+                                    {
+                                      "symbol": "23"
+                                    },
+                                    {
+                                      "symbol": "39"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "symbol": "23"
+                                }
+                              ]
+                            },
+                            {
+                              "symbol": "39"
+                            }
+                          ]
+                        },
+                        {
+                          "symbol": "23"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "39"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "23"
+                }
+              ]
+            },
+            {
+              "symbol": "39"
+            }
+          ]
+        },
+        {
+          "production": 2532,
+          "children": [
+            {
+              "production": 2117,
+              "children": [
+                {
+                  "production": 786,
+                  "children": [
+                    {
+                      "production": 570,
+                      "children": [
+                        {
+                          "production": 429,
+                          "children": [
+                            {
+                              "production": 222,
+                              "children": [
+                                {
+                                  "production": 139,
+                                  "children": [
+                                    {
+                                      "symbol": "23"
+                                    },
+                                    {
+                                      "symbol": "39"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "symbol": "23"
+                                }
+                              ]
+                            },
+                            {
+                              "symbol": "39"
+                            }
+                          ]
+                        },
+                        {
+                          "symbol": "23"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "39"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "23"
+                }
+              ]
+            },
+            {
+              "symbol": "39"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 429,
+      "children": [
+        {
+          "production": 222,
+          "children": [
+            {
+              "production": 139,
+              "children": [
+                {
+                  "symbol": "23"
+                },
+                {
+                  "symbol": "39"
+                }
+              ]
+            },
+            {
+              "symbol": "23"
+            }
+          ]
+        },
+        {
+          "symbol": "39"
+        }
+      ]
+    }
+  ]
+}

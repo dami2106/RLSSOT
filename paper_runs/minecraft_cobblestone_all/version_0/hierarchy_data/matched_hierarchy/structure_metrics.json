@@ -1,0 +1,4010 @@
+{
+  "tree_0": {
+    "depth": 6,
+    "size": 307,
+    "avg_branching": 2.2666666666666666,
+    "max_branching": 36,
+    "reuse": 0.3713355048859935,
+    "modularity": 0.19444444444444445
+  },
+  "tree_1": {
+    "depth": 6,
+    "size": 325,
+    "avg_branching": 2.3649635036496353,
+    "max_branching": 51,
+    "reuse": 0.4,
+    "modularity": 0.45098039215686275
+  },
+  "tree_2": {
+    "depth": 6,
+    "size": 220,
+    "avg_branching": 2.305263157894737,
+    "max_branching": 31,
+    "reuse": 0.4909090909090909,
+    "modularity": 0.3548387096774194
+  },
+  "tree_3": {
+    "depth": 7,
+    "size": 162,
+    "avg_branching": 2.267605633802817,
+    "max_branching": 21,
+    "reuse": 0.6296296296296297,
+    "modularity": 0.47619047619047616
+  },
+  "tree_4": {
+    "depth": 7,
+    "size": 308,
+    "avg_branching": 2.2246376811594204,
+    "max_branching": 32,
+    "reuse": 0.4155844155844156,
+    "modularity": 0.3125
+  },
+  "tree_5": {
+    "depth": 7,
+    "size": 300,
+    "avg_branching": 2.2313432835820897,
+    "max_branching": 32,
+    "reuse": 0.44333333333333336,
+    "modularity": 0.3125
+  },
+  "tree_6": {
+    "depth": 7,
+    "size": 311,
+    "avg_branching": 2.2627737226277373,
+    "max_branching": 37,
+    "reuse": 0.4758842443729904,
+    "modularity": 0.35135135135135137
+  },
+  "tree_7": {
+    "depth": 7,
+    "size": 250,
+    "avg_branching": 2.2232142857142856,
+    "max_branching": 26,
+    "reuse": 0.492,
+    "modularity": 0.4230769230769231
+  },
+  "tree_8": {
+    "depth": 7,
+    "size": 331,
+    "avg_branching": 2.22972972972973,
+    "max_branching": 36,
+    "reuse": 0.4078549848942598,
+    "modularity": 0.2777777777777778
+  },
+  "tree_9": {
+    "depth": 7,
+    "size": 281,
+    "avg_branching": 2.24,
+    "max_branching": 31,
+    "reuse": 0.4412811387900356,
+    "modularity": 0.3548387096774194
+  },
+  "tree_10": {
+    "depth": 7,
+    "size": 292,
+    "avg_branching": 2.2384615384615385,
+    "max_branching": 33,
+    "reuse": 0.4520547945205479,
+    "modularity": 0.45454545454545453
+  },
+  "tree_11": {
+    "depth": 7,
+    "size": 290,
+    "avg_branching": 2.2578125,
+    "max_branching": 34,
+    "reuse": 0.42758620689655175,
+    "modularity": 0.3235294117647059
+  },
+  "tree_12": {
+    "depth": 7,
+    "size": 224,
+    "avg_branching": 2.207920792079208,
+    "max_branching": 22,
+    "reuse": 0.5089285714285714,
+    "modularity": 0.18181818181818182
+  },
+  "tree_13": {
+    "depth": 7,
+    "size": 232,
+    "avg_branching": 2.2211538461538463,
+    "max_branching": 25,
+    "reuse": 0.5387931034482759,
+    "modularity": 0.32
+  },
+  "tree_14": {
+    "depth": 8,
+    "size": 366,
+    "avg_branching": 2.2955974842767297,
+    "max_branching": 49,
+    "reuse": 0.4207650273224044,
+    "modularity": 0.4489795918367347
+  },
+  "tree_15": {
+    "depth": 7,
+    "size": 304,
+    "avg_branching": 2.1956521739130435,
+    "max_branching": 27,
+    "reuse": 0.4506578947368421,
+    "modularity": 0.2962962962962963
+  },
+  "tree_16": {
+    "depth": 7,
+    "size": 241,
+    "avg_branching": 2.2018348623853212,
+    "max_branching": 23,
+    "reuse": 0.4979253112033195,
+    "modularity": 0.43478260869565216
+  },
+  "tree_17": {
+    "depth": 7,
+    "size": 292,
+    "avg_branching": 2.255813953488372,
+    "max_branching": 33,
+    "reuse": 0.4726027397260274,
+    "modularity": 0.3939393939393939
+  },
+  "tree_18": {
+    "depth": 7,
+    "size": 286,
+    "avg_branching": 2.2265625,
+    "max_branching": 31,
+    "reuse": 0.479020979020979,
+    "modularity": 0.3225806451612903
+  },
+  "tree_19": {
+    "depth": 7,
+    "size": 374,
+    "avg_branching": 2.2606060606060607,
+    "max_branching": 44,
+    "reuse": 0.4144385026737968,
+    "modularity": 0.4090909090909091
+  },
+  "tree_20": {
+    "depth": 7,
+    "size": 353,
+    "avg_branching": 2.3006535947712417,
+    "max_branching": 48,
+    "reuse": 0.41076487252124644,
+    "modularity": 0.375
+  },
+  "tree_21": {
+    "depth": 7,
+    "size": 292,
+    "avg_branching": 2.2384615384615385,
+    "max_branching": 31,
+    "reuse": 0.4828767123287671,
+    "modularity": 0.3548387096774194
+  },
+  "tree_22": {
+    "depth": 7,
+    "size": 262,
+    "avg_branching": 2.19327731092437,
+    "max_branching": 25,
+    "reuse": 0.5038167938931297,
+    "modularity": 0.32
+  },
+  "tree_23": {
+    "depth": 7,
+    "size": 325,
+    "avg_branching": 2.3142857142857145,
+    "max_branching": 46,
+    "reuse": 0.4276923076923077,
+    "modularity": 0.43478260869565216
+  },
+  "tree_24": {
+    "depth": 7,
+    "size": 249,
+    "avg_branching": 2.234234234234234,
+    "max_branching": 28,
+    "reuse": 0.5542168674698795,
+    "modularity": 0.17857142857142858
+  },
+  "tree_25": {
+    "depth": 7,
+    "size": 377,
+    "avg_branching": 2.292682926829268,
+    "max_branching": 49,
+    "reuse": 0.363395225464191,
+    "modularity": 0.4897959183673469
+  },
+  "tree_26": {
+    "depth": 7,
+    "size": 241,
+    "avg_branching": 2.1621621621621623,
+    "max_branching": 20,
+    "reuse": 0.5518672199170125,
+    "modularity": 0.2
+  },
+  "tree_27": {
+    "depth": 7,
+    "size": 390,
+    "avg_branching": 2.2748538011695905,
+    "max_branching": 49,
+    "reuse": 0.4076923076923077,
+    "modularity": 0.40816326530612246
+  },
+  "tree_28": {
+    "depth": 6,
+    "size": 278,
+    "avg_branching": 2.2338709677419355,
+    "max_branching": 30,
+    "reuse": 0.4712230215827338,
+    "modularity": 0.23333333333333334
+  },
+  "tree_29": {
+    "depth": 8,
+    "size": 270,
+    "avg_branching": 2.186991869918699,
+    "max_branching": 25,
+    "reuse": 0.4962962962962963,
+    "modularity": 0.16
+  },
+  "tree_30": {
+    "depth": 8,
+    "size": 352,
+    "avg_branching": 2.264516129032258,
+    "max_branching": 43,
+    "reuse": 0.4602272727272727,
+    "modularity": 0.3488372093023256
+  },
+  "tree_31": {
+    "depth": 7,
+    "size": 260,
+    "avg_branching": 2.2327586206896552,
+    "max_branching": 29,
+    "reuse": 0.5346153846153846,
+    "modularity": 0.3448275862068966
+  },
+  "tree_32": {
+    "depth": 8,
+    "size": 309,
+    "avg_branching": 2.2318840579710146,
+    "max_branching": 33,
+    "reuse": 0.46601941747572817,
+    "modularity": 0.3939393939393939
+  },
+  "tree_33": {
+    "depth": 7,
+    "size": 210,
+    "avg_branching": 2.2,
+    "max_branching": 21,
+    "reuse": 0.5714285714285714,
+    "modularity": 0.23809523809523808
+  },
+  "tree_34": {
+    "depth": 7,
+    "size": 216,
+    "avg_branching": 2.216494845360825,
+    "max_branching": 23,
+    "reuse": 0.5555555555555556,
+    "modularity": 0.391304347826087
+  },
+  "tree_35": {
+    "depth": 7,
+    "size": 471,
+    "avg_branching": 2.3618090452261304,
+    "max_branching": 74,
+    "reuse": 0.37791932059447986,
+    "modularity": 0.5540540540540541
+  },
+  "tree_36": {
+    "depth": 8,
+    "size": 285,
+    "avg_branching": 2.253968253968254,
+    "max_branching": 34,
+    "reuse": 0.49473684210526314,
+    "modularity": 0.3235294117647059
+  },
+  "tree_37": {
+    "depth": 8,
+    "size": 293,
+    "avg_branching": 2.3174603174603177,
+    "max_branching": 41,
+    "reuse": 0.4812286689419795,
+    "modularity": 0.4634146341463415
+  },
+  "tree_38": {
+    "depth": 8,
+    "size": 223,
+    "avg_branching": 2.176470588235294,
+    "max_branching": 20,
+    "reuse": 0.57847533632287,
+    "modularity": 0.4
+  },
+  "tree_39": {
+    "depth": 8,
+    "size": 274,
+    "avg_branching": 2.1666666666666665,
+    "max_branching": 23,
+    "reuse": 0.49635036496350365,
+    "modularity": 0.21739130434782608
+  },
+  "tree_40": {
+    "depth": 8,
+    "size": 290,
+    "avg_branching": 2.172932330827068,
+    "max_branching": 25,
+    "reuse": 0.4896551724137931,
+    "modularity": 0.24
+  },
+  "tree_41": {
+    "depth": 7,
+    "size": 271,
+    "avg_branching": 2.25,
+    "max_branching": 32,
+    "reuse": 0.4797047970479705,
+    "modularity": 0.28125
+  },
+  "tree_42": {
+    "depth": 7,
+    "size": 331,
+    "avg_branching": 2.26027397260274,
+    "max_branching": 40,
+    "reuse": 0.4501510574018127,
+    "modularity": 0.45
+  },
+  "tree_43": {
+    "depth": 7,
+    "size": 279,
+    "avg_branching": 2.188976377952756,
+    "max_branching": 26,
+    "reuse": 0.5232974910394266,
+    "modularity": 0.19230769230769232
+  },
+  "tree_44": {
+    "depth": 8,
+    "size": 272,
+    "avg_branching": 2.185483870967742,
+    "max_branching": 25,
+    "reuse": 0.5110294117647058,
+    "modularity": 0.28
+  },
+  "tree_45": {
+    "depth": 9,
+    "size": 396,
+    "avg_branching": 2.296511627906977,
+    "max_branching": 53,
+    "reuse": 0.4166666666666667,
+    "modularity": 0.5094339622641509
+  },
+  "tree_46": {
+    "depth": 8,
+    "size": 284,
+    "avg_branching": 2.2283464566929134,
+    "max_branching": 31,
+    "reuse": 0.5211267605633803,
+    "modularity": 0.1935483870967742
+  },
+  "tree_47": {
+    "depth": 7,
+    "size": 239,
+    "avg_branching": 2.144144144144144,
+    "max_branching": 18,
+    "reuse": 0.5732217573221757,
+    "modularity": 0.16666666666666666
+  },
+  "tree_48": {
+    "depth": 7,
+    "size": 442,
+    "avg_branching": 2.3967391304347827,
+    "max_branching": 75,
+    "reuse": 0.3416289592760181,
+    "modularity": 0.6
+  },
+  "tree_49": {
+    "depth": 8,
+    "size": 276,
+    "avg_branching": 2.1825396825396823,
+    "max_branching": 25,
+    "reuse": 0.4891304347826087,
+    "modularity": 0.2
+  },
+  "tree_50": {
+    "depth": 8,
+    "size": 271,
+    "avg_branching": 2.1774193548387095,
+    "max_branching": 24,
+    "reuse": 0.5092250922509225,
+    "modularity": 0.25
+  },
+  "tree_51": {
+    "depth": 7,
+    "size": 324,
+    "avg_branching": 2.212328767123288,
+    "max_branching": 33,
+    "reuse": 0.45987654320987653,
+    "modularity": 0.21212121212121213
+  },
+  "tree_52": {
+    "depth": 7,
+    "size": 360,
+    "avg_branching": 2.229813664596273,
+    "max_branching": 39,
+    "reuse": 0.4222222222222222,
+    "modularity": 0.2564102564102564
+  },
+  "tree_53": {
+    "depth": 7,
+    "size": 236,
+    "avg_branching": 2.175925925925926,
+    "max_branching": 21,
+    "reuse": 0.5635593220338984,
+    "modularity": 0.23809523809523808
+  },
+  "tree_54": {
+    "depth": 8,
+    "size": 232,
+    "avg_branching": 2.1792452830188678,
+    "max_branching": 21,
+    "reuse": 0.5646551724137931,
+    "modularity": 0.2857142857142857
+  },
+  "tree_55": {
+    "depth": 8,
+    "size": 342,
+    "avg_branching": 2.2885906040268456,
+    "max_branching": 45,
+    "reuse": 0.42105263157894735,
+    "modularity": 0.5111111111111111
+  },
+  "tree_56": {
+    "depth": 8,
+    "size": 315,
+    "avg_branching": 2.2753623188405796,
+    "max_branching": 40,
+    "reuse": 0.4793650793650794,
+    "modularity": 0.375
+  },
+  "tree_57": {
+    "depth": 8,
+    "size": 422,
+    "avg_branching": 2.2275132275132274,
+    "max_branching": 45,
+    "reuse": 0.36729857819905215,
+    "modularity": 0.35555555555555557
+  },
+  "tree_58": {
+    "depth": 8,
+    "size": 306,
+    "avg_branching": 2.2426470588235294,
+    "max_branching": 35,
+    "reuse": 0.4673202614379085,
+    "modularity": 0.42857142857142855
+  },
+  "tree_59": {
+    "depth": 10,
+    "size": 347,
+    "avg_branching": 2.1761006289308176,
+    "max_branching": 30,
+    "reuse": 0.4409221902017291,
+    "modularity": 0.2
+  },
+  "tree_60": {
+    "depth": 9,
+    "size": 278,
+    "avg_branching": 2.1811023622047245,
+    "max_branching": 25,
+    "reuse": 0.5107913669064749,
+    "modularity": 0.24
+  },
+  "tree_61": {
+    "depth": 7,
+    "size": 215,
+    "avg_branching": 2.183673469387755,
+    "max_branching": 20,
+    "reuse": 0.5813953488372093,
+    "modularity": 0.25
+  },
+  "tree_62": {
+    "depth": 7,
+    "size": 213,
+    "avg_branching": 2.163265306122449,
+    "max_branching": 18,
+    "reuse": 0.5446009389671361,
+    "modularity": 0.1111111111111111
+  },
+  "tree_63": {
+    "depth": 8,
+    "size": 462,
+    "avg_branching": 2.237864077669903,
+    "max_branching": 51,
+    "reuse": 0.36147186147186144,
+    "modularity": 0.45098039215686275
+  },
+  "tree_64": {
+    "depth": 9,
+    "size": 432,
+    "avg_branching": 2.176767676767677,
+    "max_branching": 37,
+    "reuse": 0.39351851851851855,
+    "modularity": 0.16216216216216217
+  },
+  "tree_65": {
+    "depth": 7,
+    "size": 274,
+    "avg_branching": 2.2195121951219514,
+    "max_branching": 28,
+    "reuse": 0.5291970802919708,
+    "modularity": 0.25
+  },
+  "tree_66": {
+    "depth": 9,
+    "size": 288,
+    "avg_branching": 2.2248062015503876,
+    "max_branching": 31,
+    "reuse": 0.4965277777777778,
+    "modularity": 0.3225806451612903
+  },
+  "tree_67": {
+    "depth": 8,
+    "size": 260,
+    "avg_branching": 2.176470588235294,
+    "max_branching": 23,
+    "reuse": 0.5384615384615384,
+    "modularity": 0.21739130434782608
+  },
+  "tree_68": {
+    "depth": 8,
+    "size": 316,
+    "avg_branching": 2.1875,
+    "max_branching": 28,
+    "reuse": 0.4462025316455696,
+    "modularity": 0.2857142857142857
+  },
+  "tree_69": {
+    "depth": 8,
+    "size": 256,
+    "avg_branching": 2.142857142857143,
+    "max_branching": 19,
+    "reuse": 0.53515625,
+    "modularity": 0.2631578947368421
+  },
+  "tree_70": {
+    "depth": 9,
+    "size": 306,
+    "avg_branching": 2.2262773722627736,
+    "max_branching": 33,
+    "reuse": 0.42483660130718953,
+    "modularity": 0.3939393939393939
+  },
+  "tree_71": {
+    "depth": 8,
+    "size": 255,
+    "avg_branching": 2.152542372881356,
+    "max_branching": 20,
+    "reuse": 0.5686274509803921,
+    "modularity": 0.15
+  },
+  "tree_72": {
+    "depth": 8,
+    "size": 284,
+    "avg_branching": 2.193798449612403,
+    "max_branching": 27,
+    "reuse": 0.49295774647887325,
+    "modularity": 0.37037037037037035
+  },
+  "tree_73": {
+    "depth": 7,
+    "size": 240,
+    "avg_branching": 2.172727272727273,
+    "max_branching": 21,
+    "reuse": 0.5583333333333333,
+    "modularity": 0.38095238095238093
+  },
+  "tree_74": {
+    "depth": 8,
+    "size": 285,
+    "avg_branching": 2.1846153846153844,
+    "max_branching": 26,
+    "reuse": 0.48771929824561405,
+    "modularity": 0.3076923076923077
+  },
+  "tree_75": {
+    "depth": 11,
+    "size": 308,
+    "avg_branching": 2.1773049645390072,
+    "max_branching": 27,
+    "reuse": 0.5,
+    "modularity": 0.25925925925925924
+  },
+  "tree_76": {
+    "depth": 9,
+    "size": 283,
+    "avg_branching": 2.220472440944882,
+    "max_branching": 30,
+    "reuse": 0.4628975265017668,
+    "modularity": 0.4
+  },
+  "tree_77": {
+    "depth": 8,
+    "size": 377,
+    "avg_branching": 2.3354037267080745,
+    "max_branching": 55,
+    "reuse": 0.4350132625994695,
+    "modularity": 0.6
+  },
+  "tree_78": {
+    "depth": 11,
+    "size": 305,
+    "avg_branching": 2.140845070422535,
+    "max_branching": 22,
+    "reuse": 0.4918032786885246,
+    "modularity": 0.09090909090909091
+  },
+  "tree_79": {
+    "depth": 9,
+    "size": 291,
+    "avg_branching": 2.1481481481481484,
+    "max_branching": 22,
+    "reuse": 0.4948453608247423,
+    "modularity": 0.13636363636363635
+  },
+  "tree_80": {
+    "depth": 9,
+    "size": 242,
+    "avg_branching": 2.171171171171171,
+    "max_branching": 21,
+    "reuse": 0.5661157024793388,
+    "modularity": 0.09523809523809523
+  },
+  "tree_81": {
+    "depth": 8,
+    "size": 220,
+    "avg_branching": 2.19,
+    "max_branching": 20,
+    "reuse": 0.55,
+    "modularity": 0.3
+  },
+  "tree_82": {
+    "depth": 7,
+    "size": 265,
+    "avg_branching": 2.2564102564102564,
+    "max_branching": 31,
+    "reuse": 0.5018867924528302,
+    "modularity": 0.5161290322580645
+  },
+  "tree_83": {
+    "depth": 8,
+    "size": 337,
+    "avg_branching": 2.24,
+    "max_branching": 38,
+    "reuse": 0.456973293768546,
+    "modularity": 0.3684210526315789
+  },
+  "tree_84": {
+    "depth": 8,
+    "size": 229,
+    "avg_branching": 2.257425742574257,
+    "max_branching": 28,
+    "reuse": 0.5283842794759825,
+    "modularity": 0.42857142857142855
+  },
+  "tree_85": {
+    "depth": 8,
+    "size": 244,
+    "avg_branching": 2.209090909090909,
+    "max_branching": 25,
+    "reuse": 0.5491803278688525,
+    "modularity": 0.36
+  },
+  "tree_86": {
+    "depth": 7,
+    "size": 278,
+    "avg_branching": 2.2338709677419355,
+    "max_branching": 31,
+    "reuse": 0.4892086330935252,
+    "modularity": 0.2903225806451613
+  },
+  "tree_87": {
+    "depth": 8,
+    "size": 236,
+    "avg_branching": 2.2169811320754715,
+    "max_branching": 25,
+    "reuse": 0.5508474576271186,
+    "modularity": 0.52
+  },
+  "tree_88": {
+    "depth": 8,
+    "size": 397,
+    "avg_branching": 2.212290502793296,
+    "max_branching": 40,
+    "reuse": 0.42065491183879095,
+    "modularity": 0.3
+  },
+  "tree_89": {
+    "depth": 9,
+    "size": 350,
+    "avg_branching": 2.1949685534591197,
+    "max_branching": 33,
+    "reuse": 0.4514285714285714,
+    "modularity": 0.18181818181818182
+  },
+  "tree_90": {
+    "depth": 7,
+    "size": 311,
+    "avg_branching": 2.198581560283688,
+    "max_branching": 30,
+    "reuse": 0.4855305466237942,
+    "modularity": 0.3
+  },
+  "tree_91": {
+    "depth": 8,
+    "size": 263,
+    "avg_branching": 2.2586206896551726,
+    "max_branching": 32,
+    "reuse": 0.5209125475285171,
+    "modularity": 0.59375
+  },
+  "tree_92": {
+    "depth": 8,
+    "size": 232,
+    "avg_branching": 2.1792452830188678,
+    "max_branching": 21,
+    "reuse": 0.5517241379310345,
+    "modularity": 0.2857142857142857
+  },
+  "tree_93": {
+    "depth": 8,
+    "size": 222,
+    "avg_branching": 2.145631067961165,
+    "max_branching": 17,
+    "reuse": 0.5855855855855856,
+    "modularity": 0.17647058823529413
+  },
+  "tree_94": {
+    "depth": 12,
+    "size": 407,
+    "avg_branching": 2.2681564245810057,
+    "max_branching": 50,
+    "reuse": 0.43734643734643736,
+    "modularity": 0.44
+  },
+  "tree_95": {
+    "depth": 8,
+    "size": 251,
+    "avg_branching": 2.1739130434782608,
+    "max_branching": 22,
+    "reuse": 0.5537848605577689,
+    "modularity": 0.4090909090909091
+  },
+  "tree_96": {
+    "depth": 8,
+    "size": 220,
+    "avg_branching": 2.19,
+    "max_branching": 21,
+    "reuse": 0.5636363636363636,
+    "modularity": 0.38095238095238093
+  },
+  "tree_97": {
+    "depth": 8,
+    "size": 223,
+    "avg_branching": 2.176470588235294,
+    "max_branching": 20,
+    "reuse": 0.5381165919282511,
+    "modularity": 0.1
+  },
+  "tree_98": {
+    "depth": 8,
+    "size": 315,
+    "avg_branching": 2.3088235294117645,
+    "max_branching": 44,
+    "reuse": 0.45714285714285713,
+    "modularity": 0.5681818181818182
+  },
+  "tree_99": {
+    "depth": 8,
+    "size": 246,
+    "avg_branching": 2.2072072072072073,
+    "max_branching": 25,
+    "reuse": 0.524390243902439,
+    "modularity": 0.32
+  },
+  "tree_100": {
+    "depth": 9,
+    "size": 280,
+    "avg_branching": 2.146153846153846,
+    "max_branching": 21,
+    "reuse": 0.5285714285714286,
+    "modularity": 0.23809523809523808
+  },
+  "tree_101": {
+    "depth": 9,
+    "size": 367,
+    "avg_branching": 2.245398773006135,
+    "max_branching": 42,
+    "reuse": 0.4114441416893733,
+    "modularity": 0.5238095238095238
+  },
+  "tree_102": {
+    "depth": 8,
+    "size": 223,
+    "avg_branching": 2.1553398058252426,
+    "max_branching": 18,
+    "reuse": 0.5739910313901345,
+    "modularity": 0.2222222222222222
+  },
+  "tree_103": {
+    "depth": 8,
+    "size": 226,
+    "avg_branching": 2.142857142857143,
+    "max_branching": 17,
+    "reuse": 0.5530973451327433,
+    "modularity": 0.23529411764705882
+  },
+  "tree_104": {
+    "depth": 8,
+    "size": 227,
+    "avg_branching": 2.1320754716981134,
+    "max_branching": 16,
+    "reuse": 0.5770925110132159,
+    "modularity": 0.125
+  },
+  "tree_105": {
+    "depth": 9,
+    "size": 342,
+    "avg_branching": 2.2287581699346406,
+    "max_branching": 37,
+    "reuse": 0.4619883040935672,
+    "modularity": 0.32432432432432434
+  },
+  "tree_106": {
+    "depth": 9,
+    "size": 326,
+    "avg_branching": 2.2260273972602738,
+    "max_branching": 35,
+    "reuse": 0.4785276073619632,
+    "modularity": 0.37142857142857144
+  },
+  "tree_107": {
+    "depth": 8,
+    "size": 290,
+    "avg_branching": 2.1893939393939394,
+    "max_branching": 26,
+    "reuse": 0.503448275862069,
+    "modularity": 0.23076923076923078
+  },
+  "tree_108": {
+    "depth": 9,
+    "size": 312,
+    "avg_branching": 2.253623188405797,
+    "max_branching": 36,
+    "reuse": 0.4967948717948718,
+    "modularity": 0.3888888888888889
+  },
+  "tree_109": {
+    "depth": 8,
+    "size": 221,
+    "avg_branching": 2.1782178217821784,
+    "max_branching": 20,
+    "reuse": 0.5701357466063348,
+    "modularity": 0.2
+  },
+  "tree_110": {
+    "depth": 8,
+    "size": 193,
+    "avg_branching": 2.1818181818181817,
+    "max_branching": 18,
+    "reuse": 0.5595854922279793,
+    "modularity": 0.2222222222222222
+  },
+  "tree_111": {
+    "depth": 7,
+    "size": 437,
+    "avg_branching": 2.435754189944134,
+    "max_branching": 79,
+    "reuse": 0.39359267734553777,
+    "modularity": 0.6708860759493671
+  },
+  "tree_112": {
+    "depth": 9,
+    "size": 361,
+    "avg_branching": 2.3076923076923075,
+    "max_branching": 50,
+    "reuse": 0.4376731301939058,
+    "modularity": 0.52
+  },
+  "tree_113": {
+    "depth": 8,
+    "size": 266,
+    "avg_branching": 2.2083333333333335,
+    "max_branching": 27,
+    "reuse": 0.5451127819548872,
+    "modularity": 0.3333333333333333
+  },
+  "tree_114": {
+    "depth": 13,
+    "size": 279,
+    "avg_branching": 2.1550387596899223,
+    "max_branching": 21,
+    "reuse": 0.5125448028673835,
+    "modularity": 0.3333333333333333
+  },
+  "tree_115": {
+    "depth": 7,
+    "size": 181,
+    "avg_branching": 2.1951219512195124,
+    "max_branching": 18,
+    "reuse": 0.6132596685082873,
+    "modularity": 0.2222222222222222
+  },
+  "tree_116": {
+    "depth": 8,
+    "size": 257,
+    "avg_branching": 2.265486725663717,
+    "max_branching": 32,
+    "reuse": 0.5136186770428015,
+    "modularity": 0.375
+  },
+  "tree_117": {
+    "depth": 8,
+    "size": 269,
+    "avg_branching": 2.178861788617886,
+    "max_branching": 24,
+    "reuse": 0.5315985130111525,
+    "modularity": 0.25
+  },
+  "tree_118": {
+    "depth": 9,
+    "size": 237,
+    "avg_branching": 2.1454545454545455,
+    "max_branching": 18,
+    "reuse": 0.5443037974683544,
+    "modularity": 0.2777777777777778
+  },
+  "tree_119": {
+    "depth": 13,
+    "size": 307,
+    "avg_branching": 2.1857142857142855,
+    "max_branching": 28,
+    "reuse": 0.4820846905537459,
+    "modularity": 0.39285714285714285
+  },
+  "tree_120": {
+    "depth": 8,
+    "size": 223,
+    "avg_branching": 2.1553398058252426,
+    "max_branching": 18,
+    "reuse": 0.5829596412556054,
+    "modularity": 0.16666666666666666
+  },
+  "tree_121": {
+    "depth": 8,
+    "size": 305,
+    "avg_branching": 2.251851851851852,
+    "max_branching": 36,
+    "reuse": 0.4918032786885246,
+    "modularity": 0.3888888888888889
+  },
+  "tree_122": {
+    "depth": 9,
+    "size": 387,
+    "avg_branching": 2.2057142857142855,
+    "max_branching": 38,
+    "reuse": 0.4418604651162791,
+    "modularity": 0.39473684210526316
+  },
+  "tree_123": {
+    "depth": 8,
+    "size": 411,
+    "avg_branching": 2.342857142857143,
+    "max_branching": 62,
+    "reuse": 0.43552311435523117,
+    "modularity": 0.5967741935483871
+  },
+  "tree_124": {
+    "depth": 8,
+    "size": 267,
+    "avg_branching": 2.180327868852459,
+    "max_branching": 24,
+    "reuse": 0.5168539325842697,
+    "modularity": 0.2916666666666667
+  },
+  "tree_125": {
+    "depth": 12,
+    "size": 236,
+    "avg_branching": 2.1363636363636362,
+    "max_branching": 17,
+    "reuse": 0.576271186440678,
+    "modularity": 0.23529411764705882
+  },
+  "tree_126": {
+    "depth": 6,
+    "size": 250,
+    "avg_branching": 2.2844036697247705,
+    "max_branching": 33,
+    "reuse": 0.488,
+    "modularity": 0.48484848484848486
+  },
+  "tree_127": {
+    "depth": 8,
+    "size": 247,
+    "avg_branching": 2.1578947368421053,
+    "max_branching": 20,
+    "reuse": 0.5344129554655871,
+    "modularity": 0.2
+  },
+  "tree_128": {
+    "depth": 8,
+    "size": 230,
+    "avg_branching": 2.160377358490566,
+    "max_branching": 19,
+    "reuse": 0.5956521739130435,
+    "modularity": 0.15789473684210525
+  },
+  "tree_129": {
+    "depth": 7,
+    "size": 303,
+    "avg_branching": 2.204379562043796,
+    "max_branching": 30,
+    "reuse": 0.5016501650165016,
+    "modularity": 0.3333333333333333
+  },
+  "tree_130": {
+    "depth": 8,
+    "size": 244,
+    "avg_branching": 2.229357798165138,
+    "max_branching": 27,
+    "reuse": 0.5532786885245902,
+    "modularity": 0.2962962962962963
+  },
+  "tree_131": {
+    "depth": 8,
+    "size": 273,
+    "avg_branching": 2.2113821138211383,
+    "max_branching": 26,
+    "reuse": 0.5421245421245421,
+    "modularity": 0.4230769230769231
+  },
+  "tree_132": {
+    "depth": 7,
+    "size": 340,
+    "avg_branching": 2.2905405405405403,
+    "max_branching": 45,
+    "reuse": 0.4470588235294118,
+    "modularity": 0.5111111111111111
+  },
+  "tree_133": {
+    "depth": 8,
+    "size": 284,
+    "avg_branching": 2.1769230769230767,
+    "max_branching": 25,
+    "reuse": 0.5105633802816901,
+    "modularity": 0.24
+  },
+  "tree_134": {
+    "depth": 13,
+    "size": 286,
+    "avg_branching": 2.142857142857143,
+    "max_branching": 21,
+    "reuse": 0.4755244755244755,
+    "modularity": 0.19047619047619047
+  },
+  "tree_135": {
+    "depth": 8,
+    "size": 253,
+    "avg_branching": 2.1724137931034484,
+    "max_branching": 22,
+    "reuse": 0.5533596837944664,
+    "modularity": 0.3181818181818182
+  },
+  "tree_136": {
+    "depth": 8,
+    "size": 316,
+    "avg_branching": 2.1283783783783785,
+    "max_branching": 21,
+    "reuse": 0.4588607594936709,
+    "modularity": 0.14285714285714285
+  },
+  "tree_137": {
+    "depth": 8,
+    "size": 225,
+    "avg_branching": 2.196078431372549,
+    "max_branching": 22,
+    "reuse": 0.5733333333333334,
+    "modularity": 0.2727272727272727
+  },
+  "tree_138": {
+    "depth": 8,
+    "size": 290,
+    "avg_branching": 2.24031007751938,
+    "max_branching": 33,
+    "reuse": 0.5206896551724138,
+    "modularity": 0.3333333333333333
+  },
+  "tree_139": {
+    "depth": 8,
+    "size": 422,
+    "avg_branching": 2.263440860215054,
+    "max_branching": 51,
+    "reuse": 0.45023696682464454,
+    "modularity": 0.37254901960784315
+  },
+  "tree_140": {
+    "depth": 8,
+    "size": 308,
+    "avg_branching": 2.1319444444444446,
+    "max_branching": 21,
+    "reuse": 0.5227272727272727,
+    "modularity": 0.09523809523809523
+  },
+  "tree_141": {
+    "depth": 9,
+    "size": 304,
+    "avg_branching": 2.179856115107914,
+    "max_branching": 27,
+    "reuse": 0.5032894736842105,
+    "modularity": 0.37037037037037035
+  },
+  "tree_142": {
+    "depth": 9,
+    "size": 227,
+    "avg_branching": 2.1941747572815533,
+    "max_branching": 22,
+    "reuse": 0.5859030837004405,
+    "modularity": 0.36363636363636365
+  },
+  "tree_143": {
+    "depth": 7,
+    "size": 284,
+    "avg_branching": 2.193798449612403,
+    "max_branching": 27,
+    "reuse": 0.5,
+    "modularity": 0.2222222222222222
+  },
+  "tree_144": {
+    "depth": 8,
+    "size": 268,
+    "avg_branching": 2.26271186440678,
+    "max_branching": 33,
+    "reuse": 0.5111940298507462,
+    "modularity": 0.3939393939393939
+  },
+  "tree_145": {
+    "depth": 8,
+    "size": 254,
+    "avg_branching": 2.1260504201680672,
+    "max_branching": 17,
+    "reuse": 0.5196850393700787,
+    "modularity": 0.11764705882352941
+  },
+  "tree_146": {
+    "depth": 9,
+    "size": 328,
+    "avg_branching": 2.18,
+    "max_branching": 29,
+    "reuse": 0.4695121951219512,
+    "modularity": 0.3103448275862069
+  },
+  "tree_147": {
+    "depth": 7,
+    "size": 242,
+    "avg_branching": 2.1517857142857144,
+    "max_branching": 19,
+    "reuse": 0.5454545454545454,
+    "modularity": 0.15789473684210525
+  },
+  "tree_148": {
+    "depth": 8,
+    "size": 314,
+    "avg_branching": 2.204225352112676,
+    "max_branching": 31,
+    "reuse": 0.4745222929936306,
+    "modularity": 0.3870967741935484
+  },
+  "tree_149": {
+    "depth": 8,
+    "size": 233,
+    "avg_branching": 2.1481481481481484,
+    "max_branching": 18,
+    "reuse": 0.5965665236051502,
+    "modularity": 0.4444444444444444
+  },
+  "tree_150": {
+    "depth": 9,
+    "size": 287,
+    "avg_branching": 2.183206106870229,
+    "max_branching": 25,
+    "reuse": 0.49825783972125437,
+    "modularity": 0.36
+  },
+  "tree_151": {
+    "depth": 8,
+    "size": 239,
+    "avg_branching": 2.144144144144144,
+    "max_branching": 18,
+    "reuse": 0.5857740585774058,
+    "modularity": 0.2777777777777778
+  },
+  "tree_152": {
+    "depth": 13,
+    "size": 292,
+    "avg_branching": 2.18796992481203,
+    "max_branching": 27,
+    "reuse": 0.4931506849315068,
+    "modularity": 0.25925925925925924
+  },
+  "tree_153": {
+    "depth": 9,
+    "size": 305,
+    "avg_branching": 2.1714285714285713,
+    "max_branching": 25,
+    "reuse": 0.5081967213114754,
+    "modularity": 0.2
+  },
+  "tree_154": {
+    "depth": 9,
+    "size": 260,
+    "avg_branching": 2.194915254237288,
+    "max_branching": 23,
+    "reuse": 0.5269230769230769,
+    "modularity": 0.2608695652173913
+  },
+  "tree_155": {
+    "depth": 9,
+    "size": 288,
+    "avg_branching": 2.2598425196850394,
+    "max_branching": 33,
+    "reuse": 0.4722222222222222,
+    "modularity": 0.45454545454545453
+  },
+  "tree_156": {
+    "depth": 9,
+    "size": 323,
+    "avg_branching": 2.220689655172414,
+    "max_branching": 34,
+    "reuse": 0.4891640866873065,
+    "modularity": 0.4117647058823529
+  },
+  "tree_157": {
+    "depth": 7,
+    "size": 246,
+    "avg_branching": 2.289719626168224,
+    "max_branching": 33,
+    "reuse": 0.5365853658536586,
+    "modularity": 0.5454545454545454
+  },
+  "tree_158": {
+    "depth": 7,
+    "size": 332,
+    "avg_branching": 2.221476510067114,
+    "max_branching": 35,
+    "reuse": 0.45180722891566266,
+    "modularity": 0.2857142857142857
+  },
+  "tree_159": {
+    "depth": 10,
+    "size": 334,
+    "avg_branching": 2.25,
+    "max_branching": 38,
+    "reuse": 0.49101796407185627,
+    "modularity": 0.3684210526315789
+  },
+  "tree_160": {
+    "depth": 7,
+    "size": 230,
+    "avg_branching": 2.201923076923077,
+    "max_branching": 23,
+    "reuse": 0.5695652173913044,
+    "modularity": 0.30434782608695654
+  },
+  "tree_161": {
+    "depth": 8,
+    "size": 233,
+    "avg_branching": 2.230769230769231,
+    "max_branching": 26,
+    "reuse": 0.5708154506437768,
+    "modularity": 0.2692307692307692
+  },
+  "tree_162": {
+    "depth": 12,
+    "size": 320,
+    "avg_branching": 2.230769230769231,
+    "max_branching": 35,
+    "reuse": 0.50625,
+    "modularity": 0.34285714285714286
+  },
+  "tree_163": {
+    "depth": 8,
+    "size": 209,
+    "avg_branching": 2.1666666666666665,
+    "max_branching": 18,
+    "reuse": 0.5885167464114832,
+    "modularity": 0.3333333333333333
+  },
+  "tree_164": {
+    "depth": 8,
+    "size": 327,
+    "avg_branching": 2.1733333333333333,
+    "max_branching": 28,
+    "reuse": 0.4923547400611621,
+    "modularity": 0.2857142857142857
+  },
+  "tree_165": {
+    "depth": 8,
+    "size": 247,
+    "avg_branching": 2.1964285714285716,
+    "max_branching": 24,
+    "reuse": 0.562753036437247,
+    "modularity": 0.25
+  },
+  "tree_166": {
+    "depth": 9,
+    "size": 281,
+    "avg_branching": 2.121212121212121,
+    "max_branching": 18,
+    "reuse": 0.5160142348754448,
+    "modularity": 0.0
+  },
+  "tree_167": {
+    "depth": 9,
+    "size": 321,
+    "avg_branching": 2.2535211267605635,
+    "max_branching": 37,
+    "reuse": 0.48598130841121495,
+    "modularity": 0.40540540540540543
+  },
+  "tree_168": {
+    "depth": 9,
+    "size": 202,
+    "avg_branching": 2.161290322580645,
+    "max_branching": 17,
+    "reuse": 0.6089108910891089,
+    "modularity": 0.35294117647058826
+  },
+  "tree_169": {
+    "depth": 9,
+    "size": 290,
+    "avg_branching": 2.223076923076923,
+    "max_branching": 31,
+    "reuse": 0.49310344827586206,
+    "modularity": 0.45161290322580644
+  },
+  "tree_170": {
+    "depth": 8,
+    "size": 214,
+    "avg_branching": 2.1515151515151514,
+    "max_branching": 17,
+    "reuse": 0.5934579439252337,
+    "modularity": 0.23529411764705882
+  },
+  "tree_171": {
+    "depth": 9,
+    "size": 295,
+    "avg_branching": 2.130434782608696,
+    "max_branching": 20,
+    "reuse": 0.5220338983050847,
+    "modularity": 0.25
+  },
+  "tree_172": {
+    "depth": 8,
+    "size": 367,
+    "avg_branching": 2.231707317073171,
+    "max_branching": 40,
+    "reuse": 0.44959128065395093,
+    "modularity": 0.3
+  },
+  "tree_173": {
+    "depth": 9,
+    "size": 399,
+    "avg_branching": 2.1988950276243093,
+    "max_branching": 38,
+    "reuse": 0.42606516290726815,
+    "modularity": 0.39473684210526316
+  },
+  "tree_174": {
+    "depth": 9,
+    "size": 221,
+    "avg_branching": 2.1782178217821784,
+    "max_branching": 20,
+    "reuse": 0.5882352941176471,
+    "modularity": 0.3
+  },
+  "tree_175": {
+    "depth": 9,
+    "size": 296,
+    "avg_branching": 2.153284671532847,
+    "max_branching": 22,
+    "reuse": 0.5,
+    "modularity": 0.18181818181818182
+  },
+  "tree_176": {
+    "depth": 8,
+    "size": 262,
+    "avg_branching": 2.175,
+    "max_branching": 23,
+    "reuse": 0.5381679389312977,
+    "modularity": 0.2608695652173913
+  },
+  "tree_177": {
+    "depth": 8,
+    "size": 268,
+    "avg_branching": 2.153225806451613,
+    "max_branching": 20,
+    "reuse": 0.5298507462686567,
+    "modularity": 0.15
+  },
+  "tree_178": {
+    "depth": 8,
+    "size": 258,
+    "avg_branching": 2.1779661016949152,
+    "max_branching": 23,
+    "reuse": 0.5387596899224806,
+    "modularity": 0.13043478260869565
+  },
+  "tree_179": {
+    "depth": 9,
+    "size": 265,
+    "avg_branching": 2.1463414634146343,
+    "max_branching": 20,
+    "reuse": 0.5169811320754717,
+    "modularity": 0.3
+  },
+  "tree_180": {
+    "depth": 8,
+    "size": 227,
+    "avg_branching": 2.26,
+    "max_branching": 28,
+    "reuse": 0.5726872246696035,
+    "modularity": 0.4642857142857143
+  },
+  "tree_181": {
+    "depth": 8,
+    "size": 354,
+    "avg_branching": 2.20625,
+    "max_branching": 35,
+    "reuse": 0.4463276836158192,
+    "modularity": 0.2571428571428571
+  },
+  "tree_182": {
+    "depth": 8,
+    "size": 321,
+    "avg_branching": 2.2535211267605635,
+    "max_branching": 38,
+    "reuse": 0.4953271028037383,
+    "modularity": 0.4473684210526316
+  },
+  "tree_183": {
+    "depth": 9,
+    "size": 244,
+    "avg_branching": 2.169642857142857,
+    "max_branching": 21,
+    "reuse": 0.5655737704918032,
+    "modularity": 0.23809523809523808
+  },
+  "tree_184": {
+    "depth": 9,
+    "size": 287,
+    "avg_branching": 2.3252032520325203,
+    "max_branching": 42,
+    "reuse": 0.4878048780487805,
+    "modularity": 0.5
+  },
+  "tree_185": {
+    "depth": 9,
+    "size": 208,
+    "avg_branching": 2.1789473684210527,
+    "max_branching": 19,
+    "reuse": 0.5865384615384616,
+    "modularity": 0.2631578947368421
+  },
+  "tree_186": {
+    "depth": 8,
+    "size": 356,
+    "avg_branching": 2.2756410256410255,
+    "max_branching": 45,
+    "reuse": 0.48314606741573035,
+    "modularity": 0.4222222222222222
+  },
+  "tree_187": {
+    "depth": 9,
+    "size": 291,
+    "avg_branching": 2.213740458015267,
+    "max_branching": 30,
+    "reuse": 0.5154639175257731,
+    "modularity": 0.3333333333333333
+  },
+  "tree_188": {
+    "depth": 9,
+    "size": 201,
+    "avg_branching": 2.150537634408602,
+    "max_branching": 16,
+    "reuse": 0.6318407960199005,
+    "modularity": 0.3125
+  },
+  "tree_189": {
+    "depth": 7,
+    "size": 216,
+    "avg_branching": 2.1717171717171717,
+    "max_branching": 19,
+    "reuse": 0.5833333333333334,
+    "modularity": 0.10526315789473684
+  },
+  "tree_190": {
+    "depth": 8,
+    "size": 320,
+    "avg_branching": 2.1700680272108843,
+    "max_branching": 27,
+    "reuse": 0.48125,
+    "modularity": 0.14814814814814814
+  },
+  "tree_191": {
+    "depth": 10,
+    "size": 278,
+    "avg_branching": 2.1640625,
+    "max_branching": 23,
+    "reuse": 0.5323741007194245,
+    "modularity": 0.30434782608695654
+  },
+  "tree_192": {
+    "depth": 8,
+    "size": 426,
+    "avg_branching": 2.361111111111111,
+    "max_branching": 66,
+    "reuse": 0.3779342723004695,
+    "modularity": 0.5303030303030303
+  },
+  "tree_193": {
+    "depth": 9,
+    "size": 245,
+    "avg_branching": 2.238532110091743,
+    "max_branching": 28,
+    "reuse": 0.5142857142857142,
+    "modularity": 0.35714285714285715
+  },
+  "tree_194": {
+    "depth": 9,
+    "size": 235,
+    "avg_branching": 2.1869158878504673,
+    "max_branching": 21,
+    "reuse": 0.5617021276595745,
+    "modularity": 0.3333333333333333
+  },
+  "tree_195": {
+    "depth": 10,
+    "size": 257,
+    "avg_branching": 2.169491525423729,
+    "max_branching": 22,
+    "reuse": 0.5408560311284046,
+    "modularity": 0.18181818181818182
+  },
+  "tree_196": {
+    "depth": 9,
+    "size": 275,
+    "avg_branching": 2.2096774193548385,
+    "max_branching": 28,
+    "reuse": 0.5127272727272727,
+    "modularity": 0.32142857142857145
+  },
+  "tree_197": {
+    "depth": 9,
+    "size": 274,
+    "avg_branching": 2.184,
+    "max_branching": 25,
+    "reuse": 0.5036496350364964,
+    "modularity": 0.28
+  },
+  "tree_198": {
+    "depth": 9,
+    "size": 345,
+    "avg_branching": 2.2337662337662336,
+    "max_branching": 38,
+    "reuse": 0.48405797101449277,
+    "modularity": 0.47368421052631576
+  },
+  "tree_199": {
+    "depth": 8,
+    "size": 281,
+    "avg_branching": 2.2222222222222223,
+    "max_branching": 30,
+    "reuse": 0.5195729537366548,
+    "modularity": 0.23333333333333334
+  },
+  "tree_200": {
+    "depth": 9,
+    "size": 281,
+    "avg_branching": 2.1538461538461537,
+    "max_branching": 22,
+    "reuse": 0.5160142348754448,
+    "modularity": 0.18181818181818182
+  },
+  "tree_201": {
+    "depth": 9,
+    "size": 366,
+    "avg_branching": 2.28125,
+    "max_branching": 46,
+    "reuse": 0.4726775956284153,
+    "modularity": 0.45652173913043476
+  },
+  "tree_202": {
+    "depth": 8,
+    "size": 346,
+    "avg_branching": 2.2697368421052633,
+    "max_branching": 43,
+    "reuse": 0.4653179190751445,
+    "modularity": 0.4186046511627907
+  },
+  "tree_203": {
+    "depth": 9,
+    "size": 374,
+    "avg_branching": 2.1941176470588237,
+    "max_branching": 34,
+    "reuse": 0.4385026737967914,
+    "modularity": 0.20588235294117646
+  },
+  "tree_204": {
+    "depth": 9,
+    "size": 378,
+    "avg_branching": 2.1542857142857144,
+    "max_branching": 29,
+    "reuse": 0.48148148148148145,
+    "modularity": 0.2413793103448276
+  },
+  "tree_205": {
+    "depth": 9,
+    "size": 241,
+    "avg_branching": 2.1238938053097347,
+    "max_branching": 16,
+    "reuse": 0.5684647302904564,
+    "modularity": 0.125
+  },
+  "tree_206": {
+    "depth": 8,
+    "size": 225,
+    "avg_branching": 2.1333333333333333,
+    "max_branching": 16,
+    "reuse": 0.5911111111111111,
+    "modularity": 0.125
+  },
+  "tree_207": {
+    "depth": 9,
+    "size": 261,
+    "avg_branching": 2.1666666666666665,
+    "max_branching": 22,
+    "reuse": 0.5478927203065134,
+    "modularity": 0.22727272727272727
+  },
+  "tree_208": {
+    "depth": 8,
+    "size": 330,
+    "avg_branching": 2.300699300699301,
+    "max_branching": 45,
+    "reuse": 0.4575757575757576,
+    "modularity": 0.4888888888888889
+  },
+  "tree_209": {
+    "depth": 9,
+    "size": 308,
+    "avg_branching": 2.1619718309859155,
+    "max_branching": 25,
+    "reuse": 0.5064935064935064,
+    "modularity": 0.2
+  },
+  "tree_210": {
+    "depth": 7,
+    "size": 247,
+    "avg_branching": 2.1578947368421053,
+    "max_branching": 20,
+    "reuse": 0.5587044534412956,
+    "modularity": 0.15
+  },
+  "tree_211": {
+    "depth": 8,
+    "size": 308,
+    "avg_branching": 2.2573529411764706,
+    "max_branching": 37,
+    "reuse": 0.4805194805194805,
+    "modularity": 0.5135135135135135
+  },
+  "tree_212": {
+    "depth": 9,
+    "size": 267,
+    "avg_branching": 2.180327868852459,
+    "max_branching": 24,
+    "reuse": 0.5280898876404494,
+    "modularity": 0.3333333333333333
+  },
+  "tree_213": {
+    "depth": 7,
+    "size": 245,
+    "avg_branching": 2.2181818181818183,
+    "max_branching": 26,
+    "reuse": 0.5265306122448979,
+    "modularity": 0.46153846153846156
+  },
+  "tree_214": {
+    "depth": 7,
+    "size": 258,
+    "avg_branching": 2.1596638655462184,
+    "max_branching": 21,
+    "reuse": 0.5348837209302325,
+    "modularity": 0.19047619047619047
+  },
+  "tree_215": {
+    "depth": 8,
+    "size": 304,
+    "avg_branching": 2.148936170212766,
+    "max_branching": 23,
+    "reuse": 0.5032894736842105,
+    "modularity": 0.08695652173913043
+  },
+  "tree_216": {
+    "depth": 9,
+    "size": 272,
+    "avg_branching": 2.203252032520325,
+    "max_branching": 27,
+    "reuse": 0.5294117647058824,
+    "modularity": 0.4444444444444444
+  },
+  "tree_217": {
+    "depth": 8,
+    "size": 270,
+    "avg_branching": 2.1693548387096775,
+    "max_branching": 23,
+    "reuse": 0.5555555555555556,
+    "modularity": 0.21739130434782608
+  },
+  "tree_218": {
+    "depth": 9,
+    "size": 292,
+    "avg_branching": 2.18796992481203,
+    "max_branching": 27,
+    "reuse": 0.5136986301369864,
+    "modularity": 0.25925925925925924
+  },
+  "tree_219": {
+    "depth": 9,
+    "size": 261,
+    "avg_branching": 2.1848739495798317,
+    "max_branching": 24,
+    "reuse": 0.5478927203065134,
+    "modularity": 0.2916666666666667
+  },
+  "tree_220": {
+    "depth": 8,
+    "size": 277,
+    "avg_branching": 2.208,
+    "max_branching": 28,
+    "reuse": 0.5342960288808665,
+    "modularity": 0.32142857142857145
+  },
+  "tree_221": {
+    "depth": 9,
+    "size": 272,
+    "avg_branching": 2.1507936507936507,
+    "max_branching": 21,
+    "reuse": 0.5367647058823529,
+    "modularity": 0.23809523809523808
+  },
+  "tree_222": {
+    "depth": 11,
+    "size": 364,
+    "avg_branching": 2.1607142857142856,
+    "max_branching": 29,
+    "reuse": 0.4258241758241758,
+    "modularity": 0.2413793103448276
+  },
+  "tree_223": {
+    "depth": 9,
+    "size": 266,
+    "avg_branching": 2.264957264957265,
+    "max_branching": 31,
+    "reuse": 0.5075187969924813,
+    "modularity": 0.41935483870967744
+  },
+  "tree_224": {
+    "depth": 9,
+    "size": 277,
+    "avg_branching": 2.15625,
+    "max_branching": 22,
+    "reuse": 0.51985559566787,
+    "modularity": 0.22727272727272727
+  },
+  "tree_225": {
+    "depth": 7,
+    "size": 267,
+    "avg_branching": 2.1451612903225805,
+    "max_branching": 20,
+    "reuse": 0.5468164794007491,
+    "modularity": 0.15
+  },
+  "tree_226": {
+    "depth": 8,
+    "size": 286,
+    "avg_branching": 2.159090909090909,
+    "max_branching": 23,
+    "reuse": 0.5314685314685315,
+    "modularity": 0.21739130434782608
+  },
+  "tree_227": {
+    "depth": 8,
+    "size": 319,
+    "avg_branching": 2.193103448275862,
+    "max_branching": 30,
+    "reuse": 0.47648902821316613,
+    "modularity": 0.16666666666666666
+  },
+  "tree_228": {
+    "depth": 8,
+    "size": 212,
+    "avg_branching": 2.1979166666666665,
+    "max_branching": 21,
+    "reuse": 0.5754716981132075,
+    "modularity": 0.3333333333333333
+  },
+  "tree_229": {
+    "depth": 8,
+    "size": 218,
+    "avg_branching": 2.17,
+    "max_branching": 19,
+    "reuse": 0.591743119266055,
+    "modularity": 0.3684210526315789
+  },
+  "tree_230": {
+    "depth": 9,
+    "size": 232,
+    "avg_branching": 2.1588785046728973,
+    "max_branching": 19,
+    "reuse": 0.5732758620689655,
+    "modularity": 0.42105263157894735
+  },
+  "tree_231": {
+    "depth": 7,
+    "size": 213,
+    "avg_branching": 2.3555555555555556,
+    "max_branching": 34,
+    "reuse": 0.5774647887323944,
+    "modularity": 0.6176470588235294
+  },
+  "tree_232": {
+    "depth": 8,
+    "size": 246,
+    "avg_branching": 2.168141592920354,
+    "max_branching": 20,
+    "reuse": 0.540650406504065,
+    "modularity": 0.25
+  },
+  "tree_233": {
+    "depth": 8,
+    "size": 282,
+    "avg_branching": 2.1953125,
+    "max_branching": 26,
+    "reuse": 0.524822695035461,
+    "modularity": 0.3076923076923077
+  },
+  "tree_234": {
+    "depth": 9,
+    "size": 285,
+    "avg_branching": 2.1515151515151514,
+    "max_branching": 22,
+    "reuse": 0.5052631578947369,
+    "modularity": 0.2727272727272727
+  },
+  "tree_235": {
+    "depth": 9,
+    "size": 413,
+    "avg_branching": 2.239130434782609,
+    "max_branching": 45,
+    "reuse": 0.46246973365617433,
+    "modularity": 0.4888888888888889
+  },
+  "tree_236": {
+    "depth": 9,
+    "size": 334,
+    "avg_branching": 2.1907894736842106,
+    "max_branching": 31,
+    "reuse": 0.47005988023952094,
+    "modularity": 0.2903225806451613
+  },
+  "tree_237": {
+    "depth": 8,
+    "size": 339,
+    "avg_branching": 2.2684563758389262,
+    "max_branching": 42,
+    "reuse": 0.4690265486725664,
+    "modularity": 0.38095238095238093
+  },
+  "tree_238": {
+    "depth": 9,
+    "size": 276,
+    "avg_branching": 2.131782945736434,
+    "max_branching": 19,
+    "reuse": 0.5289855072463768,
+    "modularity": 0.21052631578947367
+  },
+  "tree_239": {
+    "depth": 8,
+    "size": 267,
+    "avg_branching": 2.2542372881355934,
+    "max_branching": 32,
+    "reuse": 0.5205992509363296,
+    "modularity": 0.3125
+  },
+  "tree_240": {
+    "depth": 8,
+    "size": 325,
+    "avg_branching": 2.2344827586206897,
+    "max_branching": 36,
+    "reuse": 0.48615384615384616,
+    "modularity": 0.5277777777777778
+  },
+  "tree_241": {
+    "depth": 9,
+    "size": 298,
+    "avg_branching": 2.25,
+    "max_branching": 34,
+    "reuse": 0.5167785234899329,
+    "modularity": 0.5
+  },
+  "tree_242": {
+    "depth": 8,
+    "size": 225,
+    "avg_branching": 2.1538461538461537,
+    "max_branching": 18,
+    "reuse": 0.5777777777777777,
+    "modularity": 0.4444444444444444
+  },
+  "tree_243": {
+    "depth": 9,
+    "size": 273,
+    "avg_branching": 2.193548387096774,
+    "max_branching": 26,
+    "reuse": 0.5274725274725275,
+    "modularity": 0.2692307692307692
+  },
+  "tree_244": {
+    "depth": 9,
+    "size": 220,
+    "avg_branching": 2.1470588235294117,
+    "max_branching": 17,
+    "reuse": 0.6,
+    "modularity": 0.23529411764705882
+  },
+  "tree_245": {
+    "depth": 8,
+    "size": 306,
+    "avg_branching": 2.147887323943662,
+    "max_branching": 23,
+    "reuse": 0.5065359477124183,
+    "modularity": 0.2608695652173913
+  },
+  "tree_246": {
+    "depth": 9,
+    "size": 378,
+    "avg_branching": 2.2176470588235295,
+    "max_branching": 39,
+    "reuse": 0.4497354497354497,
+    "modularity": 0.3333333333333333
+  },
+  "tree_247": {
+    "depth": 8,
+    "size": 267,
+    "avg_branching": 2.180327868852459,
+    "max_branching": 24,
+    "reuse": 0.5318352059925093,
+    "modularity": 0.20833333333333334
+  },
+  "tree_248": {
+    "depth": 11,
+    "size": 295,
+    "avg_branching": 2.1777777777777776,
+    "max_branching": 25,
+    "reuse": 0.47796610169491527,
+    "modularity": 0.32
+  },
+  "tree_249": {
+    "depth": 9,
+    "size": 390,
+    "avg_branching": 2.161111111111111,
+    "max_branching": 30,
+    "reuse": 0.441025641025641,
+    "modularity": 0.2
+  },
+  "tree_250": {
+    "depth": 8,
+    "size": 228,
+    "avg_branching": 2.141509433962264,
+    "max_branching": 17,
+    "reuse": 0.5789473684210527,
+    "modularity": 0.23529411764705882
+  },
+  "tree_251": {
+    "depth": 9,
+    "size": 251,
+    "avg_branching": 2.2123893805309733,
+    "max_branching": 26,
+    "reuse": 0.549800796812749,
+    "modularity": 0.2692307692307692
+  },
+  "tree_252": {
+    "depth": 9,
+    "size": 341,
+    "avg_branching": 2.193548387096774,
+    "max_branching": 32,
+    "reuse": 0.4868035190615836,
+    "modularity": 0.34375
+  },
+  "tree_253": {
+    "depth": 8,
+    "size": 329,
+    "avg_branching": 2.2013422818791946,
+    "max_branching": 30,
+    "reuse": 0.49240121580547114,
+    "modularity": 0.3
+  },
+  "tree_254": {
+    "depth": 10,
+    "size": 312,
+    "avg_branching": 2.174825174825175,
+    "max_branching": 27,
+    "reuse": 0.5,
+    "modularity": 0.2222222222222222
+  },
+  "tree_255": {
+    "depth": 9,
+    "size": 275,
+    "avg_branching": 2.1746031746031744,
+    "max_branching": 24,
+    "reuse": 0.5490909090909091,
+    "modularity": 0.2916666666666667
+  },
+  "tree_256": {
+    "depth": 8,
+    "size": 269,
+    "avg_branching": 2.178861788617886,
+    "max_branching": 24,
+    "reuse": 0.5204460966542751,
+    "modularity": 0.16666666666666666
+  },
+  "tree_257": {
+    "depth": 10,
+    "size": 356,
+    "avg_branching": 2.2049689440993787,
+    "max_branching": 35,
+    "reuse": 0.44662921348314605,
+    "modularity": 0.2857142857142857
+  },
+  "tree_258": {
+    "depth": 8,
+    "size": 238,
+    "avg_branching": 2.135135135135135,
+    "max_branching": 17,
+    "reuse": 0.5588235294117647,
+    "modularity": 0.23529411764705882
+  },
+  "tree_259": {
+    "depth": 9,
+    "size": 236,
+    "avg_branching": 2.1363636363636362,
+    "max_branching": 17,
+    "reuse": 0.576271186440678,
+    "modularity": 0.17647058823529413
+  },
+  "tree_260": {
+    "depth": 9,
+    "size": 268,
+    "avg_branching": 2.136,
+    "max_branching": 19,
+    "reuse": 0.5261194029850746,
+    "modularity": 0.21052631578947367
+  },
+  "tree_261": {
+    "depth": 7,
+    "size": 271,
+    "avg_branching": 2.25,
+    "max_branching": 32,
+    "reuse": 0.5092250922509225,
+    "modularity": 0.46875
+  },
+  "tree_262": {
+    "depth": 7,
+    "size": 281,
+    "avg_branching": 2.2580645161290325,
+    "max_branching": 34,
+    "reuse": 0.5124555160142349,
+    "modularity": 0.5294117647058824
+  },
+  "tree_263": {
+    "depth": 9,
+    "size": 358,
+    "avg_branching": 2.23125,
+    "max_branching": 38,
+    "reuse": 0.45251396648044695,
+    "modularity": 0.3684210526315789
+  },
+  "tree_264": {
+    "depth": 8,
+    "size": 211,
+    "avg_branching": 2.121212121212121,
+    "max_branching": 14,
+    "reuse": 0.5876777251184834,
+    "modularity": 0.2857142857142857
+  },
+  "tree_265": {
+    "depth": 7,
+    "size": 365,
+    "avg_branching": 2.260869565217391,
+    "max_branching": 44,
+    "reuse": 0.4383561643835616,
+    "modularity": 0.5
+  },
+  "tree_266": {
+    "depth": 9,
+    "size": 236,
+    "avg_branching": 2.1363636363636362,
+    "max_branching": 17,
+    "reuse": 0.5550847457627118,
+    "modularity": 0.23529411764705882
+  },
+  "tree_267": {
+    "depth": 7,
+    "size": 274,
+    "avg_branching": 2.2195121951219514,
+    "max_branching": 29,
+    "reuse": 0.5036496350364964,
+    "modularity": 0.3793103448275862
+  },
+  "tree_268": {
+    "depth": 8,
+    "size": 328,
+    "avg_branching": 2.165562913907285,
+    "max_branching": 27,
+    "reuse": 0.47560975609756095,
+    "modularity": 0.2222222222222222
+  },
+  "tree_269": {
+    "depth": 8,
+    "size": 229,
+    "avg_branching": 2.1923076923076925,
+    "max_branching": 22,
+    "reuse": 0.5720524017467249,
+    "modularity": 0.3181818181818182
+  },
+  "tree_270": {
+    "depth": 7,
+    "size": 232,
+    "avg_branching": 2.2427184466019416,
+    "max_branching": 27,
+    "reuse": 0.5344827586206896,
+    "modularity": 0.4074074074074074
+  },
+  "tree_271": {
+    "depth": 9,
+    "size": 315,
+    "avg_branching": 2.211267605633803,
+    "max_branching": 32,
+    "reuse": 0.49523809523809526,
+    "modularity": 0.40625
+  },
+  "tree_272": {
+    "depth": 9,
+    "size": 234,
+    "avg_branching": 2.118181818181818,
+    "max_branching": 15,
+    "reuse": 0.5683760683760684,
+    "modularity": 0.13333333333333333
+  },
+  "tree_273": {
+    "depth": 8,
+    "size": 285,
+    "avg_branching": 2.1846153846153844,
+    "max_branching": 25,
+    "reuse": 0.512280701754386,
+    "modularity": 0.16
+  },
+  "tree_274": {
+    "depth": 9,
+    "size": 253,
+    "avg_branching": 2.135593220338983,
+    "max_branching": 18,
+    "reuse": 0.5573122529644269,
+    "modularity": 0.1111111111111111
+  },
+  "tree_275": {
+    "depth": 8,
+    "size": 412,
+    "avg_branching": 2.283333333333333,
+    "max_branching": 52,
+    "reuse": 0.4174757281553398,
+    "modularity": 0.4230769230769231
+  },
+  "tree_276": {
+    "depth": 8,
+    "size": 270,
+    "avg_branching": 2.134920634920635,
+    "max_branching": 19,
+    "reuse": 0.5333333333333333,
+    "modularity": 0.15789473684210525
+  },
+  "tree_277": {
+    "depth": 7,
+    "size": 194,
+    "avg_branching": 2.168539325842697,
+    "max_branching": 17,
+    "reuse": 0.6237113402061856,
+    "modularity": 0.35294117647058826
+  },
+  "tree_278": {
+    "depth": 10,
+    "size": 312,
+    "avg_branching": 2.2056737588652484,
+    "max_branching": 31,
+    "reuse": 0.48717948717948717,
+    "modularity": 0.41935483870967744
+  },
+  "tree_279": {
+    "depth": 9,
+    "size": 255,
+    "avg_branching": 2.1709401709401708,
+    "max_branching": 22,
+    "reuse": 0.5372549019607843,
+    "modularity": 0.2727272727272727
+  },
+  "tree_280": {
+    "depth": 8,
+    "size": 333,
+    "avg_branching": 2.1699346405228757,
+    "max_branching": 28,
+    "reuse": 0.5015015015015015,
+    "modularity": 0.21428571428571427
+  },
+  "tree_281": {
+    "depth": 7,
+    "size": 236,
+    "avg_branching": 2.175925925925926,
+    "max_branching": 21,
+    "reuse": 0.559322033898305,
+    "modularity": 0.2857142857142857
+  },
+  "tree_282": {
+    "depth": 7,
+    "size": 264,
+    "avg_branching": 2.307017543859649,
+    "max_branching": 37,
+    "reuse": 0.5075757575757576,
+    "modularity": 0.5405405405405406
+  },
+  "tree_283": {
+    "depth": 8,
+    "size": 289,
+    "avg_branching": 2.2857142857142856,
+    "max_branching": 38,
+    "reuse": 0.44982698961937717,
+    "modularity": 0.3684210526315789
+  },
+  "tree_284": {
+    "depth": 8,
+    "size": 300,
+    "avg_branching": 2.282442748091603,
+    "max_branching": 39,
+    "reuse": 0.49666666666666665,
+    "modularity": 0.41025641025641024
+  },
+  "tree_285": {
+    "depth": 8,
+    "size": 327,
+    "avg_branching": 2.1733333333333333,
+    "max_branching": 28,
+    "reuse": 0.5168195718654435,
+    "modularity": 0.25
+  },
+  "tree_286": {
+    "depth": 9,
+    "size": 300,
+    "avg_branching": 2.1824817518248176,
+    "max_branching": 27,
+    "reuse": 0.5,
+    "modularity": 0.3333333333333333
+  },
+  "tree_287": {
+    "depth": 9,
+    "size": 182,
+    "avg_branching": 2.207317073170732,
+    "max_branching": 19,
+    "reuse": 0.6153846153846154,
+    "modularity": 0.2631578947368421
+  },
+  "tree_288": {
+    "depth": 8,
+    "size": 253,
+    "avg_branching": 2.1538461538461537,
+    "max_branching": 19,
+    "reuse": 0.5335968379446641,
+    "modularity": 0.10526315789473684
+  },
+  "tree_289": {
+    "depth": 9,
+    "size": 297,
+    "avg_branching": 2.1449275362318843,
+    "max_branching": 22,
+    "reuse": 0.5016835016835017,
+    "modularity": 0.09090909090909091
+  },
+  "tree_290": {
+    "depth": 9,
+    "size": 231,
+    "avg_branching": 2.1296296296296298,
+    "max_branching": 16,
+    "reuse": 0.5670995670995671,
+    "modularity": 0.1875
+  },
+  "tree_291": {
+    "depth": 8,
+    "size": 310,
+    "avg_branching": 2.1458333333333335,
+    "max_branching": 23,
+    "reuse": 0.4838709677419355,
+    "modularity": 0.30434782608695654
+  },
+  "tree_292": {
+    "depth": 8,
+    "size": 256,
+    "avg_branching": 2.142857142857143,
+    "max_branching": 19,
+    "reuse": 0.56640625,
+    "modularity": 0.2631578947368421
+  },
+  "tree_293": {
+    "depth": 8,
+    "size": 288,
+    "avg_branching": 2.1742424242424243,
+    "max_branching": 25,
+    "reuse": 0.5659722222222222,
+    "modularity": 0.28
+  },
+  "tree_294": {
+    "depth": 8,
+    "size": 262,
+    "avg_branching": 2.19327731092437,
+    "max_branching": 25,
+    "reuse": 0.5381679389312977,
+    "modularity": 0.36
+  },
+  "tree_295": {
+    "depth": 9,
+    "size": 247,
+    "avg_branching": 2.1578947368421053,
+    "max_branching": 20,
+    "reuse": 0.5465587044534413,
+    "modularity": 0.25
+  },
+  "tree_296": {
+    "depth": 8,
+    "size": 286,
+    "avg_branching": 2.1923076923076925,
+    "max_branching": 27,
+    "reuse": 0.513986013986014,
+    "modularity": 0.2962962962962963
+  },
+  "tree_297": {
+    "depth": 9,
+    "size": 257,
+    "avg_branching": 2.169491525423729,
+    "max_branching": 22,
+    "reuse": 0.5175097276264592,
+    "modularity": 0.22727272727272727
+  },
+  "tree_298": {
+    "depth": 9,
+    "size": 279,
+    "avg_branching": 2.1550387596899223,
+    "max_branching": 22,
+    "reuse": 0.5053763440860215,
+    "modularity": 0.22727272727272727
+  },
+  "tree_299": {
+    "depth": 9,
+    "size": 305,
+    "avg_branching": 2.218978102189781,
+    "max_branching": 32,
+    "reuse": 0.521311475409836,
+    "modularity": 0.40625
+  },
+  "tree_300": {
+    "depth": 11,
+    "size": 316,
+    "avg_branching": 2.1724137931034484,
+    "max_branching": 27,
+    "reuse": 0.5063291139240507,
+    "modularity": 0.25925925925925924
+  },
+  "tree_301": {
+    "depth": 8,
+    "size": 278,
+    "avg_branching": 2.1640625,
+    "max_branching": 22,
+    "reuse": 0.5251798561151079,
+    "modularity": 0.22727272727272727
+  },
+  "tree_302": {
+    "depth": 8,
+    "size": 244,
+    "avg_branching": 2.169642857142857,
+    "max_branching": 21,
+    "reuse": 0.5491803278688525,
+    "modularity": 0.19047619047619047
+  },
+  "tree_303": {
+    "depth": 8,
+    "size": 331,
+    "avg_branching": 2.1710526315789473,
+    "max_branching": 27,
+    "reuse": 0.4743202416918429,
+    "modularity": 0.2222222222222222
+  },
+  "tree_304": {
+    "depth": 9,
+    "size": 302,
+    "avg_branching": 2.1654676258992804,
+    "max_branching": 25,
+    "reuse": 0.5033112582781457,
+    "modularity": 0.2
+  },
+  "tree_305": {
+    "depth": 8,
+    "size": 246,
+    "avg_branching": 2.168141592920354,
+    "max_branching": 21,
+    "reuse": 0.5691056910569106,
+    "modularity": 0.42857142857142855
+  },
+  "tree_306": {
+    "depth": 9,
+    "size": 379,
+    "avg_branching": 2.2634730538922154,
+    "max_branching": 46,
+    "reuse": 0.45382585751978893,
+    "modularity": 0.45652173913043476
+  },
+  "tree_307": {
+    "depth": 8,
+    "size": 243,
+    "avg_branching": 2.1228070175438596,
+    "max_branching": 16,
+    "reuse": 0.5720164609053497,
+    "modularity": 0.1875
+  },
+  "tree_308": {
+    "depth": 8,
+    "size": 244,
+    "avg_branching": 2.189189189189189,
+    "max_branching": 23,
+    "reuse": 0.5368852459016393,
+    "modularity": 0.34782608695652173
+  },
+  "tree_309": {
+    "depth": 10,
+    "size": 347,
+    "avg_branching": 2.232258064516129,
+    "max_branching": 38,
+    "reuse": 0.48703170028818443,
+    "modularity": 0.4473684210526316
+  },
+  "tree_310": {
+    "depth": 7,
+    "size": 227,
+    "avg_branching": 2.1941747572815533,
+    "max_branching": 22,
+    "reuse": 0.5286343612334802,
+    "modularity": 0.3181818181818182
+  },
+  "tree_311": {
+    "depth": 9,
+    "size": 325,
+    "avg_branching": 2.189189189189189,
+    "max_branching": 30,
+    "reuse": 0.5107692307692308,
+    "modularity": 0.3333333333333333
+  },
+  "tree_312": {
+    "depth": 7,
+    "size": 246,
+    "avg_branching": 2.2477064220183487,
+    "max_branching": 29,
+    "reuse": 0.5121951219512195,
+    "modularity": 0.27586206896551724
+  },
+  "tree_313": {
+    "depth": 8,
+    "size": 251,
+    "avg_branching": 2.1367521367521367,
+    "max_branching": 18,
+    "reuse": 0.5697211155378487,
+    "modularity": 0.05555555555555555
+  },
+  "tree_314": {
+    "depth": 10,
+    "size": 352,
+    "avg_branching": 2.221518987341772,
+    "max_branching": 37,
+    "reuse": 0.4375,
+    "modularity": 0.2972972972972973
+  },
+  "tree_315": {
+    "depth": 8,
+    "size": 357,
+    "avg_branching": 2.282051282051282,
+    "max_branching": 46,
+    "reuse": 0.47619047619047616,
+    "modularity": 0.41304347826086957
+  },
+  "tree_316": {
+    "depth": 9,
+    "size": 297,
+    "avg_branching": 2.2595419847328246,
+    "max_branching": 36,
+    "reuse": 0.5117845117845118,
+    "modularity": 0.4166666666666667
+  },
+  "tree_317": {
+    "depth": 7,
+    "size": 240,
+    "avg_branching": 2.212962962962963,
+    "max_branching": 25,
+    "reuse": 0.5708333333333333,
+    "modularity": 0.32
+  },
+  "tree_318": {
+    "depth": 11,
+    "size": 297,
+    "avg_branching": 2.176470588235294,
+    "max_branching": 26,
+    "reuse": 0.4612794612794613,
+    "modularity": 0.46153846153846156
+  },
+  "tree_319": {
+    "depth": 10,
+    "size": 308,
+    "avg_branching": 2.1619718309859155,
+    "max_branching": 25,
+    "reuse": 0.4902597402597403,
+    "modularity": 0.32
+  },
+  "tree_320": {
+    "depth": 8,
+    "size": 213,
+    "avg_branching": 2.2083333333333335,
+    "max_branching": 22,
+    "reuse": 0.6103286384976526,
+    "modularity": 0.4090909090909091
+  },
+  "tree_321": {
+    "depth": 9,
+    "size": 361,
+    "avg_branching": 2.278481012658228,
+    "max_branching": 45,
+    "reuse": 0.4487534626038781,
+    "modularity": 0.3333333333333333
+  },
+  "tree_322": {
+    "depth": 8,
+    "size": 259,
+    "avg_branching": 2.2241379310344827,
+    "max_branching": 27,
+    "reuse": 0.5714285714285714,
+    "modularity": 0.4074074074074074
+  },
+  "tree_323": {
+    "depth": 9,
+    "size": 203,
+    "avg_branching": 2.126315789473684,
+    "max_branching": 14,
+    "reuse": 0.6305418719211823,
+    "modularity": 0.2857142857142857
+  },
+  "tree_324": {
+    "depth": 8,
+    "size": 212,
+    "avg_branching": 2.1530612244897958,
+    "max_branching": 17,
+    "reuse": 0.5943396226415094,
+    "modularity": 0.17647058823529413
+  },
+  "tree_325": {
+    "depth": 7,
+    "size": 316,
+    "avg_branching": 2.202797202797203,
+    "max_branching": 31,
+    "reuse": 0.47468354430379744,
+    "modularity": 0.2903225806451613
+  },
+  "tree_326": {
+    "depth": 10,
+    "size": 263,
+    "avg_branching": 2.130081300813008,
+    "max_branching": 18,
+    "reuse": 0.5095057034220533,
+    "modularity": 0.16666666666666666
+  },
+  "tree_327": {
+    "depth": 9,
+    "size": 303,
+    "avg_branching": 2.2706766917293235,
+    "max_branching": 38,
+    "reuse": 0.49504950495049505,
+    "modularity": 0.5526315789473685
+  },
+  "tree_328": {
+    "depth": 7,
+    "size": 391,
+    "avg_branching": 2.4074074074074074,
+    "max_branching": 68,
+    "reuse": 0.40153452685422,
+    "modularity": 0.5441176470588235
+  },
+  "tree_329": {
+    "depth": 8,
+    "size": 489,
+    "avg_branching": 2.2181818181818183,
+    "max_branching": 44,
+    "reuse": 0.3803680981595092,
+    "modularity": 0.25
+  },
+  "tree_330": {
+    "depth": 8,
+    "size": 292,
+    "avg_branching": 2.18796992481203,
+    "max_branching": 26,
+    "reuse": 0.4863013698630137,
+    "modularity": 0.38461538461538464
+  },
+  "tree_331": {
+    "depth": 8,
+    "size": 298,
+    "avg_branching": 2.338582677165354,
+    "max_branching": 45,
+    "reuse": 0.46308724832214765,
+    "modularity": 0.6222222222222222
+  },
+  "tree_332": {
+    "depth": 8,
+    "size": 255,
+    "avg_branching": 2.1709401709401708,
+    "max_branching": 22,
+    "reuse": 0.5490196078431373,
+    "modularity": 0.3181818181818182
+  },
+  "tree_333": {
+    "depth": 10,
+    "size": 384,
+    "avg_branching": 2.3641975308641974,
+    "max_branching": 61,
+    "reuse": 0.4348958333333333,
+    "modularity": 0.5737704918032787
+  },
+  "tree_334": {
+    "depth": 8,
+    "size": 230,
+    "avg_branching": 2.29,
+    "max_branching": 31,
+    "reuse": 0.5304347826086957,
+    "modularity": 0.5483870967741935
+  },
+  "tree_335": {
+    "depth": 8,
+    "size": 214,
+    "avg_branching": 2.13,
+    "max_branching": 15,
+    "reuse": 0.6074766355140186,
+    "modularity": 0.2
+  },
+  "tree_336": {
+    "depth": 9,
+    "size": 300,
+    "avg_branching": 2.2313432835820897,
+    "max_branching": 33,
+    "reuse": 0.49333333333333335,
+    "modularity": 0.3333333333333333
+  },
+  "tree_337": {
+    "depth": 8,
+    "size": 245,
+    "avg_branching": 2.121739130434783,
+    "max_branching": 16,
+    "reuse": 0.563265306122449,
+    "modularity": 0.125
+  },
+  "tree_338": {
+    "depth": 10,
+    "size": 256,
+    "avg_branching": 2.1610169491525424,
+    "max_branching": 21,
+    "reuse": 0.546875,
+    "modularity": 0.23809523809523808
+  },
+  "tree_339": {
+    "depth": 9,
+    "size": 339,
+    "avg_branching": 2.223684210526316,
+    "max_branching": 36,
+    "reuse": 0.4837758112094395,
+    "modularity": 0.3611111111111111
+  },
+  "tree_340": {
+    "depth": 10,
+    "size": 233,
+    "avg_branching": 2.128440366972477,
+    "max_branching": 16,
+    "reuse": 0.575107296137339,
+    "modularity": 0.3125
+  },
+  "tree_341": {
+    "depth": 8,
+    "size": 244,
+    "avg_branching": 2.189189189189189,
+    "max_branching": 23,
+    "reuse": 0.569672131147541,
+    "modularity": 0.391304347826087
+  },
+  "tree_342": {
+    "depth": 8,
+    "size": 375,
+    "avg_branching": 2.2395209580838324,
+    "max_branching": 41,
+    "reuse": 0.43466666666666665,
+    "modularity": 0.2926829268292683
+  },
+  "tree_343": {
+    "depth": 9,
+    "size": 278,
+    "avg_branching": 2.1984126984126986,
+    "max_branching": 27,
+    "reuse": 0.5179856115107914,
+    "modularity": 0.3333333333333333
+  },
+  "tree_344": {
+    "depth": 8,
+    "size": 274,
+    "avg_branching": 2.256198347107438,
+    "max_branching": 33,
+    "reuse": 0.5291970802919708,
+    "modularity": 0.48484848484848486
+  },
+  "tree_345": {
+    "depth": 8,
+    "size": 228,
+    "avg_branching": 2.1826923076923075,
+    "max_branching": 21,
+    "reuse": 0.5789473684210527,
+    "modularity": 0.23809523809523808
+  },
+  "tree_346": {
+    "depth": 9,
+    "size": 239,
+    "avg_branching": 2.2037037037037037,
+    "max_branching": 24,
+    "reuse": 0.5815899581589958,
+    "modularity": 0.3333333333333333
+  },
+  "tree_347": {
+    "depth": 8,
+    "size": 211,
+    "avg_branching": 2.1875,
+    "max_branching": 20,
+    "reuse": 0.6018957345971564,
+    "modularity": 0.25
+  },
+  "tree_348": {
+    "depth": 8,
+    "size": 298,
+    "avg_branching": 2.1838235294117645,
+    "max_branching": 27,
+    "reuse": 0.5067114093959731,
+    "modularity": 0.2962962962962963
+  },
+  "tree_349": {
+    "depth": 10,
+    "size": 254,
+    "avg_branching": 2.279279279279279,
+    "max_branching": 33,
+    "reuse": 0.4763779527559055,
+    "modularity": 0.42424242424242425
+  },
+  "tree_350": {
+    "depth": 8,
+    "size": 218,
+    "avg_branching": 2.17,
+    "max_branching": 19,
+    "reuse": 0.6055045871559633,
+    "modularity": 0.15789473684210525
+  },
+  "tree_351": {
+    "depth": 11,
+    "size": 315,
+    "avg_branching": 2.226950354609929,
+    "max_branching": 34,
+    "reuse": 0.4857142857142857,
+    "modularity": 0.3235294117647059
+  },
+  "tree_352": {
+    "depth": 9,
+    "size": 234,
+    "avg_branching": 2.1574074074074074,
+    "max_branching": 19,
+    "reuse": 0.5897435897435898,
+    "modularity": 0.21052631578947367
+  },
+  "tree_353": {
+    "depth": 7,
+    "size": 176,
+    "avg_branching": 2.1875,
+    "max_branching": 17,
+    "reuse": 0.6363636363636364,
+    "modularity": 0.23529411764705882
+  },
+  "tree_354": {
+    "depth": 9,
+    "size": 317,
+    "avg_branching": 2.1944444444444446,
+    "max_branching": 30,
+    "reuse": 0.4952681388012618,
+    "modularity": 0.2
+  },
+  "tree_355": {
+    "depth": 11,
+    "size": 256,
+    "avg_branching": 2.1982758620689653,
+    "max_branching": 25,
+    "reuse": 0.53125,
+    "modularity": 0.28
+  },
+  "tree_356": {
+    "depth": 9,
+    "size": 349,
+    "avg_branching": 2.289473684210526,
+    "max_branching": 46,
+    "reuse": 0.49283667621776506,
+    "modularity": 0.43478260869565216
+  },
+  "tree_357": {
+    "depth": 8,
+    "size": 209,
+    "avg_branching": 2.236559139784946,
+    "max_branching": 24,
+    "reuse": 0.6028708133971292,
+    "modularity": 0.375
+  },
+  "tree_358": {
+    "depth": 9,
+    "size": 226,
+    "avg_branching": 2.142857142857143,
+    "max_branching": 17,
+    "reuse": 0.5752212389380531,
+    "modularity": 0.23529411764705882
+  },
+  "tree_359": {
+    "depth": 9,
+    "size": 412,
+    "avg_branching": 2.233695652173913,
+    "max_branching": 45,
+    "reuse": 0.441747572815534,
+    "modularity": 0.4666666666666667
+  },
+  "tree_360": {
+    "depth": 9,
+    "size": 264,
+    "avg_branching": 2.1557377049180326,
+    "max_branching": 21,
+    "reuse": 0.5303030303030303,
+    "modularity": 0.23809523809523808
+  },
+  "tree_361": {
+    "depth": 8,
+    "size": 285,
+    "avg_branching": 2.272,
+    "max_branching": 36,
+    "reuse": 0.5017543859649123,
+    "modularity": 0.5277777777777778
+  },
+  "tree_362": {
+    "depth": 8,
+    "size": 225,
+    "avg_branching": 2.196078431372549,
+    "max_branching": 22,
+    "reuse": 0.56,
+    "modularity": 0.3181818181818182
+  },
+  "tree_363": {
+    "depth": 8,
+    "size": 248,
+    "avg_branching": 2.205357142857143,
+    "max_branching": 25,
+    "reuse": 0.5403225806451613,
+    "modularity": 0.36
+  },
+  "tree_364": {
+    "depth": 12,
+    "size": 324,
+    "avg_branching": 2.1824324324324325,
+    "max_branching": 29,
+    "reuse": 0.5061728395061729,
+    "modularity": 0.27586206896551724
+  },
+  "tree_365": {
+    "depth": 8,
+    "size": 226,
+    "avg_branching": 2.2058823529411766,
+    "max_branching": 23,
+    "reuse": 0.5619469026548672,
+    "modularity": 0.30434782608695654
+  },
+  "tree_366": {
+    "depth": 8,
+    "size": 293,
+    "avg_branching": 2.162962962962963,
+    "max_branching": 24,
+    "reuse": 0.49146757679180886,
+    "modularity": 0.25
+  },
+  "tree_367": {
+    "depth": 9,
+    "size": 270,
+    "avg_branching": 2.2231404958677685,
+    "max_branching": 29,
+    "reuse": 0.5259259259259259,
+    "modularity": 0.3793103448275862
+  },
+  "tree_368": {
+    "depth": 9,
+    "size": 345,
+    "avg_branching": 2.2051282051282053,
+    "max_branching": 34,
+    "reuse": 0.4666666666666667,
+    "modularity": 0.3235294117647059
+  },
+  "tree_369": {
+    "depth": 9,
+    "size": 268,
+    "avg_branching": 2.225,
+    "max_branching": 28,
+    "reuse": 0.5410447761194029,
+    "modularity": 0.42857142857142855
+  },
+  "tree_370": {
+    "depth": 9,
+    "size": 236,
+    "avg_branching": 2.1559633027522938,
+    "max_branching": 19,
+    "reuse": 0.5720338983050848,
+    "modularity": 0.21052631578947367
+  },
+  "tree_371": {
+    "depth": 8,
+    "size": 254,
+    "avg_branching": 2.2,
+    "max_branching": 25,
+    "reuse": 0.5511811023622047,
+    "modularity": 0.32
+  },
+  "tree_372": {
+    "depth": 8,
+    "size": 263,
+    "avg_branching": 2.183333333333333,
+    "max_branching": 24,
+    "reuse": 0.5551330798479087,
+    "modularity": 0.20833333333333334
+  },
+  "tree_373": {
+    "depth": 10,
+    "size": 284,
+    "avg_branching": 2.193798449612403,
+    "max_branching": 26,
+    "reuse": 0.5176056338028169,
+    "modularity": 0.34615384615384615
+  },
+  "tree_374": {
+    "depth": 9,
+    "size": 204,
+    "avg_branching": 2.136842105263158,
+    "max_branching": 15,
+    "reuse": 0.6225490196078431,
+    "modularity": 0.0
+  },
+  "tree_375": {
+    "depth": 9,
+    "size": 348,
+    "avg_branching": 2.360544217687075,
+    "max_branching": 55,
+    "reuse": 0.4339080459770115,
+    "modularity": 0.5272727272727272
+  },
+  "tree_376": {
+    "depth": 8,
+    "size": 231,
+    "avg_branching": 2.169811320754717,
+    "max_branching": 20,
+    "reuse": 0.6017316017316018,
+    "modularity": 0.25
+  },
+  "tree_377": {
+    "depth": 8,
+    "size": 184,
+    "avg_branching": 2.2048192771084336,
+    "max_branching": 19,
+    "reuse": 0.625,
+    "modularity": 0.42105263157894735
+  },
+  "tree_378": {
+    "depth": 9,
+    "size": 274,
+    "avg_branching": 2.1666666666666665,
+    "max_branching": 23,
+    "reuse": 0.5364963503649635,
+    "modularity": 0.2608695652173913
+  },
+  "tree_379": {
+    "depth": 12,
+    "size": 257,
+    "avg_branching": 2.1880341880341883,
+    "max_branching": 23,
+    "reuse": 0.5680933852140078,
+    "modularity": 0.2608695652173913
+  },
+  "tree_380": {
+    "depth": 9,
+    "size": 292,
+    "avg_branching": 2.124087591240876,
+    "max_branching": 18,
+    "reuse": 0.5205479452054794,
+    "modularity": 0.2222222222222222
+  },
+  "tree_381": {
+    "depth": 11,
+    "size": 363,
+    "avg_branching": 2.207317073170732,
+    "max_branching": 36,
+    "reuse": 0.41597796143250687,
+    "modularity": 0.4722222222222222
+  },
+  "tree_382": {
+    "depth": 8,
+    "size": 247,
+    "avg_branching": 2.256880733944954,
+    "max_branching": 30,
+    "reuse": 0.5263157894736842,
+    "modularity": 0.4666666666666667
+  },
+  "tree_383": {
+    "depth": 7,
+    "size": 198,
+    "avg_branching": 2.2386363636363638,
+    "max_branching": 23,
+    "reuse": 0.5909090909090909,
+    "modularity": 0.43478260869565216
+  },
+  "tree_384": {
+    "depth": 10,
+    "size": 272,
+    "avg_branching": 2.168,
+    "max_branching": 23,
+    "reuse": 0.5294117647058824,
+    "modularity": 0.34782608695652173
+  },
+  "tree_385": {
+    "depth": 11,
+    "size": 299,
+    "avg_branching": 2.2074074074074073,
+    "max_branching": 29,
+    "reuse": 0.5083612040133779,
+    "modularity": 0.27586206896551724
+  },
+  "tree_386": {
+    "depth": 9,
+    "size": 233,
+    "avg_branching": 2.128440366972477,
+    "max_branching": 15,
+    "reuse": 0.5665236051502146,
+    "modularity": 0.13333333333333333
+  },
+  "tree_387": {
+    "depth": 9,
+    "size": 298,
+    "avg_branching": 2.1838235294117645,
+    "max_branching": 27,
+    "reuse": 0.5067114093959731,
+    "modularity": 0.4074074074074074
+  },
+  "tree_388": {
+    "depth": 10,
+    "size": 269,
+    "avg_branching": 2.161290322580645,
+    "max_branching": 22,
+    "reuse": 0.550185873605948,
+    "modularity": 0.36363636363636365
+  },
+  "tree_389": {
+    "depth": 11,
+    "size": 273,
+    "avg_branching": 2.141732283464567,
+    "max_branching": 20,
+    "reuse": 0.5238095238095238,
+    "modularity": 0.15
+  },
+  "tree_390": {
+    "depth": 8,
+    "size": 222,
+    "avg_branching": 2.2551020408163267,
+    "max_branching": 27,
+    "reuse": 0.5675675675675675,
+    "modularity": 0.48148148148148145
+  },
+  "tree_391": {
+    "depth": 8,
+    "size": 220,
+    "avg_branching": 2.212121212121212,
+    "max_branching": 23,
+    "reuse": 0.5818181818181818,
+    "modularity": 0.34782608695652173
+  },
+  "tree_392": {
+    "depth": 9,
+    "size": 511,
+    "avg_branching": 2.4170616113744074,
+    "max_branching": 88,
+    "reuse": 0.3522504892367906,
+    "modularity": 0.6136363636363636
+  },
+  "tree_393": {
+    "depth": 9,
+    "size": 255,
+    "avg_branching": 2.208695652173913,
+    "max_branching": 25,
+    "reuse": 0.5411764705882353,
+    "modularity": 0.28
+  },
+  "tree_394": {
+    "depth": 10,
+    "size": 253,
+    "avg_branching": 2.1913043478260867,
+    "max_branching": 24,
+    "reuse": 0.5335968379446641,
+    "modularity": 0.20833333333333334
+  },
+  "tree_395": {
+    "depth": 9,
+    "size": 226,
+    "avg_branching": 2.142857142857143,
+    "max_branching": 17,
+    "reuse": 0.6106194690265486,
+    "modularity": 0.11764705882352941
+  },
+  "tree_396": {
+    "depth": 8,
+    "size": 197,
+    "avg_branching": 2.1538461538461537,
+    "max_branching": 16,
+    "reuse": 0.5989847715736041,
+    "modularity": 0.25
+  },
+  "tree_397": {
+    "depth": 9,
+    "size": 251,
+    "avg_branching": 2.1551724137931036,
+    "max_branching": 20,
+    "reuse": 0.5418326693227091,
+    "modularity": 0.15
+  },
+  "tree_398": {
+    "depth": 8,
+    "size": 251,
+    "avg_branching": 2.1551724137931036,
+    "max_branching": 20,
+    "reuse": 0.5418326693227091,
+    "modularity": 0.25
+  },
+  "tree_399": {
+    "depth": 8,
+    "size": 207,
+    "avg_branching": 2.21505376344086,
+    "max_branching": 22,
+    "reuse": 0.6038647342995169,
+    "modularity": 0.36363636363636365
+  },
+  "tree_400": {
+    "depth": 11,
+    "size": 256,
+    "avg_branching": 2.142857142857143,
+    "max_branching": 19,
+    "reuse": 0.578125,
+    "modularity": 0.21052631578947367
+  },
+  "tree_401": {
+    "depth": 10,
+    "size": 304,
+    "avg_branching": 2.148936170212766,
+    "max_branching": 23,
+    "reuse": 0.4967105263157895,
+    "modularity": 0.17391304347826086
+  },
+  "tree_402": {
+    "depth": 9,
+    "size": 258,
+    "avg_branching": 2.1965811965811968,
+    "max_branching": 25,
+    "reuse": 0.5581395348837209,
+    "modularity": 0.48
+  },
+  "tree_403": {
+    "depth": 9,
+    "size": 245,
+    "avg_branching": 2.1785714285714284,
+    "max_branching": 22,
+    "reuse": 0.563265306122449,
+    "modularity": 0.2727272727272727
+  },
+  "tree_404": {
+    "depth": 10,
+    "size": 315,
+    "avg_branching": 2.1506849315068495,
+    "max_branching": 24,
+    "reuse": 0.4984126984126984,
+    "modularity": 0.20833333333333334
+  },
+  "tree_405": {
+    "depth": 9,
+    "size": 303,
+    "avg_branching": 2.157142857142857,
+    "max_branching": 24,
+    "reuse": 0.5082508250825083,
+    "modularity": 0.25
+  },
+  "tree_406": {
+    "depth": 8,
+    "size": 222,
+    "avg_branching": 2.125,
+    "max_branching": 15,
+    "reuse": 0.6036036036036037,
+    "modularity": 0.06666666666666667
+  },
+  "tree_407": {
+    "depth": 9,
+    "size": 336,
+    "avg_branching": 2.2635135135135136,
+    "max_branching": 41,
+    "reuse": 0.47023809523809523,
+    "modularity": 0.5121951219512195
+  },
+  "tree_408": {
+    "depth": 8,
+    "size": 210,
+    "avg_branching": 2.247311827956989,
+    "max_branching": 25,
+    "reuse": 0.5428571428571428,
+    "modularity": 0.4
+  },
+  "tree_409": {
+    "depth": 10,
+    "size": 254,
+    "avg_branching": 2.2,
+    "max_branching": 25,
+    "reuse": 0.5354330708661418,
+    "modularity": 0.16
+  },
+  "tree_410": {
+    "depth": 9,
+    "size": 299,
+    "avg_branching": 2.1911764705882355,
+    "max_branching": 27,
+    "reuse": 0.45484949832775917,
+    "modularity": 0.2222222222222222
+  },
+  "tree_411": {
+    "depth": 9,
+    "size": 418,
+    "avg_branching": 2.266304347826087,
+    "max_branching": 51,
+    "reuse": 0.4354066985645933,
+    "modularity": 0.37254901960784315
+  },
+  "tree_412": {
+    "depth": 8,
+    "size": 228,
+    "avg_branching": 2.1826923076923075,
+    "max_branching": 21,
+    "reuse": 0.5745614035087719,
+    "modularity": 0.19047619047619047
+  },
+  "tree_413": {
+    "depth": 8,
+    "size": 415,
+    "avg_branching": 2.287292817679558,
+    "max_branching": 54,
+    "reuse": 0.40963855421686746,
+    "modularity": 0.4074074074074074
+  },
+  "tree_414": {
+    "depth": 9,
+    "size": 212,
+    "avg_branching": 2.1313131313131315,
+    "max_branching": 14,
+    "reuse": 0.6132075471698113,
+    "modularity": 0.21428571428571427
+  },
+  "tree_415": {
+    "depth": 8,
+    "size": 392,
+    "avg_branching": 2.172222222222222,
+    "max_branching": 33,
+    "reuse": 0.4260204081632653,
+    "modularity": 0.21212121212121213
+  },
+  "tree_416": {
+    "depth": 10,
+    "size": 266,
+    "avg_branching": 2.1721311475409837,
+    "max_branching": 22,
+    "reuse": 0.5601503759398496,
+    "modularity": 0.2727272727272727
+  },
+  "tree_417": {
+    "depth": 10,
+    "size": 372,
+    "avg_branching": 2.2349397590361444,
+    "max_branching": 41,
+    "reuse": 0.48118279569892475,
+    "modularity": 0.43902439024390244
+  },
+  "tree_418": {
+    "depth": 7,
+    "size": 496,
+    "avg_branching": 2.5384615384615383,
+    "max_branching": 101,
+    "reuse": 0.3185483870967742,
+    "modularity": 0.6831683168316832
+  },
+  "tree_419": {
+    "depth": 11,
+    "size": 417,
+    "avg_branching": 2.2857142857142856,
+    "max_branching": 54,
+    "reuse": 0.42206235011990406,
+    "modularity": 0.5
+  },
+  "tree_420": {
+    "depth": 9,
+    "size": 223,
+    "avg_branching": 2.198019801980198,
+    "max_branching": 22,
+    "reuse": 0.5829596412556054,
+    "modularity": 0.3181818181818182
+  },
+  "tree_421": {
+    "depth": 8,
+    "size": 352,
+    "avg_branching": 2.221518987341772,
+    "max_branching": 37,
+    "reuse": 0.4744318181818182,
+    "modularity": 0.24324324324324326
+  },
+  "tree_422": {
+    "depth": 11,
+    "size": 337,
+    "avg_branching": 2.1538461538461537,
+    "max_branching": 26,
+    "reuse": 0.4896142433234421,
+    "modularity": 0.11538461538461539
+  },
+  "tree_423": {
+    "depth": 7,
+    "size": 327,
+    "avg_branching": 2.414814814814815,
+    "max_branching": 58,
+    "reuse": 0.4648318042813456,
+    "modularity": 0.5689655172413793
+  },
+  "tree_424": {
+    "depth": 8,
+    "size": 336,
+    "avg_branching": 2.248322147651007,
+    "max_branching": 39,
+    "reuse": 0.4017857142857143,
+    "modularity": 0.3333333333333333
+  },
+  "tree_425": {
+    "depth": 9,
+    "size": 273,
+    "avg_branching": 2.193548387096774,
+    "max_branching": 26,
+    "reuse": 0.5311355311355311,
+    "modularity": 0.2692307692307692
+  },
+  "tree_426": {
+    "depth": 8,
+    "size": 212,
+    "avg_branching": 2.1752577319587627,
+    "max_branching": 18,
+    "reuse": 0.6132075471698113,
+    "modularity": 0.3333333333333333
+  },
+  "tree_427": {
+    "depth": 8,
+    "size": 286,
+    "avg_branching": 2.1923076923076925,
+    "max_branching": 27,
+    "reuse": 0.486013986013986,
+    "modularity": 0.2962962962962963
+  },
+  "tree_428": {
+    "depth": 9,
+    "size": 224,
+    "avg_branching": 2.1650485436893203,
+    "max_branching": 19,
+    "reuse": 0.5758928571428571,
+    "modularity": 0.10526315789473684
+  },
+  "tree_429": {
+    "depth": 8,
+    "size": 337,
+    "avg_branching": 2.2857142857142856,
+    "max_branching": 44,
+    "reuse": 0.486646884272997,
+    "modularity": 0.4318181818181818
+  },
+  "tree_430": {
+    "depth": 10,
+    "size": 261,
+    "avg_branching": 2.1848739495798317,
+    "max_branching": 24,
+    "reuse": 0.5134099616858238,
+    "modularity": 0.3333333333333333
+  },
+  "tree_431": {
+    "depth": 8,
+    "size": 304,
+    "avg_branching": 2.1956521739130435,
+    "max_branching": 29,
+    "reuse": 0.5230263157894737,
+    "modularity": 0.2413793103448276
+  },
+  "tree_432": {
+    "depth": 9,
+    "size": 274,
+    "avg_branching": 2.1666666666666665,
+    "max_branching": 23,
+    "reuse": 0.5109489051094891,
+    "modularity": 0.34782608695652173
+  },
+  "tree_433": {
+    "depth": 9,
+    "size": 248,
+    "avg_branching": 2.185840707964602,
+    "max_branching": 23,
+    "reuse": 0.5685483870967742,
+    "modularity": 0.30434782608695654
+  },
+  "tree_434": {
+    "depth": 9,
+    "size": 203,
+    "avg_branching": 2.172043010752688,
+    "max_branching": 18,
+    "reuse": 0.6305418719211823,
+    "modularity": 0.2222222222222222
+  },
+  "tree_435": {
+    "depth": 9,
+    "size": 253,
+    "avg_branching": 2.1538461538461537,
+    "max_branching": 19,
+    "reuse": 0.541501976284585,
+    "modularity": 0.21052631578947367
+  },
+  "tree_436": {
+    "depth": 8,
+    "size": 240,
+    "avg_branching": 2.414141414141414,
+    "max_branching": 41,
+    "reuse": 0.5125,
+    "modularity": 0.5609756097560976
+  },
+  "tree_437": {
+    "depth": 11,
+    "size": 296,
+    "avg_branching": 2.153284671532847,
+    "max_branching": 22,
+    "reuse": 0.5067567567567568,
+    "modularity": 0.22727272727272727
+  },
+  "tree_438": {
+    "depth": 7,
+    "size": 249,
+    "avg_branching": 2.1946902654867255,
+    "max_branching": 24,
+    "reuse": 0.5341365461847389,
+    "modularity": 0.125
+  },
+  "tree_439": {
+    "depth": 9,
+    "size": 242,
+    "avg_branching": 2.1517857142857144,
+    "max_branching": 19,
+    "reuse": 0.5454545454545454,
+    "modularity": 0.3684210526315789
+  },
+  "tree_440": {
+    "depth": 8,
+    "size": 224,
+    "avg_branching": 2.1862745098039214,
+    "max_branching": 21,
+    "reuse": 0.5625,
+    "modularity": 0.2857142857142857
+  },
+  "tree_441": {
+    "depth": 8,
+    "size": 396,
+    "avg_branching": 2.3795180722891565,
+    "max_branching": 64,
+    "reuse": 0.44191919191919193,
+    "modularity": 0.609375
+  },
+  "tree_442": {
+    "depth": 8,
+    "size": 234,
+    "avg_branching": 2.219047619047619,
+    "max_branching": 25,
+    "reuse": 0.5769230769230769,
+    "modularity": 0.32
+  },
+  "tree_443": {
+    "depth": 8,
+    "size": 221,
+    "avg_branching": 2.156862745098039,
+    "max_branching": 17,
+    "reuse": 0.5882352941176471,
+    "modularity": 0.058823529411764705
+  },
+  "tree_444": {
+    "depth": 8,
+    "size": 284,
+    "avg_branching": 2.264,
+    "max_branching": 34,
+    "reuse": 0.5,
+    "modularity": 0.4117647058823529
+  },
+  "tree_445": {
+    "depth": 11,
+    "size": 234,
+    "avg_branching": 2.177570093457944,
+    "max_branching": 20,
+    "reuse": 0.5726495726495726,
+    "modularity": 0.25
+  },
+  "tree_446": {
+    "depth": 9,
+    "size": 361,
+    "avg_branching": 2.2641509433962264,
+    "max_branching": 44,
+    "reuse": 0.44321329639889195,
+    "modularity": 0.45454545454545453
+  },
+  "tree_447": {
+    "depth": 8,
+    "size": 351,
+    "avg_branching": 2.229299363057325,
+    "max_branching": 37,
+    "reuse": 0.4415954415954416,
+    "modularity": 0.3783783783783784
+  },
+  "tree_448": {
+    "depth": 9,
+    "size": 431,
+    "avg_branching": 2.4571428571428573,
+    "max_branching": 82,
+    "reuse": 0.39211136890951276,
+    "modularity": 0.6585365853658537
+  },
+  "tree_449": {
+    "depth": 11,
+    "size": 337,
+    "avg_branching": 2.2550335570469797,
+    "max_branching": 40,
+    "reuse": 0.49554896142433236,
+    "modularity": 0.475
+  },
+  "tree_450": {
+    "depth": 7,
+    "size": 290,
+    "avg_branching": 2.312,
+    "max_branching": 41,
+    "reuse": 0.49310344827586206,
+    "modularity": 0.5365853658536586
+  },
+  "tree_451": {
+    "depth": 8,
+    "size": 264,
+    "avg_branching": 2.247863247863248,
+    "max_branching": 31,
+    "reuse": 0.5113636363636364,
+    "modularity": 0.45161290322580644
+  },
+  "tree_452": {
+    "depth": 12,
+    "size": 258,
+    "avg_branching": 2.1779661016949152,
+    "max_branching": 22,
+    "reuse": 0.5542635658914729,
+    "modularity": 0.36363636363636365
+  },
+  "tree_453": {
+    "depth": 10,
+    "size": 367,
+    "avg_branching": 2.245398773006135,
+    "max_branching": 42,
+    "reuse": 0.45776566757493187,
+    "modularity": 0.5238095238095238
+  },
+  "tree_454": {
+    "depth": 9,
+    "size": 198,
+    "avg_branching": 2.141304347826087,
+    "max_branching": 15,
+    "reuse": 0.6212121212121212,
+    "modularity": 0.3333333333333333
+  },
+  "tree_455": {
+    "depth": 8,
+    "size": 310,
+    "avg_branching": 2.2071428571428573,
+    "max_branching": 31,
+    "reuse": 0.5,
+    "modularity": 0.3225806451612903
+  },
+  "tree_456": {
+    "depth": 9,
+    "size": 225,
+    "avg_branching": 2.1538461538461537,
+    "max_branching": 18,
+    "reuse": 0.5822222222222222,
+    "modularity": 0.2222222222222222
+  },
+  "tree_457": {
+    "depth": 8,
+    "size": 229,
+    "avg_branching": 2.1714285714285713,
+    "max_branching": 20,
+    "reuse": 0.5458515283842795,
+    "modularity": 0.3
+  },
+  "tree_458": {
+    "depth": 9,
+    "size": 255,
+    "avg_branching": 2.1709401709401708,
+    "max_branching": 22,
+    "reuse": 0.5607843137254902,
+    "modularity": 0.13636363636363635
+  },
+  "tree_459": {
+    "depth": 11,
+    "size": 302,
+    "avg_branching": 2.197080291970803,
+    "max_branching": 29,
+    "reuse": 0.4900662251655629,
+    "modularity": 0.41379310344827586
+  },
+  "tree_460": {
+    "depth": 8,
+    "size": 195,
+    "avg_branching": 2.255813953488372,
+    "max_branching": 24,
+    "reuse": 0.6051282051282051,
+    "modularity": 0.5
+  },
+  "tree_461": {
+    "depth": 11,
+    "size": 315,
+    "avg_branching": 2.195804195804196,
+    "max_branching": 30,
+    "reuse": 0.5047619047619047,
+    "modularity": 0.2
+  },
+  "tree_462": {
+    "depth": 8,
+    "size": 213,
+    "avg_branching": 2.2083333333333335,
+    "max_branching": 22,
+    "reuse": 0.5586854460093896,
+    "modularity": 0.22727272727272727
+  },
+  "tree_463": {
+    "depth": 8,
+    "size": 250,
+    "avg_branching": 2.1842105263157894,
+    "max_branching": 22,
+    "reuse": 0.532,
+    "modularity": 0.2727272727272727
+  },
+  "tree_464": {
+    "depth": 9,
+    "size": 236,
+    "avg_branching": 2.1559633027522938,
+    "max_branching": 19,
+    "reuse": 0.559322033898305,
+    "modularity": 0.15789473684210525
+  },
+  "tree_465": {
+    "depth": 8,
+    "size": 239,
+    "avg_branching": 2.144144144144144,
+    "max_branching": 18,
+    "reuse": 0.5732217573221757,
+    "modularity": 0.1111111111111111
+  },
+  "tree_466": {
+    "depth": 9,
+    "size": 252,
+    "avg_branching": 2.1452991452991452,
+    "max_branching": 19,
+    "reuse": 0.5476190476190477,
+    "modularity": 0.15789473684210525
+  },
+  "tree_467": {
+    "depth": 9,
+    "size": 251,
+    "avg_branching": 2.1739130434782608,
+    "max_branching": 22,
+    "reuse": 0.545816733067729,
+    "modularity": 0.22727272727272727
+  },
+  "tree_468": {
+    "depth": 9,
+    "size": 232,
+    "avg_branching": 2.1792452830188678,
+    "max_branching": 21,
+    "reuse": 0.5732758620689655,
+    "modularity": 0.19047619047619047
+  },
+  "tree_469": {
+    "depth": 9,
+    "size": 244,
+    "avg_branching": 2.189189189189189,
+    "max_branching": 23,
+    "reuse": 0.5450819672131147,
+    "modularity": 0.2608695652173913
+  },
+  "tree_470": {
+    "depth": 9,
+    "size": 278,
+    "avg_branching": 2.1984126984126986,
+    "max_branching": 27,
+    "reuse": 0.5323741007194245,
+    "modularity": 0.2962962962962963
+  },
+  "tree_471": {
+    "depth": 9,
+    "size": 228,
+    "avg_branching": 2.121495327102804,
+    "max_branching": 15,
+    "reuse": 0.5570175438596491,
+    "modularity": 0.26666666666666666
+  },
+  "tree_472": {
+    "depth": 9,
+    "size": 333,
+    "avg_branching": 2.3380281690140845,
+    "max_branching": 49,
+    "reuse": 0.4444444444444444,
+    "modularity": 0.5714285714285714
+  },
+  "tree_473": {
+    "depth": 9,
+    "size": 201,
+    "avg_branching": 2.150537634408602,
+    "max_branching": 16,
+    "reuse": 0.6368159203980099,
+    "modularity": 0.0
+  },
+  "tree_474": {
+    "depth": 8,
+    "size": 242,
+    "avg_branching": 2.171171171171171,
+    "max_branching": 21,
+    "reuse": 0.5785123966942148,
+    "modularity": 0.23809523809523808
+  },
+  "tree_475": {
+    "depth": 12,
+    "size": 335,
+    "avg_branching": 2.183006535947712,
+    "max_branching": 30,
+    "reuse": 0.49850746268656715,
+    "modularity": 0.36666666666666664
+  },
+  "tree_476": {
+    "depth": 9,
+    "size": 407,
+    "avg_branching": 2.36046511627907,
+    "max_branching": 64,
+    "reuse": 0.40786240786240785,
+    "modularity": 0.515625
+  },
+  "tree_477": {
+    "depth": 9,
+    "size": 340,
+    "avg_branching": 2.2450331125827816,
+    "max_branching": 38,
+    "reuse": 0.4588235294117647,
+    "modularity": 0.3684210526315789
+  },
+  "tree_478": {
+    "depth": 11,
+    "size": 235,
+    "avg_branching": 2.1666666666666665,
+    "max_branching": 20,
+    "reuse": 0.574468085106383,
+    "modularity": 0.4
+  },
+  "tree_479": {
+    "depth": 8,
+    "size": 252,
+    "avg_branching": 2.1452991452991452,
+    "max_branching": 19,
+    "reuse": 0.5714285714285714,
+    "modularity": 0.10526315789473684
+  },
+  "tree_480": {
+    "depth": 8,
+    "size": 273,
+    "avg_branching": 2.2113821138211383,
+    "max_branching": 28,
+    "reuse": 0.5347985347985348,
+    "modularity": 0.32142857142857145
+  },
+  "tree_481": {
+    "depth": 9,
+    "size": 272,
+    "avg_branching": 2.168,
+    "max_branching": 23,
+    "reuse": 0.5477941176470589,
+    "modularity": 0.34782608695652173
+  },
+  "tree_482": {
+    "depth": 9,
+    "size": 224,
+    "avg_branching": 2.2525252525252526,
+    "max_branching": 27,
+    "reuse": 0.5625,
+    "modularity": 0.5555555555555556
+  },
+  "tree_483": {
+    "depth": 9,
+    "size": 363,
+    "avg_branching": 2.3973509933774833,
+    "max_branching": 60,
+    "reuse": 0.44077134986225897,
+    "modularity": 0.45
+  },
+  "tree_484": {
+    "depth": 10,
+    "size": 255,
+    "avg_branching": 2.0991735537190084,
+    "max_branching": 14,
+    "reuse": 0.5450980392156862,
+    "modularity": 0.07142857142857142
+  },
+  "tree_485": {
+    "depth": 8,
+    "size": 241,
+    "avg_branching": 2.1818181818181817,
+    "max_branching": 22,
+    "reuse": 0.5726141078838174,
+    "modularity": 0.18181818181818182
+  },
+  "tree_486": {
+    "depth": 9,
+    "size": 336,
+    "avg_branching": 2.2789115646258504,
+    "max_branching": 42,
+    "reuse": 0.4791666666666667,
+    "modularity": 0.5238095238095238
+  },
+  "tree_487": {
+    "depth": 9,
+    "size": 251,
+    "avg_branching": 2.1739130434782608,
+    "max_branching": 22,
+    "reuse": 0.50199203187251,
+    "modularity": 0.18181818181818182
+  },
+  "tree_488": {
+    "depth": 9,
+    "size": 200,
+    "avg_branching": 2.2111111111111112,
+    "max_branching": 21,
+    "reuse": 0.6,
+    "modularity": 0.23809523809523808
+  },
+  "tree_489": {
+    "depth": 8,
+    "size": 299,
+    "avg_branching": 2.292307692307692,
+    "max_branching": 40,
+    "reuse": 0.49498327759197325,
+    "modularity": 0.5
+  },
+  "tree_490": {
+    "depth": 8,
+    "size": 337,
+    "avg_branching": 2.3496503496503496,
+    "max_branching": 52,
+    "reuse": 0.4391691394658754,
+    "modularity": 0.5576923076923077
+  },
+  "tree_491": {
+    "depth": 9,
+    "size": 250,
+    "avg_branching": 2.128205128205128,
+    "max_branching": 17,
+    "reuse": 0.568,
+    "modularity": 0.11764705882352941
+  },
+  "tree_492": {
+    "depth": 9,
+    "size": 287,
+    "avg_branching": 2.183206106870229,
+    "max_branching": 25,
+    "reuse": 0.5087108013937283,
+    "modularity": 0.28
+  },
+  "tree_493": {
+    "depth": 9,
+    "size": 251,
+    "avg_branching": 2.2123893805309733,
+    "max_branching": 26,
+    "reuse": 0.5378486055776892,
+    "modularity": 0.2692307692307692
+  },
+  "tree_494": {
+    "depth": 10,
+    "size": 291,
+    "avg_branching": 2.196969696969697,
+    "max_branching": 28,
+    "reuse": 0.5120274914089347,
+    "modularity": 0.21428571428571427
+  },
+  "tree_495": {
+    "depth": 8,
+    "size": 341,
+    "avg_branching": 2.251655629139073,
+    "max_branching": 40,
+    "reuse": 0.45454545454545453,
+    "modularity": 0.3
+  },
+  "tree_496": {
+    "depth": 10,
+    "size": 275,
+    "avg_branching": 2.15748031496063,
+    "max_branching": 22,
+    "reuse": 0.5309090909090909,
+    "modularity": 0.22727272727272727
+  },
+  "tree_497": {
+    "depth": 9,
+    "size": 278,
+    "avg_branching": 2.1307692307692307,
+    "max_branching": 19,
+    "reuse": 0.5323741007194245,
+    "modularity": 0.21052631578947367
+  },
+  "tree_498": {
+    "depth": 8,
+    "size": 243,
+    "avg_branching": 2.3047619047619046,
+    "max_branching": 34,
+    "reuse": 0.5267489711934157,
+    "modularity": 0.4117647058823529
+  },
+  "tree_499": {
+    "depth": 8,
+    "size": 200,
+    "avg_branching": 2.1630434782608696,
+    "max_branching": 17,
+    "reuse": 0.61,
+    "modularity": 0.17647058823529413
+  },
+  "tree_500": {
+    "depth": 11,
+    "size": 220,
+    "avg_branching": 2.2346938775510203,
+    "max_branching": 25,
+    "reuse": 0.6,
+    "modularity": 0.32
+  }
+}

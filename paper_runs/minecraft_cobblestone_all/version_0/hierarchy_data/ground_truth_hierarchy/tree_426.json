@@ -1,0 +1,91 @@
+{
+  "production": 0,
+  "children": [
+    {
+      "production": 196,
+      "children": [
+        {
+          "production": 82,
+          "children": [
+            {
+              "symbol": "18"
+            },
+            {
+              "production": 20,
+              "children": [
+                {
+                  "symbol": "27"
+                },
+                {
+                  "symbol": "13"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "production": 237,
+          "children": [
+            {
+              "production": 238,
+              "children": [
+                {
+                  "production": 235,
+                  "children": [
+                    {
+                      "production": 240,
+                      "children": [
+                        {
+                          "symbol": "36"
+                        },
+                        {
+                          "symbol": "42"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "33"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "43"
+                }
+              ]
+            },
+            {
+              "symbol": "11"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 172,
+      "children": [
+        {
+          "production": 243,
+          "children": [
+            {
+              "production": 92,
+              "children": [
+                {
+                  "symbol": "8"
+                },
+                {
+                  "symbol": "14"
+                }
+              ]
+            },
+            {
+              "symbol": "32"
+            }
+          ]
+        },
+        {
+          "symbol": "21"
+        }
+      ]
+    }
+  ]
+}

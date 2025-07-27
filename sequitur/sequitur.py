@@ -237,7 +237,9 @@ def main():
     gt_trees = construct_hierarchy(args, dataset_dir, gt_hierarchy_output_dir, 'groundTruth', gt_mapping, gt_mapping)
 
     matched_trees = construct_hierarchy(args, predicted_dir, matched_hierarchy_output_dir, 'predicted_skills', None, pred_mapping)
-    similarity_metrics_dict = compute_all_similarity_metrics(gt_trees, pred_trees, output_dir)
+    # similarity_metrics_dict = compute_all_similarity_metrics(gt_trees, pred_trees, output_dir)
+
+    print("Computing average structure metrics for each set...")
 
     # --- Compute average structure metrics for each set and save to summary file ---
     def compute_average_metrics(metrics_json_path):

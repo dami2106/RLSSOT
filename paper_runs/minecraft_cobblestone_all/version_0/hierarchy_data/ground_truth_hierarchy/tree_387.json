@@ -1,0 +1,102 @@
+{
+  "production": 0,
+  "children": [
+    {
+      "production": 14,
+      "children": [
+        {
+          "symbol": "18"
+        },
+        {
+          "symbol": "8"
+        }
+      ]
+    },
+    {
+      "production": 205,
+      "children": [
+        {
+          "production": 188,
+          "children": [
+            {
+              "symbol": "23"
+            },
+            {
+              "symbol": "8"
+            }
+          ]
+        },
+        {
+          "production": 112,
+          "children": [
+            {
+              "production": 236,
+              "children": [
+                {
+                  "production": 225,
+                  "children": [
+                    {
+                      "symbol": "23"
+                    },
+                    {
+                      "symbol": "30"
+                    }
+                  ]
+                },
+                {
+                  "production": 238,
+                  "children": [
+                    {
+                      "production": 235,
+                      "children": [
+                        {
+                          "production": 240,
+                          "children": [
+                            {
+                              "symbol": "36"
+                            },
+                            {
+                              "symbol": "42"
+                            }
+                          ]
+                        },
+                        {
+                          "symbol": "33"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "43"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "symbol": "11"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 29,
+      "children": [
+        {
+          "production": 198,
+          "children": [
+            {
+              "symbol": "14"
+            },
+            {
+              "symbol": "32"
+            }
+          ]
+        },
+        {
+          "symbol": "21"
+        }
+      ]
+    }
+  ]
+}

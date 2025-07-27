@@ -1,0 +1,83 @@
+{
+  "production": 0,
+  "children": [
+    {
+      "production": 98,
+      "children": [
+        {
+          "production": 140,
+          "children": [
+            {
+              "production": 117,
+              "children": [
+                {
+                  "production": 88,
+                  "children": [
+                    {
+                      "production": 39,
+                      "children": [
+                        {
+                          "production": 62,
+                          "children": [
+                            {
+                              "symbol": "8"
+                            },
+                            {
+                              "symbol": "3"
+                            }
+                          ]
+                        },
+                        {
+                          "production": 106,
+                          "children": [
+                            {
+                              "production": 142,
+                              "children": [
+                                {
+                                  "symbol": "2"
+                                },
+                                {
+                                  "symbol": "12"
+                                },
+                                {
+                                  "symbol": "1"
+                                }
+                              ]
+                            },
+                            {
+                              "symbol": "10"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "0"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "13"
+                }
+              ]
+            },
+            {
+              "production": 134,
+              "children": [
+                {
+                  "symbol": "6"
+                },
+                {
+                  "symbol": "7"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "symbol": "9"
+        }
+      ]
+    }
+  ]
+}

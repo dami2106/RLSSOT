@@ -1,0 +1,83 @@
+{
+  "production": 0,
+  "children": [
+    {
+      "production": 83,
+      "children": [
+        {
+          "production": 236,
+          "children": [
+            {
+              "production": 225,
+              "children": [
+                {
+                  "symbol": "23"
+                },
+                {
+                  "symbol": "30"
+                }
+              ]
+            },
+            {
+              "production": 238,
+              "children": [
+                {
+                  "production": 235,
+                  "children": [
+                    {
+                      "production": 240,
+                      "children": [
+                        {
+                          "symbol": "36"
+                        },
+                        {
+                          "symbol": "42"
+                        }
+                      ]
+                    },
+                    {
+                      "symbol": "33"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "43"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "production": 128,
+          "children": [
+            {
+              "symbol": "11"
+            },
+            {
+              "production": 198,
+              "children": [
+                {
+                  "symbol": "14"
+                },
+                {
+                  "symbol": "32"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 3,
+      "children": [
+        {
+          "symbol": "34"
+        },
+        {
+          "symbol": "21"
+        }
+      ]
+    }
+  ]
+}

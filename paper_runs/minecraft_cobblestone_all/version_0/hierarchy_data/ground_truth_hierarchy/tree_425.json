@@ -1,0 +1,81 @@
+{
+  "production": 0,
+  "children": [
+    {
+      "production": 46,
+      "children": [
+        {
+          "symbol": "18"
+        },
+        {
+          "symbol": "38"
+        }
+      ]
+    },
+    {
+      "production": 107,
+      "children": [
+        {
+          "symbol": "40"
+        },
+        {
+          "symbol": "3"
+        },
+        {
+          "production": 240,
+          "children": [
+            {
+              "symbol": "36"
+            },
+            {
+              "symbol": "42"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "production": 108,
+      "children": [
+        {
+          "symbol": "33"
+        },
+        {
+          "production": 62,
+          "children": [
+            {
+              "production": 222,
+              "children": [
+                {
+                  "symbol": "43"
+                },
+                {
+                  "symbol": "11"
+                }
+              ]
+            },
+            {
+              "production": 29,
+              "children": [
+                {
+                  "production": 198,
+                  "children": [
+                    {
+                      "symbol": "14"
+                    },
+                    {
+                      "symbol": "32"
+                    }
+                  ]
+                },
+                {
+                  "symbol": "21"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
