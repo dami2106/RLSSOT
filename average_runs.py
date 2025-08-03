@@ -5,12 +5,14 @@ import re
 import os
 
 TASK_NAME = "minecraft"
-DATASET_SIZE = "cobblestone_mapped"
+DATASET_SIZE = "minecraft_cobblestone_mapped"
 CLUSTER_SIZE = "14"
 
-df = pd.read_csv(f'Traces/{TASK_NAME}/{TASK_NAME}_{DATASET_SIZE}/best.csv')
+SEEDS = [10, 42]
 
-def build_cli(row):
+df = pd.read_csv(f'Traces/{TASK_NAME}/{DATASET_SIZE}/best.csv')
+
+def build_cli(row, seed):
     args = [
         f"--alpha-eval {row['params_alpha-eval']}",
         f"--alpha-train {row['params_alpha-train']}",
@@ -27,13 +29,13 @@ def build_cli(row):
         f"--radius-gw {row['params_radius-gw']}",
         f"--rho {row['params_rho']}",
         f"--weight-decay {row['params_weight-decay']}",
-        f"--dataset {TASK_NAME}/{TASK_NAME}_{DATASET_SIZE}",
-        "--feature-name pca_features",
+        f"--dataset {TASK_NAME}/{DATASET_SIZE}",
+        "--feature-name features",
         "--save-directory runs",
-        f"--run {TASK_NAME}_{DATASET_SIZE}_{row['number']}",
+        f"--run {TASK_NAME}_{DATASET_SIZE}_{row['number']}_seed{seed}",
         "--val-freq 5",
         "--layers 512 256 40",
-        "--seed 0",
+        f"--seed {seed}",
         "--visualize",
         "--log",
         f"--n-clusters {CLUSTER_SIZE}",
@@ -45,23 +47,29 @@ def build_cli(row):
 
 csv_filename = f"{TASK_NAME}_{DATASET_SIZE}_AVERAGE_RUNS.csv"
 headers_written = False
-headers = ["run_num"]
+headers = ["run_num", "seed"]
 
 for idx, row in df.iterrows():
-    cli = build_cli(row)
     print(f"Trying config number {row['number']} with expected value {row['value']}")
-    for i in range(2):
+    for i, seed in enumerate(SEEDS):
+        cli = build_cli(row, seed)
         result = subprocess.run(f"python src/train.py {cli}", shell=True, capture_output=True, text=True)
+
+        if result.returncode != 0:
+            print(f"Error running config {row['number']} with seed {seed}: {result.stderr}")
+            continue
+
+
         pattern = r"\b(test_\w+)\b[^\d\-]*([0-9]*\.?[0-9]+)"
         matches = re.findall(pattern, result.stdout)
         metrics = {metric: float(value) for metric, value in matches}
         if not headers_written:
-            headers = ["run_num"] + list(metrics.keys())
+            headers = ["run_num", "seed"] + list(metrics.keys())
             with open(csv_filename, "w", newline="") as f:
                 writer = csv.writer(f)
                 writer.writerow(headers)
             headers_written = True
-        row_data = [i + 1] + [metrics.get(h, "") for h in headers[1:]]
+        row_data = [i + 1, seed] + [metrics.get(h, "") for h in headers[2:]]
         with open(csv_filename, "a", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(row_data)

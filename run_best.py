@@ -7,6 +7,7 @@ import re
 TASK_NAME="stone_pick_static"
 DATASET_SIZE="pixels_big"
 CLUSTER_SIZE="5"
+SEED = 10
 
 # Load and sort CSV
 df = pd.read_csv(f'Traces/{TASK_NAME}/{TASK_NAME}_{DATASET_SIZE}/best.csv')
@@ -35,7 +36,7 @@ def build_cli(row):
         f"--run {TASK_NAME}_{DATASET_SIZE}_{row['number']}",
         "--val-freq 5",
         "--layers 650 300 40",
-        "--seed 0",
+        f"--seed {SEED}",
         "--visualize",
         "--log",
         f"--n-clusters {CLUSTER_SIZE}",

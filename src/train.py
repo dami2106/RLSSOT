@@ -26,12 +26,7 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 torch.use_deterministic_algorithms(True, warn_only=True)  # PyTorch >=1.8
 
-SEED = 0
 
-np.random.seed(SEED)
-torch.manual_seed(SEED)
-torch.cuda.manual_seed(SEED)
-torch.cuda.manual_seed_all(SEED)
 
 class VideoSSL(pl.LightningModule):
     def __init__(self, lr=1e-4, weight_decay=1e-4, layer_sizes=[64, 128, 40], n_clusters=20, alpha_train=0.3, alpha_eval=0.3,
@@ -366,7 +361,7 @@ class VideoSSL(pl.LightningModule):
                 features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
                 features_full.append(features)
             features_full = torch.cat(features_full, dim=0).reshape(-1, features.shape[2]).cpu().numpy()
-            kmeans = KMeans(n_clusters=K).fit(features_full)
+            kmeans = KMeans(n_clusters=K).fit(features_full) #n_init = 10
             self.mlp.train()
         self.clusters.data = torch.from_numpy(kmeans.cluster_centers_).to(self.clusters.device)
         return None
@@ -422,15 +417,30 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    torch.cuda.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
+
     pl.seed_everything(args.seed)
 
     data_val = RLDataset('Traces', args.dataset, args.n_frames, standardise=args.std_feats, random=False, feature_type=args.feature_name)
     data_train = RLDataset('Traces', args.dataset, args.n_frames, standardise=args.std_feats, random=True, feature_type=args.feature_name)
     data_test = RLDataset('Traces', args.dataset, None, standardise=args.std_feats, random=False, feature_type=args.feature_name)
-
+    #Maybe combine above ^ 
     val_loader = DataLoader(data_val, batch_size=args.batch_size,shuffle=False)
     train_loader = DataLoader(data_train, batch_size=args.batch_size, shuffle=True)
     test_loader = DataLoader(data_test, batch_size=1, shuffle=False)
+
+
+    # np.random.seed(args.seed)
+    # torch.manual_seed(args.seed)
+    # torch.cuda.manual_seed(args.seed)
+    # torch.cuda.manual_seed_all(args.seed)
+
+    # pl.seed_everything(args.seed)
+
+    #Seed dataset with 0 then seed model args.seed
 
     if args.ckpt is not None:
         ssl = VideoSSL.load_from_checkpoint(args.ckpt)
