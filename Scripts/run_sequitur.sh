@@ -1,1 +1,1 @@
-python sequitur/sequitur.py --predicted-dir paper_runs/minecraft_cobblestone_all/version_0 --dataset-dir Traces/minecraft/minecraft_cobblestone_all
+python sequitur/sequitur.py --predicted-dir paper_runs/minecraft_cobblestone_mapped/version_0 --dataset-dir Traces/minecraft/minecraft_cobblestone_mapped

@@ -36,14 +36,14 @@ def build_subtree(grammar, prod):
             subtree["children"].append({"symbol": tok})
     return subtree
 
-def visualize_tree(tree_dict, filename_base, fmt="png", root_label=None, label_mapping=None):
+def visualize_tree(tree_dict, filename_base, fmt="pdf", root_label=None, label_mapping=None):
     """
     tree_dict: nested dict with keys
       - 'production' → int
       - OR 'symbol' → str
       and optional 'children': [ … ]
     filename_base: e.g. "seq_tree_0"  (no extension)
-    fmt: "png" or "pdf"
+    fmt: "pdf" (default)
     root_label: if given, use this string as the label for the very top node
     label_mapping: optional dict mapping grammar labels to readable strings
     """
@@ -55,13 +55,13 @@ def visualize_tree(tree_dict, filename_base, fmt="png", root_label=None, label_m
         nid = str(id(node))
         # if this is the root of the entire tree and a custom label was supplied, use it:
         if is_root and root_label is not None:
-            label = root_label
+            label = "Truth"
         else:
             if "production" in node:
                 label = f"R{node['production']}"
             else:
                 # Use mapping if available, otherwise use original symbol
-                label = label_mapping.get(node["symbol"], node["symbol"]) if label_mapping else node["symbol"]
+                label = label_mapping.get(node["symbol"], node["symbol"]).replace("_", " ").title() if label_mapping else node["symbol"]
 
         dot.node(nid, label)
         if parent_id is not None:
@@ -73,6 +73,8 @@ def visualize_tree(tree_dict, filename_base, fmt="png", root_label=None, label_m
     # kick off recursion marking the first call as the root
     recurse(tree_dict, parent_id=None, is_root=True)
 
+    # Set DPI to 300 for higher quality PDF
+    dot.graph_attr["dpi"] = "300"
     outpath = dot.render(filename_base, cleanup=True)
     # print(f"Written {outpath}")
 
@@ -135,7 +137,7 @@ def construct_hierarchy(args, dataset_dir, hierarchy_output_dir, skill_folder, m
 
     for idx, (seq, tree) in enumerate(zip(sequences, trees)):
         png_path = hierarchy_output_dir / f'seq_tree_{idx}'
-        visualize_tree(tree, png_path, fmt='png', root_label=f'H{idx}', label_mapping=vis_mapping)
+        visualize_tree(tree, png_path, fmt='pdf', root_label=f'H{idx}', label_mapping=vis_mapping)
         json_path = hierarchy_output_dir / f'tree_{idx}.json'
         json_path.write_text(json.dumps(tree, indent=2))
         
