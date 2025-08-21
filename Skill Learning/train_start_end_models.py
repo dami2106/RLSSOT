@@ -1,7 +1,7 @@
 
 import os
 import numpy as np
-from single_class_svm import create_svm_model, create_svm_model_robust, predict_across_skills
+from oc_svm import OneClassSVMClassifier
 
 
 dir_ = '../Data/stone_pick_random_pixels_big'
@@ -94,55 +94,334 @@ for skill in skills:
 
 
 svm_start_models = {}
-
 for skill, data in skill_data.items():
     start_states = data['start_states']
     end_states = data['end_states']
     other_states = data['other_states']
-    combined_other = np.concatenate((end_states, other_states), axis=0)
 
-    print("Start model for skill", skill)
-    svm_start_models[skill] = create_svm_model_robust(start_states, combined_other)
-    print("=" * 60)
+    # Train start state model using OC SVM
+    if len(start_states) > 0:
+        print(f"Training start state model for skill: {skill}")
+        print(f"  - Start states: {len(start_states)}")
+        print(f"  - End states: {len(end_states)}")
+        print(f"  - Other states: {len(other_states)}")
+        
+        # Create and train start state model
+        start_model = OneClassSVMClassifier(kernel='rbf', nu=0.1, gamma='scale', verbose=False)
+        
+        # For start states, we want to learn what constitutes a valid start
+        # We'll use start_states as positive examples (inliers)
+        start_model.fit(start_states)
+        
+        # Store the trained model
+        svm_start_models[skill] = start_model
+        
+        print(f"  ✓ Start state model trained successfully")
+    else:
+        print(f"Warning: No start states found for skill: {skill}")
+        svm_start_models[skill] = None
 
 svm_end_models = {}
-
 for skill, data in skill_data.items():
     start_states = data['start_states']
     end_states = data['end_states']
     other_states = data['other_states']
-    combined_other = np.concatenate((start_states, other_states), axis=0)
 
-    print("End model for skill", skill)
-    svm_end_models[skill] = create_svm_model_robust(end_states, combined_other)
-    print("=" * 60)
+    # Train end state model using OC SVM
+    if len(end_states) > 0:
+        print(f"Training end state model for skill: {skill}")
+        print(f"  - Start states: {len(start_states)}")
+        print(f"  - End states: {len(end_states)}")
+        print(f"  - Other states: {len(other_states)}")
+        
+        # Create and train end state model
+        end_model = OneClassSVMClassifier(kernel='rbf', nu=0.1, gamma='scale', verbose=False)
+        
+        # For end states, we want to learn what constitutes a valid end
+        # We'll use end_states as positive examples (inliers)
+        end_model.fit(end_states)
+        
+        # Store the trained model
+        svm_end_models[skill] = end_model
+        
+        print(f"  ✓ End state model trained successfully")
+    else:
+        print(f"Warning: No end states found for skill: {skill}")
+        svm_end_models[skill] = None
 
+print(f"\nTraining completed!")
+print(f"Start state models trained: {len([m for m in svm_start_models.values() if m is not None])}")
+print(f"End state models trained: {len([m for m in svm_end_models.values() if m is not None])}")
 
-for skill in skill_data: 
-    #Test the start and end models, add up correct vs incorrect vs total 
-    start_states = skill_data[skill]['start_states']
-    end_states = skill_data[skill]['end_states']
+# Function to predict if a state is a start state for a given skill
+def is_start_state(state_features, skill, models):
+    """Check if the given state is a start state for the specified skill."""
+    if skill not in models or models[skill] is None:
+        return False
+    
+    # Reshape if needed (single sample)
+    if state_features.ndim == 1:
+        state_features = state_features.reshape(1, -1)
+    
+    # Predict using the OC SVM (1 = inlier/start state, -1 = outlier/not start state)
+    prediction = models[skill].predict(state_features)
+    return prediction[0] == 1
 
-    correct_start = 0 
-    correct_end = 0
-    total_start = 0
-    total_end = 0
+# Function to predict if a state is an end state for a given skill
+def is_end_state(state_features, skill, models):
+    """Check if the given state is an end state for the specified skill."""
+    if skill not in models or models[skill] is None:
+        return False
+    
+    # Reshape if needed (single sample)
+    if state_features.ndim == 1:
+        state_features = state_features.reshape(1, -1)
+    
+    # Predict using the OC SVM (1 = inlier/end state, -1 = outlier/not end state)
+    prediction = models[skill].predict(state_features)
+    return prediction[0] == 1
 
-    for feat in start_states:
-        predictions = predict_across_skills(feat, svm_start_models)
-        if predictions['top_skill'] == skill:
-            correct_start += 1
-        total_start += 1
+# Function to get confidence scores for start/end state predictions
+def get_start_state_confidence(state_features, skill, models):
+    """Get confidence score for start state prediction (higher = more confident it's a start state)."""
+    if skill not in models or models[skill] is None:
+        return 0.0
+    
+    # Reshape if needed (single sample)
+    if state_features.ndim == 1:
+        state_features = state_features.reshape(1, -1)
+    
+    # Get decision function score (higher positive values = more confident it's a start state)
+    confidence = models[skill].decision_function(state_features)
+    return confidence[0]
 
-    for feat in end_states:
-        predictions = predict_across_skills(feat, svm_end_models)
-        if predictions['top_skill'] == skill:
-            correct_end += 1
-        total_end += 1
+def get_end_state_confidence(state_features, skill, models):
+    """Get confidence score for end state prediction (higher = more confident it's an end state)."""
+    if skill not in models or models[skill] is None:
+        return 0.0
+    
+    # Reshape if needed (single sample)
+    if state_features.ndim == 1:
+        state_features = state_features.reshape(1, -1)
+    
+    # Get decision function score (higher positive values = more confident it's an end state)
+    confidence = models[skill].decision_function(state_features)
+    return confidence[0]
 
-    print(f"Skill: {skill}")
-    print(f"Start Model - Correct: {correct_start}, Total: {total_start}")
-    print(f"End Model - Correct: {correct_end}, Total: {total_end}")
-    print("=" * 60)
+# Example usage of the trained models
+print(f"\nExample predictions:")
+for skill in list(skills)[:3]:  # Show first 3 skills as examples
+    if skill in svm_start_models and svm_start_models[skill] is not None:
+        # Test with a sample start state
+        sample_start = skill_data[skill]['start_states'][0]
+        is_start = is_start_state(sample_start, skill, svm_start_models)
+        start_conf = get_start_state_confidence(sample_start, skill, svm_start_models)
+        
+        print(f"Skill '{skill}' - Sample start state:")
+        print(f"  Is start state: {is_start}")
+        print(f"  Start confidence: {start_conf:.4f}")
+        
+        # Test with a sample end state
+        if len(skill_data[skill]['end_states']) > 0:
+            sample_end = skill_data[skill]['end_states'][0]
+            is_end = is_end_state(sample_end, skill, svm_end_models)
+            end_conf = get_end_state_confidence(sample_end, skill, svm_end_models)
+            
+            print(f"  Is end state: {is_end}")
+            print(f"  End confidence: {end_conf:.4f}")
+        print()
+
+# Save all trained models
+def save_all_models(save_dir='../Data/trained_models'):
+    """Save all trained start and end state models to disk."""
+    os.makedirs(save_dir, exist_ok=True)
+    
+    # Save start state models
+    start_models_dir = os.path.join(save_dir, 'start_models')
+    os.makedirs(start_models_dir, exist_ok=True)
+    
+    for skill, model in svm_start_models.items():
+        if model is not None:
+            model_path = os.path.join(start_models_dir, f'{skill}_start.joblib')
+            model.save_model(model_path)
+            print(f"Saved start model for '{skill}' to {model_path}")
+    
+    # Save end state models
+    end_models_dir = os.path.join(save_dir, 'end_models')
+    os.makedirs(end_models_dir, exist_ok=True)
+    
+    for skill, model in svm_end_models.items():
+        if model is not None:
+            model_path = os.path.join(end_models_dir, f'{skill}_end.joblib')
+            model.save_model(model_path)
+            print(f"Saved end model for '{skill}' to {model_path}")
+    
+    print(f"\nAll models saved to {save_dir}")
+
+# Load all trained models
+def load_all_models(load_dir='../Data/trained_models'):
+    """Load all trained start and end state models from disk."""
+    loaded_start_models = {}
+    loaded_end_models = {}
+    
+    # Load start state models
+    start_models_dir = os.path.join(load_dir, 'start_models')
+    if os.path.exists(start_models_dir):
+        for model_file in os.listdir(start_models_dir):
+            if model_file.endswith('_start.joblib'):
+                skill = model_file.replace('_start.joblib', '')
+                model_path = os.path.join(start_models_dir, model_file)
+                loaded_start_models[skill] = OneClassSVMClassifier.load_model(model_path)
+                print(f"Loaded start model for '{skill}' from {model_path}")
+    
+    # Load end state models
+    end_models_dir = os.path.join(load_dir, 'end_models')
+    if os.path.exists(end_models_dir):
+        for model_file in os.listdir(end_models_dir):
+            if model_file.endswith('_end.joblib'):
+                skill = model_file.replace('_end.joblib', '')
+                model_path = os.path.join(end_models_dir, model_file)
+                loaded_end_models[skill] = OneClassSVMClassifier.load_model(model_path)
+                print(f"Loaded end model for '{skill}' from {model_path}")
+    
+    return loaded_start_models, loaded_end_models
+
+# Function to find the best skill to execute based on current state
+def find_best_start_skill(current_state, models, confidence_threshold=0.0):
+    """
+    Find the best skill to start based on the current state.
+    
+    Args:
+        current_state: Current state features
+        models: Dictionary of trained start state models
+        confidence_threshold: Minimum confidence threshold for considering a skill
+        
+    Returns:
+        Tuple of (best_skill, confidence) or (None, 0.0) if no suitable skill found
+    """
+    best_skill = None
+    best_confidence = confidence_threshold
+    
+    for skill, model in models.items():
+        if model is not None:
+            confidence = get_start_state_confidence(current_state, skill, models)
+            if confidence > best_confidence:
+                best_confidence = confidence
+                best_skill = skill
+    
+    return best_skill, best_confidence
+
+def find_best_end_skill(current_state, models, confidence_threshold=0.0):
+    """
+    Find the best skill that has reached its end state based on the current state.
+    
+    Args:
+        current_state: Current state features
+        models: Dictionary of trained end state models
+        confidence_threshold: Minimum confidence threshold for considering a skill
+        
+    Returns:
+        Tuple of (best_skill, confidence) or (None, 0.0) if no suitable skill found
+    """
+    best_skill = None
+    best_confidence = confidence_threshold
+    
+    for skill, model in models.items():
+        if model is not None:
+            confidence = get_end_state_confidence(current_state, skill, models)
+            if confidence > best_confidence:
+                best_confidence = confidence
+                best_skill = skill
+    
+    return best_skill, best_confidence
+
+# Function to evaluate model performance on test data
+def evaluate_models_on_data(test_data, start_models, end_models):
+    """
+    Evaluate the performance of start and end state models on test data.
+    
+    Args:
+        test_data: Dictionary with skill data containing start_states, end_states, other_states
+        start_models: Dictionary of trained start state models
+        end_models: Dictionary of trained end state models
+        
+    Returns:
+        Dictionary containing evaluation metrics for each skill
+    """
+    results = {}
+    
+    for skill in test_data.keys():
+        if skill not in start_models or skill not in end_models:
+            continue
+            
+        start_model = start_models[skill]
+        end_model = end_models[skill]
+        
+        if start_model is None or end_model is None:
+            continue
+        
+        # Test start state detection
+        start_states = test_data[skill]['start_states']
+        end_states = test_data[skill]['end_states']
+        other_states = test_data[skill]['other_states']
+        
+        # Start state evaluation
+        start_correct = 0
+        start_total = len(start_states)
+        
+        for state in start_states:
+            if is_start_state(state, skill, start_models):
+                start_correct += 1
+        
+        # End state evaluation
+        end_correct = 0
+        end_total = len(end_states)
+        
+        for state in end_states:
+            if is_end_state(state, skill, end_models):
+                end_correct += 1
+        
+        # False positive evaluation (other states incorrectly classified as start/end)
+        start_fp = 0
+        end_fp = 0
+        
+        for state in other_states:
+            if is_start_state(state, skill, start_models):
+                start_fp += 1
+            if is_end_state(state, skill, end_models):
+                end_fp += 1
+        
+        results[skill] = {
+            'start_accuracy': start_correct / start_total if start_total > 0 else 0,
+            'end_accuracy': end_correct / end_total if end_total > 0 else 0,
+            'start_false_positives': start_fp,
+            'end_false_positives': end_fp,
+            'start_total': start_total,
+            'end_total': end_total
+        }
+    
+    return results
+
+# Save models by default
+print("\nSaving trained models...")
+save_all_models()
+
+print("\n" + "="*60)
+print("Training and setup complete!")
+print("="*60)
+print("\nYou can now use these models for:")
+print("1. Detecting when to start a skill (option initiation)")
+print("2. Detecting when a skill has completed (option termination)")
+print("3. Behavioral cloning pipeline integration")
+print("\nExample usage:")
+print("  # Check if current state is a start state for 'mine_stone'")
+print("  is_start = is_start_state(current_state, 'mine_stone', svm_start_models)")
+print("  ")
+print("  # Get confidence scores")
+print("  start_conf = get_start_state_confidence(current_state, 'mine_stone', svm_start_models)")
+print("  end_conf = get_end_state_confidence(current_state, 'mine_stone', svm_end_models)")
+print("  ")
+print("  # Find best skill to execute")
+print("  best_skill, confidence = find_best_start_skill(current_state, svm_start_models)")
 
 
