@@ -45,7 +45,6 @@ class OneClassSVMClassifier:
             kernel=kernel,
             nu=nu,
             gamma=gamma,
-            random_state=random_state,
             verbose=verbose
         )
         
@@ -379,7 +378,6 @@ class OneClassSVMClassifier:
                 kernel=self.kernel,
                 nu=self.nu,
                 gamma=self.gamma,
-                random_state=self.random_state,
                 verbose=self.verbose
             )
             self.is_fitted = False

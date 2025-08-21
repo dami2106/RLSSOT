@@ -2,9 +2,11 @@
 import os
 import numpy as np
 from oc_svm import OneClassSVMClassifier
+from sklearn.metrics import precision_recall_fscore_support, roc_auc_score, average_precision_score
+from sklearn.model_selection import train_test_split
 
 
-dir_ = '../Data/stone_pick_random_pixels_big'
+dir_ = 'Data/stone_pick_random_pixels_big'
 files = os.listdir(dir_ + '/groundTruth')
 
 
@@ -93,30 +95,100 @@ for skill in skills:
     }
 
 
+# Hyperparameter tuning utilities
+PARAM_GRID = {
+    'nu': [0.01, 0.05, 0.1, 0.2, 0.3],
+    'gamma': ['scale', 0.001, 0.01, 0.1, 1.0]
+}
+
+
+def tune_ocsvm_for_skill(positive_states: np.ndarray,
+                         negative_states: np.ndarray,
+                         param_grid: dict = PARAM_GRID,
+                         val_pos_ratio: float = 0.2,
+                         negative_ratio: float = 1.0,
+                         random_state: int = 42,
+                         verbose: bool = True):
+    """
+    Tune One-Class SVM hyperparameters using a validation split.
+
+    Trains only on positive samples (as required by OCSVM), and evaluates
+    on held-out positives vs sampled negatives using ROC AUC of the
+    decision_function.
+    """
+    if len(positive_states) < 2 or len(negative_states) == 0:
+        return {'nu': 0.1, 'gamma': 'scale'}, float('nan')
+
+    # Split positives into train/val
+    pos_idx = np.arange(len(positive_states))
+    train_idx, val_idx = train_test_split(pos_idx, test_size=max(1, int(len(pos_idx) * val_pos_ratio)),
+                                          random_state=random_state, shuffle=True, stratify=None)
+    pos_train = positive_states[train_idx]
+    pos_val = positive_states[val_idx]
+
+    # Sample negatives for validation
+    n_neg_val = max(1, int(len(pos_val) * negative_ratio))
+    n_neg_val = min(n_neg_val, len(negative_states))
+    rng = np.random.default_rng(random_state)
+    neg_indices = rng.choice(len(negative_states), size=n_neg_val, replace=False)
+    neg_val = negative_states[neg_indices]
+
+    X_val = np.vstack([pos_val, neg_val])
+    y_val = np.concatenate([np.ones(len(pos_val)), np.zeros(len(neg_val))])
+
+    best_score = -np.inf
+    best_params = None
+
+    for nu in param_grid.get('nu', [0.1]):
+        for gamma in param_grid.get('gamma', ['scale']):
+            model = OneClassSVMClassifier(kernel='rbf', nu=nu, gamma=gamma, verbose=False)
+            try:
+                model.fit(pos_train)
+                scores = model.decision_function(X_val)
+                score = roc_auc_score(y_val, scores)
+            except Exception:
+                score = -np.inf
+
+            if score > best_score:
+                best_score = score
+                best_params = {'nu': nu, 'gamma': gamma}
+
+    if verbose and best_params is not None:
+        print(f"  Tuned params: {best_params}, val ROC AUC: {best_score:.3f}")
+
+    if best_params is None:
+        best_params = {'nu': 0.1, 'gamma': 'scale'}
+        best_score = float('nan')
+
+    return best_params, best_score
+
+
 svm_start_models = {}
 for skill, data in skill_data.items():
     start_states = data['start_states']
     end_states = data['end_states']
     other_states = data['other_states']
 
-    # Train start state model using OC SVM
+    # Train start state model using OC SVM with hyperparameter tuning
     if len(start_states) > 0:
         print(f"Training start state model for skill: {skill}")
         print(f"  - Start states: {len(start_states)}")
         print(f"  - End states: {len(end_states)}")
         print(f"  - Other states: {len(other_states)}")
-        
-        # Create and train start state model
-        start_model = OneClassSVMClassifier(kernel='rbf', nu=0.1, gamma='scale', verbose=False)
-        
-        # For start states, we want to learn what constitutes a valid start
-        # We'll use start_states as positive examples (inliers)
+
+        if len(other_states) > 0 and len(start_states) > 1:
+            best_params, best_score = tune_ocsvm_for_skill(start_states, other_states, PARAM_GRID, verbose=True)
+            start_model = OneClassSVMClassifier(kernel='rbf', nu=best_params['nu'], gamma=best_params['gamma'], verbose=False)
+        else:
+            print("  Insufficient data for tuning; using defaults (nu=0.1, gamma='scale')")
+            best_params, best_score = {'nu': 0.1, 'gamma': 'scale'}, float('nan')
+            start_model = OneClassSVMClassifier(kernel='rbf', nu=0.1, gamma='scale', verbose=False)
+
+        # Retrain on all available positive samples
         start_model.fit(start_states)
-        
-        # Store the trained model
+
         svm_start_models[skill] = start_model
-        
-        print(f"  ✓ Start state model trained successfully")
+        print(f"  ✓ Start model trained. Params: {best_params}, val ROC AUC: {best_score if np.isfinite(best_score) else float('nan'):.3f}")
     else:
         print(f"Warning: No start states found for skill: {skill}")
         svm_start_models[skill] = None
@@ -127,24 +199,26 @@ for skill, data in skill_data.items():
     end_states = data['end_states']
     other_states = data['other_states']
 
-    # Train end state model using OC SVM
+    # Train end state model using OC SVM with hyperparameter tuning
     if len(end_states) > 0:
         print(f"Training end state model for skill: {skill}")
         print(f"  - Start states: {len(start_states)}")
         print(f"  - End states: {len(end_states)}")
         print(f"  - Other states: {len(other_states)}")
-        
-        # Create and train end state model
-        end_model = OneClassSVMClassifier(kernel='rbf', nu=0.1, gamma='scale', verbose=False)
-        
-        # For end states, we want to learn what constitutes a valid end
-        # We'll use end_states as positive examples (inliers)
+
+        if len(other_states) > 0 and len(end_states) > 1:
+            best_params, best_score = tune_ocsvm_for_skill(end_states, other_states, PARAM_GRID, verbose=True)
+            end_model = OneClassSVMClassifier(kernel='rbf', nu=best_params['nu'], gamma=best_params['gamma'], verbose=False)
+        else:
+            print("  Insufficient data for tuning; using defaults (nu=0.1, gamma='scale')")
+            best_params, best_score = {'nu': 0.1, 'gamma': 'scale'}, float('nan')
+            end_model = OneClassSVMClassifier(kernel='rbf', nu=0.1, gamma='scale', verbose=False)
+
+        # Retrain on all available positive samples
         end_model.fit(end_states)
-        
-        # Store the trained model
+
         svm_end_models[skill] = end_model
-        
-        print(f"  ✓ End state model trained successfully")
+        print(f"  ✓ End model trained. Params: {best_params}, val ROC AUC: {best_score if np.isfinite(best_score) else float('nan'):.3f}")
     else:
         print(f"Warning: No end states found for skill: {skill}")
         svm_end_models[skill] = None
@@ -232,7 +306,7 @@ for skill in list(skills)[:3]:  # Show first 3 skills as examples
         print()
 
 # Save all trained models
-def save_all_models(save_dir='../Data/trained_models'):
+def save_all_models(save_dir='Data/trained_models'):
     """Save all trained start and end state models to disk."""
     os.makedirs(save_dir, exist_ok=True)
     
@@ -406,22 +480,89 @@ def evaluate_models_on_data(test_data, start_models, end_models):
 print("\nSaving trained models...")
 save_all_models()
 
-print("\n" + "="*60)
-print("Training and setup complete!")
-print("="*60)
-print("\nYou can now use these models for:")
-print("1. Detecting when to start a skill (option initiation)")
-print("2. Detecting when a skill has completed (option termination)")
-print("3. Behavioral cloning pipeline integration")
-print("\nExample usage:")
-print("  # Check if current state is a start state for 'mine_stone'")
-print("  is_start = is_start_state(current_state, 'mine_stone', svm_start_models)")
-print("  ")
-print("  # Get confidence scores")
-print("  start_conf = get_start_state_confidence(current_state, 'mine_stone', svm_start_models)")
-print("  end_conf = get_end_state_confidence(current_state, 'mine_stone', svm_end_models)")
-print("  ")
-print("  # Find best skill to execute")
-print("  best_skill, confidence = find_best_start_skill(current_state, svm_start_models)")
+
+def evaluate_detailed_metrics(skill_data, start_models, end_models):
+    print("\nEvaluating models on available data (note: this uses the same data used to build the distributions; add a hold-out split for unbiased estimates).\n")
+
+    start_metrics = []
+    end_metrics = []
+
+    for skill, data in skill_data.items():
+        start_model = start_models.get(skill)
+        end_model = end_models.get(skill)
+
+        start_states = data['start_states']
+        end_states = data['end_states']
+        other_states = data['other_states']
+
+        print(f"Skill: {skill}")
+        print(f"  Counts -> start: {len(start_states)}, end: {len(end_states)}, other: {len(other_states)}")
+
+        # Evaluate start model
+        if start_model is not None and len(start_states) > 0 and len(other_states) > 0:
+            X_start = np.vstack([start_states, other_states])
+            y_start = np.concatenate([np.ones(len(start_states)), np.zeros(len(other_states))])
+
+            pred_start = start_model.predict(X_start)
+            pred_start_bin = (pred_start == 1).astype(int)
+
+            acc = float(np.mean(pred_start_bin == y_start))
+            prec, rec, f1, _ = precision_recall_fscore_support(y_start, pred_start_bin, average='binary', zero_division=0)
+            try:
+                scores = start_model.decision_function(X_start)
+                auroc = roc_auc_score(y_start, scores)
+                ap = average_precision_score(y_start, scores)
+            except Exception:
+                auroc, ap = float('nan'), float('nan')
+
+            # False Positive Rate on other states
+            neg_pred_pos = int(np.sum(pred_start_bin[len(start_states):] == 1))
+            fpr = float(neg_pred_pos / len(other_states)) if len(other_states) > 0 else 0.0
+
+            start_metrics.append({'acc': acc, 'prec': prec, 'rec': rec, 'f1': f1, 'auroc': auroc, 'ap': ap, 'fpr': fpr})
+            print(f"  Start model -> acc: {acc:.3f}, prec: {prec:.3f}, rec: {rec:.3f}, f1: {f1:.3f}, auroc: {auroc:.3f}, ap: {ap:.3f}, fpr: {fpr:.3f}")
+        else:
+            print("  Start model -> skipped (missing model or insufficient data)")
+
+        # Evaluate end model
+        if end_model is not None and len(end_states) > 0 and len(other_states) > 0:
+            X_end = np.vstack([end_states, other_states])
+            y_end = np.concatenate([np.ones(len(end_states)), np.zeros(len(other_states))])
+
+            pred_end = end_model.predict(X_end)
+            pred_end_bin = (pred_end == 1).astype(int)
+
+            acc = float(np.mean(pred_end_bin == y_end))
+            prec, rec, f1, _ = precision_recall_fscore_support(y_end, pred_end_bin, average='binary', zero_division=0)
+            try:
+                scores = end_model.decision_function(X_end)
+                auroc = roc_auc_score(y_end, scores)
+                ap = average_precision_score(y_end, scores)
+            except Exception:
+                auroc, ap = float('nan'), float('nan')
+
+            neg_pred_pos = int(np.sum(pred_end_bin[len(end_states):] == 1))
+            fpr = float(neg_pred_pos / len(other_states)) if len(other_states) > 0 else 0.0
+
+            end_metrics.append({'acc': acc, 'prec': prec, 'rec': rec, 'f1': f1, 'auroc': auroc, 'ap': ap, 'fpr': fpr})
+            print(f"  End   model -> acc: {acc:.3f}, prec: {prec:.3f}, rec: {rec:.3f}, f1: {f1:.3f}, auroc: {auroc:.3f}, ap: {ap:.3f}, fpr: {fpr:.3f}")
+        else:
+            print("  End   model -> skipped (missing model or insufficient data)")
+
+        print()
+
+    # Macro averages
+    def macro_avg(entries, key):
+        vals = [e[key] for e in entries if np.isfinite(e[key])]
+        return float(np.mean(vals)) if len(vals) > 0 else float('nan')
+
+    if len(start_metrics) > 0:
+        print("Start model macro-averages across skills:")
+        print(f"  acc: {macro_avg(start_metrics, 'acc'):.3f}, prec: {macro_avg(start_metrics, 'prec'):.3f}, rec: {macro_avg(start_metrics, 'rec'):.3f}, f1: {macro_avg(start_metrics, 'f1'):.3f}, auroc: {macro_avg(start_metrics, 'auroc'):.3f}, ap: {macro_avg(start_metrics, 'ap'):.3f}, fpr: {macro_avg(start_metrics, 'fpr'):.3f}")
+    if len(end_metrics) > 0:
+        print("End model macro-averages across skills:")
+        print(f"  acc: {macro_avg(end_metrics, 'acc'):.3f}, prec: {macro_avg(end_metrics, 'prec'):.3f}, rec: {macro_avg(end_metrics, 'rec'):.3f}, f1: {macro_avg(end_metrics, 'f1'):.3f}, auroc: {macro_avg(end_metrics, 'auroc'):.3f}, ap: {macro_avg(end_metrics, 'ap'):.3f}, fpr: {macro_avg(end_metrics, 'fpr'):.3f}")
 
 
+# Run detailed evaluation
+evaluate_detailed_metrics(skill_data, svm_start_models, svm_end_models)
