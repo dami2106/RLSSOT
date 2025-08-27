@@ -8,6 +8,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_recall_fscore_support, classification_report
 from sklearn.metrics import confusion_matrix
 import joblib
+import matplotlib.pyplot as plt
+import seaborn as sns
 from skill_helpers import *
 
 dir_ = 'Data/stone_pick_random_pixels_big'
@@ -23,15 +25,15 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-nu_grid = [0.001, 0.005, 0.01, 0.02, 0.05, 0.1]
-gamma_grid = ['scale', 'auto', 1e-3, 1e-2, 1e-1]
+nu_grid = [1e-4, 5e-4, 1e-3, 5e-3, 1e-2, 2e-2, 5e-2, 1e-1, 2e-1]
+gamma_grid = ['scale', 'auto'] + list(10.0**np.arange(-6, 1))  # 1e-6 .. 1e0
 
 rng = np.random.default_rng(42)
 results = {}
-skills = get_unique_skills(files)
+skills = get_unique_skills(dir_, files)
 skill_data = {}
 for skill in skills:
-    start_states, end_states, other_states = get_start_end_states(skill, files)
+    start_states, end_states, other_states = get_start_end_states(dir_, skill, files)
     skill_data[skill] = {
         'start_states': start_states,
         'end_states': end_states,
@@ -104,6 +106,18 @@ for skill in skills:
     print(cm)
     print(classification_report(y_true, y_pred, target_names=["neg", "pos"], zero_division=0))
     print("="*50)
+    # Save confusion matrix plot with metrics
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=["neg", "pos"], yticklabels=["neg", "pos"])
+    plt.title(f"Confusion Matrix for {skill} ({args.phase})")
+    plt.xlabel("Predicted")
+    plt.ylabel("True")
+    metrics_text = f"Precision: {prec:.3f}\nRecall: {rec:.3f}\nF1: {f1:.3f}\nnu: {best['nu']}\ngamma: {best['gamma']}"
+    plt.gcf().text(0.99, 0.01, metrics_text, fontsize=10, va='bottom', ha='right', bbox=dict(facecolor='white', alpha=0.7))
+    img_filename = f"{skill}_{args.phase}.png"
+    plt.tight_layout(rect=[0, 0.05, 1, 1])
+    plt.savefig(img_filename, dpi=300)
+    plt.close()
     # Save the final model retrained on all positives to the appropriate directory
     os.makedirs(model_dir, exist_ok=True)
     joblib.dump(final_clf, f"{model_dir}/{skill}_best_model.joblib")

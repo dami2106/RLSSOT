@@ -9,7 +9,7 @@ from sklearn.metrics import precision_recall_fscore_support, classification_repo
 from sklearn.metrics import confusion_matrix
 import joblib
 
-def get_unique_skills(files):
+def get_unique_skills(dir_, files):
     unique_skills = set()
     for file in files:
         with open(os.path.join(dir_ + '/groundTruth', file), 'r') as f:
@@ -40,7 +40,7 @@ def segment_edges(lst, mode):
 
     return edges
 
-def get_start_end_states(skill, files):
+def get_start_end_states(dir_, skill, files):
     start_states = []
     end_states = []
     other_states = []  # new
