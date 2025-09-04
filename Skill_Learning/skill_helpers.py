@@ -40,46 +40,81 @@ def segment_edges(lst, mode):
 
     return edges
 
+
+
+# [s1, s2, s3],   [s4, s5],    [s6, s7, s8, s9]
+# skill_1         skill_2      skill_1
+
+# for skill_1, 
+# start_states     = [s1, s6]
+# end_states       = [s3, s9]
+# all_skill_states = [s1, s2, s3,   s6, s7, s8, s9]
+
+# negative_end_skill = [s1, s2, s6, s7, s8]
+# negative_end_all = [s1, s2, s4, s5, s6, s7, s8]
+
 def get_start_end_states(dir_, skill, files):
     start_states = []
     end_states = []
-    other_states = []  # new
+    all_skill_states = []
+
+    negative_end_skill = []
+    negative_end_all = []
+    all_other_states = []
 
     for file in files:
-        with open(os.path.join(dir_ + '/groundTruth', file), 'r') as f:
+        with open(os.path.join(dir_, 'groundTruth', file), 'r') as f:
             lines = f.read().splitlines()
 
-        pca_feats = np.load(os.path.join(dir_ + '/pca_features', file + '.npy'))
-        n_frames = len(pca_feats)
-        # assert n_frames == len(lines), f"Mismatch in {file}: {n_frames} feats vs {len(lines)} labels"
+        pca_feats = np.load(os.path.join(dir_, 'pca_features', file + '.npy'))
+
+        # keep them in sync in case of off-by-one labeling issues
+        n = min(len(lines), len(pca_feats))
+        lines = lines[:n]
+        pca_feats = pca_feats[:n]
 
         # indices where this skill appears
         skill_indices = [i for i, x in enumerate(lines) if x == skill]
-        if not skill_indices:
-            # if the skill never occurs, then *all* frames are "other"
-            other_states.extend(pca_feats.tolist())
-            continue
 
         # starts and ends for this skill's contiguous segments
         starts = segment_edges(skill_indices, mode="start")
         ends   = segment_edges(skill_indices, mode="end")
 
-        # collect start & end feature vectors
+        # for quick membership tests
+        ends_set = set(ends)
+
+        # collect start & end feature vectors for this skill
         for s in starts:
             start_states.append(pca_feats[s].tolist())
         for e in ends:
             end_states.append(pca_feats[e].tolist())
 
-        # everything else (exclude only starts and ends)
-        excluded = set(starts) | set(ends)
-        for idx in range(n_frames):
-            if idx not in excluded:
-                other_states.append(pca_feats[idx].tolist())
+        # all frames of this skill
+        for i in skill_indices:
+            all_skill_states.append(pca_feats[i].tolist())
+
+        # negative_end_skill: all skill frames except the skill's end frames
+        for i in skill_indices:
+            if i not in ends_set:
+                negative_end_skill.append(pca_feats[i].tolist())
+
+        # negative_end_all: all frames (any label) except the skill's end frames
+        for i in range(n):
+            if i not in ends_set:
+                negative_end_all.append(pca_feats[i].tolist())
+
+        # all_other_states: all frames NOT belonging to this skill
+        for i in range(n):
+            if lines[i] != skill:
+                all_other_states.append(pca_feats[i].tolist())
 
     return (
         np.array(start_states),
         np.array(end_states),
-        np.array(other_states),
+        np.array(all_skill_states),
+        np.array(negative_end_skill),
+        np.array(negative_end_all),
+        np.array(all_other_states),
     )
 
 def evaluate_ocsvm(X_pos_train, X_pos_val, X_neg_val, nu, gamma):

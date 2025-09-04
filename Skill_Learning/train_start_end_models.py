@@ -33,16 +33,17 @@ results = {}
 skills = get_unique_skills(dir_, files)
 skill_data = {}
 for skill in skills:
-    start_states, end_states, other_states = get_start_end_states(dir_, skill, files)
+    start_states, end_states, other_states, all_skill_states = get_start_end_states(dir_, skill, files)
     skill_data[skill] = {
         'start_states': start_states,
         'end_states': end_states,
-        'other_states': other_states
+        'other_states': other_states,
+        'all_skill_states': all_skill_states
     }
 
     # Choose positives and negatives based on requested phase
     if args.phase == "start":
-        X_pos_all = start_states
+        X_pos_all = all_skill_states
         X_neg_all = np.vstack([arr for arr in [end_states, other_states]]) if len(end_states) and len(other_states) else (
             end_states if len(end_states) else other_states
         )
