@@ -10,7 +10,7 @@ from sklearn.metrics import confusion_matrix
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
-from skill_helpers import *
+from old_helpers import *
 
 dir_ = 'Data/stone_pick_random_pixels_big'
 files = os.listdir(dir_ + '/groundTruth')
@@ -98,6 +98,14 @@ for skill in skills:
         y_true, y_pred, average="binary", pos_label=1, zero_division=0
     )
     cm = confusion_matrix(y_true, y_pred, labels=[0, 1])
+    results[skill] = {
+    "threshold": float("nan"),   # OC-SVM has no probability threshold; keep column for side-by-side compare
+    "precision": float(prec),
+    "recall": float(rec),
+    "f1": float(f1),
+    "confusion_matrix": cm
+        }
+    
 
     print(f"\n=== Skill: {skill} ({args.phase}) ===")
     print(f"Best params -> nu={best['nu']}, gamma={best['gamma']}, val_F1={best['f1']:.3f}")
@@ -122,3 +130,89 @@ for skill in skills:
     # Save the final model retrained on all positives to the appropriate directory
     os.makedirs(model_dir, exist_ok=True)
     joblib.dump(final_clf, f"{model_dir}/{skill}_best_model.joblib")
+
+
+# ========= Summary across skills (OC-SVM) =========
+from math import isnan
+import pandas as pd
+
+rows = []
+tot_tn = tot_fp = tot_fn = tot_tp = 0
+
+for skill, res in results.items():
+    cm = res["confusion_matrix"]
+    tn, fp = cm[0]
+    fn, tp = cm[1]
+    tot_tn += int(tn); tot_fp += int(fp); tot_fn += int(fn); tot_tp += int(tp)
+
+    support_pos = int(tp + fn)
+    support_neg = int(tn + fp)
+    support_all = support_pos + support_neg
+    acc = (tp + tn) / support_all if support_all else float("nan")
+
+    rows.append({
+        "skill": skill,
+        "pos_support": support_pos,
+        "neg_support": support_neg,
+        "threshold": res.get("threshold", float("nan")),  # keep same column as SVC
+        "precision": res["precision"],
+        "recall": res["recall"],
+        "f1": res["f1"],
+        "accuracy": acc,
+        "tp": int(tp), "fp": int(fp), "fn": int(fn), "tn": int(tn),
+    })
+
+# Overall (micro) metrics
+overall_support = tot_tp + tot_fp + tot_fn + tot_tn
+overall_precision = (tot_tp / (tot_tp + tot_fp)) if (tot_tp + tot_fp) else 0.0
+overall_recall    = (tot_tp / (tot_tp + tot_fn)) if (tot_tp + tot_fn) else 0.0
+if (overall_precision + overall_recall) > 0:
+    overall_f1 = 2 * overall_precision * overall_recall / (overall_precision + overall_recall)
+else:
+    overall_f1 = 0.0
+overall_accuracy  = (tot_tp + tot_tn) / overall_support if overall_support else float("nan")
+
+# Macro (mean across skills)
+import numpy as np
+macro_precision = float(np.mean([r["precision"] for r in rows])) if rows else float("nan")
+macro_recall    = float(np.mean([r["recall"]    for r in rows])) if rows else float("nan")
+macro_f1        = float(np.mean([r["f1"]        for r in rows])) if rows else float("nan")
+macro_accuracy  = float(np.mean([r["accuracy"]  for r in rows])) if rows else float("nan")
+
+# Pretty print (same style as SVC)
+print("\n" + "="*80)
+print("PER-SKILL METRICS (OC-SVM) — sorted by F1 desc")
+print("="*80)
+
+if pd is not None:
+    df = pd.DataFrame(rows)
+    df = df.sort_values("f1", ascending=False)
+    disp_cols = ["skill", "pos_support", "neg_support", "threshold",
+                 "precision", "recall", "f1", "accuracy", "tp", "fp", "fn"]
+    for c in ["threshold", "precision", "recall", "f1", "accuracy"]:
+        df[c] = df[c].astype(float).round(3)
+    print(df[disp_cols].to_string(index=False))
+else:
+    rows_sorted = sorted(rows, key=lambda r: r["f1"], reverse=True)
+    header = f"{'skill':18s} {'pos':>5s} {'neg':>5s} {'thr':>6s} {'P':>6s} {'R':>6s} {'F1':>6s} {'Acc':>6s} {'TP':>5s} {'FP':>5s} {'FN':>5s}"
+    print(header)
+    print("-"*len(header))
+    for r in rows_sorted:
+        thr = r['threshold']
+        thr_print = f"{thr:.3f}" if isinstance(thr, float) and not isnan(thr) else "  nan"
+        print(f"{r['skill']:18s} {r['pos_support']:5d} {r['neg_support']:5d} "
+              f"{thr_print:>6s} {r['precision']:6.3f} {r['recall']:6.3f} "
+              f"{r['f1']:6.3f} {r['accuracy']:6.3f} {r['tp']:5d} {r['fp']:5d} {r['fn']:5d}")
+
+print("\n" + "="*80)
+print("OVERALL (MICRO) METRICS — pooled over all skills (OC-SVM)")
+print("="*80)
+print(f"Support (all skills): {overall_support}")
+print(f"TP={tot_tp}  FP={tot_fp}  FN={tot_fn}  TN={tot_tn}")
+print(f"Precision: {overall_precision:.3f}  Recall: {overall_recall:.3f}  F1: {overall_f1:.3f}  Accuracy: {overall_accuracy:.3f}")
+
+print("\n" + "="*80)
+print("MACRO AVERAGES — mean of per-skill metrics (OC-SVM)")
+print("="*80)
+print(f"Precision: {macro_precision:.3f}  Recall: {macro_recall:.3f}  F1: {macro_f1:.3f}  Accuracy: {macro_accuracy:.3f}")
+print("="*80 + "\n")
