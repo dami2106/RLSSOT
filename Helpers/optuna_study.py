@@ -28,13 +28,13 @@ def objective(trial, args):
         "radius-gw": trial.suggest_float("radius-gw", 0.001, 0.1, step = 0.001),
         "learning-rate": trial.suggest_categorical("learning-rate", [1e-5, 1e-4, 1e-3, 1e-2, 1e-1]),
         "weight-decay": trial.suggest_categorical("weight-decay", [1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1]),
-        "batch-size": trial.suggest_categorical("batch-size", [2, 16]),
+        "batch-size": trial.suggest_categorical("batch-size", [2, 8]),
         "n-epochs": trial.suggest_int("n-epochs", 5, 50, step = 5),
         "ub-frames": trial.suggest_categorical("ub-frames", [True, False]),
         "ub-actions": trial.suggest_categorical("ub-actions", [True, False]),
         "std-feats": trial.suggest_categorical("std-feats", [True, False]),
         "rho": trial.suggest_float("rho", 0.001, 0.3, step = 0.001),
-        "n-frames": trial.suggest_int("n-frames", 5, 500, step = 5),
+        "n-frames": trial.suggest_int("n-frames", 2, 30, step = 2),
     }
 
     # Fixed parameters (not part of tuning)

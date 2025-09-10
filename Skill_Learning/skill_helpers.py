@@ -8,6 +8,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_recall_fscore_support, classification_report
 from sklearn.metrics import confusion_matrix
 import joblib
+import json
+
+# --------------------------------------------------------------------------------------
+# Existing helper functions above
+# --------------------------------------------------------------------------------------
 
 def get_unique_skills(dir_, files):
     unique_skills = set()
@@ -164,3 +169,117 @@ def check_if_end_skill(state, end_model_skill, threshold=0.0):
     """
     score = float(end_model_skill.decision_function(state.reshape(1, -1)))
     return (score > threshold), score
+
+
+# --------------------------------------------------------------------------------------
+# NEW: Start-model loading & inference utilities
+# --------------------------------------------------------------------------------------
+
+def load_start_models(models_dir):
+    """Load all per-skill start models and their thresholds.
+
+    Expects files of the form:
+      {skill}_clf.joblib      - the calibrated sklearn pipeline model
+      {skill}_meta.json       - contains at least a 'threshold' field
+
+    Returns
+    -------
+    dict: skill -> { 'model': model, 'threshold': float, 'meta': meta_dict }
+    """
+    models = {}
+    if not os.path.isdir(models_dir):
+        raise FileNotFoundError(f"Models directory not found: {models_dir}")
+
+    for fname in os.listdir(models_dir):
+        if not fname.endswith('_clf.joblib'):
+            continue
+        skill = fname[:-10]  # strip '_clf.joblib'
+        model_path = os.path.join(models_dir, fname)
+        meta_path = os.path.join(models_dir, f"{skill}_meta.json")
+
+        try:
+            model = joblib.load(model_path)
+        except Exception as e:
+            print(f"[WARN] Could not load model {model_path}: {e}")
+            continue
+
+        threshold = 0.5
+        meta = {}
+        if os.path.isfile(meta_path):
+            try:
+                with open(meta_path, 'r') as f:
+                    meta = json.load(f)
+                threshold = float(meta.get('threshold', 0.5))
+            except Exception as e:
+                print(f"[WARN] Could not read meta for {skill}: {e}")
+
+        models[skill] = {
+            'model': model,
+            'threshold': threshold,
+            'meta': meta
+        }
+    return models
+
+
+def classify_state_with_start_models(state_vec, start_models, strategy="prob", return_all=False):
+    """Classify a single state into one of the start skill models.
+
+    Parameters
+    ----------
+    state_vec : array-like, shape (d,)
+        Feature vector (same representation used during training, e.g. PCA features).
+    start_models : dict
+        Output of load_start_models(). Each value has keys 'model', 'threshold'.
+    strategy : {'prob', 'margin'}
+        prob   -> choose skill with highest P(positive)
+        margin -> choose skill with largest (P(positive) - threshold)
+    return_all : bool
+        If True, also return detailed per-skill scores/decisions.
+
+    Returns
+    -------
+    best_skill : str or None
+    best_score : float (probability or margin depending on strategy)
+    details (optional) : list of dict per skill
+    """
+    if len(state_vec.shape) != 1:
+        state_vec = state_vec.reshape(-1)
+
+    best_skill = None
+    best_score = -1e9
+    details = []
+
+    for skill, bundle in start_models.items():
+        model = bundle['model']
+        thr = bundle['threshold']
+        try:
+            proba = float(model.predict_proba(state_vec.reshape(1, -1))[0, 1])
+        except AttributeError:
+            # Fallback if model has no predict_proba (shouldn't happen with CalibratedClassifierCV)
+            pred = model.predict(state_vec.reshape(1, -1))[0]
+            proba = float(pred)
+        margin = proba - thr
+        score = proba if strategy == 'prob' else margin
+
+        details.append({
+            'skill': skill,
+            'prob': proba,
+            'threshold': thr,
+            'margin': margin,
+            'passes_threshold': proba >= thr
+        })
+
+        if score > best_score:
+            best_score = score
+            best_skill = skill
+
+    if return_all:
+        return best_skill, best_score, sorted(details, key=lambda d: d['prob'], reverse=True)
+    return best_skill, best_score
+
+
+def filter_skills_passing_threshold(details):
+    """Given the details list from classify_state_with_start_models(return_all=True),
+    return list of skills whose prob >= threshold sorted by descending prob."""
+    passing = [d for d in details if d['passes_threshold']]
+    return sorted(passing, key=lambda d: d['prob'], reverse=True)

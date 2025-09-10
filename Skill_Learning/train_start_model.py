@@ -1,4 +1,5 @@
 import os
+import json
 import numpy as np
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split, StratifiedKFold
@@ -13,13 +14,18 @@ from sklearn.metrics import (
     confusion_matrix,
 )
 from skill_helpers import *
+from joblib import dump
 import pandas as pd 
 from math import isnan
 
-SEED = 0
+SEED = 42
 rng = np.random.default_rng(SEED)
 
-dir_ = 'Data/stone_pick_random_pixels_big'
+dir_ = 'Data/Test'
+
+# Directory to save trained start models & metadata
+models_dir = os.path.join(dir_, 'start_models')
+os.makedirs(models_dir, exist_ok=True)
 files = os.listdir(os.path.join(dir_, 'groundTruth'))
 
 
@@ -106,8 +112,31 @@ for skill in skills:
         "precision": float(precision),
         "recall": float(recall),
         "f1": float(f1),
-        "confusion_matrix": cm
+        "confusion_matrix": cm,
+        "val_f1": float(val_f1)
     }
+
+    # Persist model + metadata
+    model_path = os.path.join(models_dir, f"{skill}_clf.joblib")
+    meta_path = os.path.join(models_dir, f"{skill}_meta.json")
+    try:
+        dump(clf, model_path)
+        with open(meta_path, 'w') as f:
+            json.dump({
+                'skill': skill,
+                'threshold': thr,
+                'val_f1': val_f1,
+                'test_precision': precision,
+                'test_recall': recall,
+                'test_f1': f1,
+                'n_train_pos': int((y_train == 1).sum()),
+                'n_train_neg': int((y_train == 0).sum()),
+                'n_test_pos': int((y_test == 1).sum()),
+                'n_test_neg': int((y_test == 0).sum()),
+                'seed': SEED
+            }, f, indent=2)
+    except Exception as e:
+        print(f"[WARN] Failed to save model/metadata for skill {skill}: {e}")
 
     # print(f"Results: {results[skill]}")
     # print(classification_report(y_test, y_pred, zero_division=0))
@@ -169,6 +198,31 @@ disp_cols = ["skill", "pos_support", "neg_support", "threshold",
 for c in ["threshold", "precision", "recall", "f1", "accuracy"]:
     df[c] = df[c].astype(float).round(3)
 print(df[disp_cols].to_string(index=False))
+
+# Save per-skill metrics table & overall summary
+metrics_csv = os.path.join(models_dir, 'per_skill_metrics.csv')
+metrics_json = os.path.join(models_dir, 'summary_metrics.json')
+try:
+    df.to_csv(metrics_csv, index=False)
+    with open(metrics_json, 'w') as f:
+        json.dump({
+            'overall': {
+                'support': overall_support,
+                'tp': tot_tp, 'fp': tot_fp, 'fn': tot_fn, 'tn': tot_tn,
+                'precision': overall_precision,
+                'recall': overall_recall,
+                'f1': overall_f1,
+                'accuracy': overall_accuracy
+            },
+            'macro': {
+                'precision': macro_precision,
+                'recall': macro_recall,
+                'f1': macro_f1,
+                'accuracy': macro_accuracy
+            }
+        }, f, indent=2)
+except Exception as e:
+    print(f"[WARN] Failed to save aggregate metrics: {e}")
 
 print("\n" + "="*80)
 print("OVERALL (MICRO) METRICS — pooled over all skills")
