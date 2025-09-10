@@ -175,7 +175,7 @@ def check_if_end_skill(state, end_model_skill, threshold=0.0):
 # NEW: Start-model loading & inference utilities
 # --------------------------------------------------------------------------------------
 
-def load_start_models(models_dir):
+def load_models(models_dir):
     """Load all per-skill start models and their thresholds.
 
     Expects files of the form:
@@ -274,7 +274,7 @@ def classify_state_with_start_models(state_vec, start_models, strategy="prob", r
             best_skill = skill
 
     if return_all:
-        return best_skill, best_score, sorted(details, key=lambda d: d['prob'], reverse=True)
+        return sorted(details, key=lambda d: d['prob'], reverse=True)
     return best_skill, best_score
 
 
@@ -283,3 +283,106 @@ def filter_skills_passing_threshold(details):
     return list of skills whose prob >= threshold sorted by descending prob."""
     passing = [d for d in details if d['passes_threshold']]
     return sorted(passing, key=lambda d: d['prob'], reverse=True)
+
+
+def get_bc_data(dir_, skill, files, feature_name = 'pca_features'):
+    all_skill_states = []
+    all_other_states = []
+
+    all_skill_actions = []
+    all_other_actions = []
+
+    for file in files:
+        with open(os.path.join(dir_, 'groundTruth', file), 'r') as f:
+            lines = f.read().splitlines()
+
+        pca_feats = np.load(os.path.join(dir_, feature_name, file + '.npy'))
+        actions = np.load(os.path.join(dir_, 'actions', file + '.npy'))
+
+        # indices where this skill appears
+        skill_indices = [i for i, x in enumerate(lines) if x == skill]
+
+
+        # all frames of this skill
+        for i in skill_indices:
+            all_skill_states.append(pca_feats[i].tolist())
+            all_skill_actions.append(actions[i])
+
+        # all_other_states: all frames NOT belonging to this skill
+        for i in range(len(pca_feats)):
+            if lines[i] != skill:
+                all_other_states.append(pca_feats[i].tolist())
+                all_other_actions.append(actions[i])
+
+    return (
+        np.array(all_skill_states),
+        np.array(all_other_states),
+        np.array(all_skill_actions),
+        np.array(all_other_actions)
+    )
+
+
+def check_end_state(state_vec, end_models, skill, strategy="prob", return_all=False):
+    """Decide if a single state is an END state for a given skill.
+
+    Parameters
+    ----------
+    state_vec : array-like, shape (d,)
+        Feature vector (same representation used during training).
+    end_models : dict
+        Mapping {skill_name: {'model': fitted_estimator, 'threshold': float}}.
+        Typically created by your end-model training/saving code.
+    skill : str
+        The skill whose end-state model should be used.
+    strategy : {'prob', 'margin'}, default='prob'
+        'prob'   -> return the model's P(end | state) as the score.
+        'margin' -> return (P(end | state) - threshold) as the score.
+    return_all : bool, default=False
+        If True, return a details dict instead of (is_end, score).
+
+    Returns
+    -------
+    is_end : bool
+        Whether the state is predicted to be an end state for `skill`
+        using the stored threshold.
+    score : float
+        Either probability or margin depending on `strategy`.
+    details (optional) : dict
+        {'skill', 'prob', 'threshold', 'margin', 'passes_threshold'}
+    """
+    if hasattr(state_vec, "shape") and len(state_vec.shape) != 1:
+        state_vec = state_vec.reshape(-1)
+
+    if skill not in end_models:
+        raise ValueError(f"No end-state model found for skill '{skill}'")
+
+    bundle = end_models[skill]
+    model = bundle.get('model', None)
+    thr = float(bundle.get('threshold', 0.5))
+
+    if model is None:
+        raise ValueError(f"End-state model bundle for '{skill}' is missing 'model'")
+
+    # Get probability of 'end' class
+    try:
+        proba = float(model.predict_proba(state_vec.reshape(1, -1))[0, 1])
+    except AttributeError:
+        # Fallback if the model lacks predict_proba (should be rare with CalibratedClassifierCV)
+        pred = model.predict(state_vec.reshape(1, -1))[0]
+        proba = float(pred)
+
+    margin = proba - thr
+    is_end = proba >= thr
+    score = proba if strategy == "prob" else margin
+
+    details = {
+        'skill': skill,
+        'prob': proba,
+        'threshold': thr,
+        'margin': margin,
+        'passes_threshold': is_end
+    }
+
+    if return_all:
+        return details
+    return is_end, score
