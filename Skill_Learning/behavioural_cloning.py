@@ -75,121 +75,125 @@ dir_ = 'Data/Test'
 files = os.listdir(os.path.join(dir_, 'groundTruth'))
 
 unique_skills = get_unique_skills(dir_, files)
+skill = "wood"
+# for skill in unique_skills:
 
-for skill in unique_skills:
+print(f"===== TRAINING SKILL {skill} =====")
+episodes = get_bc_data_by_episode(dir_, files, skill, feature_name='pca_features')
+rng = np.random.default_rng(0)
+idx = np.arange(len(episodes))
+rng.shuffle(idx)
+n = len(idx)
+train_idx = idx[: int(0.8*n)]
+val_idx   = idx[int(0.8*n): int(0.9*n)]
+test_idx  = idx[int(0.9*n):]
 
-    print(f"===== TRAINING SKILL {skill} =====")
-    episodes = get_bc_data_by_episode(dir_, files, skill, feature_name='pca_features')
-    rng = np.random.default_rng(0)
-    idx = np.arange(len(episodes))
-    rng.shuffle(idx)
-    n = len(idx)
-    train_idx = idx[: int(0.8*n)]
-    val_idx   = idx[int(0.8*n): int(0.9*n)]
-    test_idx  = idx[int(0.9*n):]
-
-    train_eps = [episodes[i] for i in train_idx]
-    val_eps   = [episodes[i] for i in val_idx]
-    test_eps  = [episodes[i] for i in test_idx]
-
-
-    X_tr, y_tr = bc_flatten_split(train_eps, use_skill=True)
-    X_va, y_va = bc_flatten_split(val_eps,   use_skill=True)
-    X_te, y_te = bc_flatten_split(test_eps,  use_skill=True)
+train_eps = [episodes[i] for i in train_idx]
+val_eps   = [episodes[i] for i in val_idx]
+test_eps  = [episodes[i] for i in test_idx]
 
 
-    print(X_tr.shape, y_tr.shape)
-    print(X_va.shape, y_va.shape)
-    print(X_te.shape, y_te.shape)
+X_tr, y_tr = bc_flatten_split(train_eps, use_skill=True)
+X_va, y_va = bc_flatten_split(val_eps,   use_skill=True)
+X_te, y_te = bc_flatten_split(test_eps,  use_skill=True)
 
 
-    scaler = Standardizer()
-    X_tr = scaler.fit_transform(X_tr)
-    X_va = scaler.transform(X_va)
-    X_te = scaler.transform(X_te)
+print(X_tr.shape, y_tr.shape)
+print(X_va.shape, y_va.shape)
+print(X_te.shape, y_te.shape)
 
 
-    train_ds = BCDataset(X_tr, y_tr)
-    val_ds   = BCDataset(X_va, y_va)
-    test_ds  = BCDataset(X_te, y_te)
-
-    n_actions = 16
-    counts = np.bincount(y_tr, minlength=n_actions).astype(np.float64)
-    inv = np.zeros_like(counts); obs = counts > 0
-    inv[obs] = 1.0 / counts[obs]
-    sample_w = inv[y_tr]  # per-sample weight = inverse freq of its class
-    sampler = WeightedRandomSampler(sample_w, num_samples=len(sample_w), replacement=True)
-
-    use_mps = torch.backends.mps.is_available()
-    train_loader = DataLoader(train_ds, batch_size=1024, sampler=sampler, shuffle=False, pin_memory=not use_mps) 
-    val_loader   = DataLoader(val_ds,   batch_size=2048, shuffle=False, pin_memory=not use_mps)
-    test_loader  = DataLoader(test_ds,  batch_size=2048, shuffle=False, pin_memory=not use_mps)
+scaler = Standardizer()
+X_tr = scaler.fit_transform(X_tr)
+X_va = scaler.transform(X_va)
+X_te = scaler.transform(X_te)
 
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = PolicyMLP(d_in=X_tr.shape[1], n_actions=n_actions).to(device)
+train_ds = BCDataset(X_tr, y_tr)
+val_ds   = BCDataset(X_va, y_va)
+test_ds  = BCDataset(X_te, y_te)
 
-    criterion = nn.CrossEntropyLoss()  # keep weights OFF
-    opt = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
+n_actions = 16
+counts = np.bincount(y_tr, minlength=n_actions).astype(np.float64)
+inv = np.zeros_like(counts); obs = counts > 0
+inv[obs] = 1.0 / counts[obs]
+sample_w = inv[y_tr]  # per-sample weight = inverse freq of its class
+sampler = WeightedRandomSampler(sample_w, num_samples=len(sample_w), replacement=True)
 
-    best_val = float('inf'); patience=10; bad=0
-    for epoch in range(800):
-        # train
-        model.train()
-        total = 0.0
-        for xb, yb in train_loader:
-            xb, yb = xb.to(device), yb.to(device)
-            opt.zero_grad()
-            logits = model(xb)
-            loss = criterion(logits, yb)
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            opt.step()
-            total += loss.item() * xb.size(0)
-        train_loss = total / len(train_ds)
-
-        # val
-        model.eval()
-        with torch.no_grad():
-            tot, correct = 0.0, 0
-            for xb, yb in val_loader:
-                xb, yb = xb.to(device), yb.to(device)
-                logits = model(xb)
-                loss = criterion(logits, yb)
-                tot += loss.item() * xb.size(0)
-                pred = logits.argmax(dim=1)
-                correct += (pred == yb).sum().item()
-            val_loss = tot / len(val_ds)
-            val_acc = correct / len(val_ds)
-
-        print(f"epoch {epoch:03d} | train {train_loss:.4f} | val {val_loss:.4f} | acc {val_acc:.3f}")
-
-        # early stop on val CE
-        if val_loss + 1e-6 < best_val:
-            best_val = val_loss
-            bad = 0
-            best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
-        else:
-            bad += 1
-            if bad >= patience:
-                break
+use_mps = torch.backends.mps.is_available()
+train_loader = DataLoader(train_ds, batch_size=1024, sampler=sampler, shuffle=False, pin_memory=not use_mps) 
+val_loader   = DataLoader(val_ds,   batch_size=2048, shuffle=False, pin_memory=not use_mps)
+test_loader  = DataLoader(test_ds,  batch_size=2048, shuffle=False, pin_memory=not use_mps)
 
 
-    model.load_state_dict(best_state)
-    model.to(device)
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = PolicyMLP(d_in=X_tr.shape[1], n_actions=n_actions, hidden_sizes=(384, 252)).to(device)
 
-    # quick test metric
+criterion = nn.CrossEntropyLoss()  # keep weights OFF
+opt = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-3)
+
+best_val = float('inf'); patience=10; bad=0
+for epoch in range(168):
+    # train
+    model.train()
+    total = 0.0
+    for xb, yb in train_loader:
+        xb, yb = xb.to(device), yb.to(device)
+        opt.zero_grad()
+        logits = model(xb)
+        loss = criterion(logits, yb)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+        opt.step()
+        total += loss.item() * xb.size(0)
+    train_loss = total / len(train_ds)
+
+    # val
     model.eval()
     with torch.no_grad():
         tot, correct = 0.0, 0
-        for xb, yb in test_loader:
+        for xb, yb in val_loader:
             xb, yb = xb.to(device), yb.to(device)
             logits = model(xb)
             loss = criterion(logits, yb)
             tot += loss.item() * xb.size(0)
-            correct += (logits.argmax(1) == yb).sum().item()
-        print(f"TEST  NLL {tot/len(test_ds):.4f} | ACC {correct/len(test_ds):.3f}")
+            pred = logits.argmax(dim=1)
+            correct += (pred == yb).sum().item()
+        val_loss = tot / len(val_ds)
+        val_acc = correct / len(val_ds)
 
-    print("========================\n")
+    print(f"epoch {epoch:03d} | train {train_loss:.4f} | val {val_loss:.4f} | acc {val_acc:.3f}")
+
+    # early stop on val CE
+    if val_loss + 1e-6 < best_val:
+        best_val = val_loss
+        bad = 0
+        best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+    # else:
+    #     bad += 1
+    #     if bad >= patience:
+    #         break
 
 
+model.load_state_dict(best_state)
+model.to(device)
+
+# quick test metric
+model.eval()
+with torch.no_grad():
+    tot, correct = 0.0, 0
+    for xb, yb in test_loader:
+        xb, yb = xb.to(device), yb.to(device)
+        logits = model(xb)
+        loss = criterion(logits, yb)
+        tot += loss.item() * xb.size(0)
+        correct += (logits.argmax(1) == yb).sum().item()
+    print(f"TEST  NLL {tot/len(test_ds):.4f} | ACC {correct/len(test_ds):.3f}")
+
+print("========================\n")
+
+
+
+#Save model and scaler to disk
+torch.save(model.state_dict(), f"model_{skill}.pt")
+joblib.dump(scaler, f"scaler_{skill}.pkl")
