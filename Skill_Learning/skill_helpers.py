@@ -9,6 +9,7 @@ from sklearn.metrics import precision_recall_fscore_support, classification_repo
 from sklearn.metrics import confusion_matrix
 import joblib
 import json
+import torch
 
 # --------------------------------------------------------------------------------------
 # Existing helper functions above
@@ -285,42 +286,6 @@ def filter_skills_passing_threshold(details):
     return sorted(passing, key=lambda d: d['prob'], reverse=True)
 
 
-def get_bc_data(dir_, skill, files, feature_name = 'pca_features'):
-    all_skill_states = []
-    all_other_states = []
-
-    all_skill_actions = []
-    all_other_actions = []
-
-    for file in files:
-        with open(os.path.join(dir_, 'groundTruth', file), 'r') as f:
-            lines = f.read().splitlines()
-
-        pca_feats = np.load(os.path.join(dir_, feature_name, file + '.npy'))
-        actions = np.load(os.path.join(dir_, 'actions', file + '.npy'))
-
-        # indices where this skill appears
-        skill_indices = [i for i, x in enumerate(lines) if x == skill]
-
-
-        # all frames of this skill
-        for i in skill_indices:
-            all_skill_states.append(pca_feats[i].tolist())
-            all_skill_actions.append(actions[i])
-
-        # all_other_states: all frames NOT belonging to this skill
-        for i in range(len(pca_feats)):
-            if lines[i] != skill:
-                all_other_states.append(pca_feats[i].tolist())
-                all_other_actions.append(actions[i])
-
-    return (
-        np.array(all_skill_states),
-        np.array(all_other_states),
-        np.array(all_skill_actions),
-        np.array(all_other_actions)
-    )
-
 
 def check_end_state(state_vec, end_models, skill, strategy="prob", return_all=False):
     """Decide if a single state is an END state for a given skill.
@@ -386,3 +351,72 @@ def check_end_state(state_vec, end_models, skill, strategy="prob", return_all=Fa
     if return_all:
         return details
     return is_end, score
+
+def get_bc_data_by_episode(dir_, files, skill, feature_name='pca_features'):
+    """
+    Returns a list[dict] with one dict per episode (file).
+    Each dict keeps states/actions for the requested `skill` and for 'other'.
+    Also includes full episode arrays and a boolean skill mask for flexibility.
+    """
+    episodes = []
+
+    for file in files:
+        # Load per-episode artifacts
+        with open(os.path.join(dir_, 'groundTruth', file), 'r') as f:
+            lines = f.read().splitlines()  # len = T
+
+        pca_path = os.path.join(dir_, feature_name, file + '.npy')
+        act_path = os.path.join(dir_, 'actions', file + '.npy')
+
+        states = np.load(pca_path)        # shape [T, d]
+        actions = np.load(act_path)       # shape [T]
+
+        # Sanity checks
+        if len(lines) != len(states) or len(states) != len(actions):
+            raise ValueError(
+                f"Length mismatch in {file}: "
+                f"labels={len(lines)} states={len(states)} actions={len(actions)}"
+            )
+
+        # Boolean mask for frames belonging to the skill
+        skill_mask = np.array([lab == skill for lab in lines], dtype=bool)
+        other_mask = ~skill_mask
+
+        # Slice once, keep per-episode arrays
+        ep = dict(
+            episode_id=file,
+            # requested slices
+            skill_states=states[skill_mask],
+            skill_actions=actions[skill_mask],
+            other_states=states[other_mask],
+            other_actions=actions[other_mask],
+            # optional full episode (handy for sequence models)
+            states=states,
+            actions=actions,
+            skill_mask=skill_mask
+        )
+        episodes.append(ep)
+
+    return episodes
+
+def bc_flatten_split(episode_dicts, use_skill=True):
+    """
+    Converts a list of per-episode dicts into (X, y) step-level arrays.
+    If use_skill=True, uses only frames matching the `skill`; otherwise uses 'other'.
+    """
+    X, y = [], []
+    s_key = 'skill_states' if use_skill else 'other_states'
+    a_key = 'skill_actions' if use_skill else 'other_actions'
+    for ep in episode_dicts:
+        X.append(ep[s_key])
+        y.append(ep[a_key])
+    if len(X) == 0:
+        return np.empty((0,)), np.empty((0,), dtype=int)
+    return np.concatenate(X, axis=0), np.concatenate(y, axis=0)
+
+def compute_class_weights(y, n_classes):
+    # inverse frequency -> normalize to mean=1
+    counts = np.bincount(y, minlength=n_classes).astype(np.float32)
+    inv = 1.0 / np.maximum(counts, 1.0)
+    inv *= (counts.mean() * 1.0) / inv.mean()
+    return torch.tensor(inv, dtype=torch.float32)
