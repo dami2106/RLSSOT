@@ -166,6 +166,51 @@ def save_skill_ordering(skills, fname, out_dir="skill_orderings"):
             f.write(f"{skill}\n")
 
 
+def save_skill_segments(skills, fname, out_dir="skill_segments"):
+    """
+    Save skill segments as a dictionary mapping skill_id to list of active indices.
+    Args:
+        skills: 1D numpy array or list of skill indices (length = num_frames)
+        fname:  Name of the episode/file (used for naming the output file)
+        out_dir: Directory to save the text files
+    """
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, f"{fname}_segments.txt")
+    
+    # Convert to numpy array for easier processing
+    if hasattr(skills, 'cpu'):
+        skills = skills.cpu().numpy()
+    skills = np.array(skills)
+    
+    # Find segment boundaries
+    skill_changes = np.where(np.diff(skills) != 0)[0] + 1
+    segment_boundaries = np.concatenate(([0], skill_changes, [len(skills)]))
+    
+    # Group consecutive indices by skill
+    skill_segments = {}
+    for i in range(len(segment_boundaries) - 1):
+        start_idx = segment_boundaries[i]
+        end_idx = segment_boundaries[i + 1]
+        skill_id = skills[start_idx]
+        
+        if skill_id not in skill_segments:
+            skill_segments[skill_id] = []
+        
+        # Add the range of indices for this skill segment
+        skill_segments[skill_id].append(list(range(start_idx, end_idx)))
+    
+    # Write to file
+    with open(out_path, "w") as f:
+        f.write("skill_segments:\n")
+        for skill_id in sorted(skill_segments.keys()):
+            f.write(f"skill_{skill_id}:\n")
+            for segment in skill_segments[skill_id]:
+                f.write(f"  - {segment}\n")
+            f.write("\n")
+    
+    return skill_segments
+
+
 def save_matching_mapping(pred_to_gt, out_dir="mapping"):
     """
     Save the Hungarian matching (predicted to GT mapping) to a text file.

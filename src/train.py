@@ -276,11 +276,13 @@ class VideoSSL(pl.LightningModule):
                     saved_matching_mapping = True
 
                 skills = (
-                    pred[0].cpu().numpy().tolist()
+                    pred[0].cpu().numpy()
                     if hasattr(pred, 'cpu')
-                    else np.array(pred).tolist()
+                    else np.array(pred)
                 )
+                # Save both the original format and the new segments format
                 save_skill_ordering(skills, fname[0], out_dir=skills_dir)
+                save_skill_segments(skills, fname[0], out_dir=skills_dir)
                 
 
 

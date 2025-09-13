@@ -10,7 +10,9 @@ from sklearn.metrics import confusion_matrix
 import joblib
 import json
 import torch
-
+from typing import List, Dict, Iterable, Any
+import os
+from pathlib import Path
 # --------------------------------------------------------------------------------------
 # Existing helper functions above
 # --------------------------------------------------------------------------------------
@@ -46,10 +48,38 @@ def segment_edges(lst, mode):
 
     return edges
 
+def make_skill_segments(acts, truth):
 
+    segment_actions = [i for i in range(5, 17)]
 
-# [s1, s2, s3],   [s4, s5],    [s6, s7, s8, s9]
-# skill_1         skill_2      skill_1
+    def _segments(cum_ends: List[int]) -> List[List[int]]:
+        # cum_ends contains 1-based inclusive end-index positions
+        bounds = [-1] + cum_ends
+        return [list(range(lo + 1, hi + 1)) for lo, hi in zip(bounds[:-1], bounds[1:])]
+
+    # 1-based inclusive segment ends where acts[i] is a boundary action
+    cum_ends = [i + 1 for i, a in enumerate(acts) if a in segment_actions]
+
+    idx_groups = _segments(cum_ends)
+
+    # print("IDX GROUPS", idx_groups) 
+
+    #Make sure idx_groups[-1][-1] is len(acts)-1
+    if idx_groups[-1][-1] != len(acts)-1:
+        idx_groups[-1].append(len(acts)-1)
+
+    skill_segments: Dict[str, List[List[int]]] = {}
+    for seg in idx_groups:
+        labels = {truth[idx] for idx in seg}
+        if len(labels) != 1:
+            raise ValueError(f"Mixed labels in segment {seg}: {labels}")
+        label = labels.pop()
+        skill_segments.setdefault(label, []).append(seg)
+
+    return skill_segments
+
+# [s1, s2, s3],   [s4, s5],    [s6, s7, s8, s9, s10, s11, s12]
+# skill_1         skill_2      skill_1 is used twice (s6 - s9, s10 - s11)
 
 # for skill_1, 
 # start_states     = [s1, s6]
@@ -57,70 +87,66 @@ def segment_edges(lst, mode):
 # all_skill_states = [s1, s2, s3,   s6, s7, s8, s9]
 
 # negative_end_skill = [s1, s2, s6, s7, s8]
-# negative_end_all = [s1, s2, s4, s5, s6, s7, s8]
 
-def get_start_end_states(dir_, skill, files):
+
+# ------
+# negative_end_all = [s1, s2, s4, s5, s6, s7, s8]
+# all_other_states = [s4, s5]
+
+def get_start_end_states(dir_, skill, features_dirname='pca_features'):
+    dir_ = Path(dir_)
+
     start_states = []
     end_states = []
     all_skill_states = []
 
     negative_end_skill = []
-    negative_end_all = []
-    all_other_states = []
+    all_other_states = []   # states from skills != `skill`
+
+    gt_dir = dir_ / 'groundTruth'
+    act_dir = dir_ / 'actions'
+    feat_dir = dir_ / features_dirname
+
+    files = os.listdir(gt_dir)
 
     for file in files:
-        with open(os.path.join(dir_, 'groundTruth', file), 'r') as f:
-            lines = f.read().splitlines()
+        with open(gt_dir / file, 'r') as f:
+            truths = f.read().splitlines()
 
-        pca_feats = np.load(os.path.join(dir_, 'pca_features', file + '.npy'))
+        feats = np.load(feat_dir / f'{file}.npy')      # shape: [T, D]
+        actions = np.load(act_dir / f'{file}.npy')     # shape: [T] or [T, ...]
 
-        # keep them in sync in case of off-by-one labeling issues
-        n = min(len(lines), len(pca_feats))
-        lines = lines[:n]
-        pca_feats = pca_feats[:n]
+        # dict: { skill_name: [ [idxs...], [idxs...], ... ] }
+        segs_for_skill = make_skill_segments(actions, truths)
 
-        # indices where this skill appears
-        skill_indices = [i for i, x in enumerate(lines) if x == skill]
+        for skill_name, segs in segs_for_skill.items():
+            for seg in segs:
+                # seg is a list of time indices for this segment
+                if skill_name == skill:
+                    # starts/ends for the target skill
+                    start_states.append(feats[seg[0]])
+                    end_states.append(feats[seg[-1]])
 
-        # starts and ends for this skill's contiguous segments
-        starts = segment_edges(skill_indices, mode="start")
-        ends   = segment_edges(skill_indices, mode="end")
+                    # all states for the target skill
+                    all_skill_states.extend(feats[seg])
 
-        # for quick membership tests
-        ends_set = set(ends)
+                    # "negative end" within the skill = everything except the segment's last state
+                    if len(seg) > 1:
+                        negative_end_skill.extend(feats[seg[:-1]])
+                else:
+                    # all states from other skills
+                    all_other_states.extend(feats[seg])
 
-        # collect start & end feature vectors for this skill
-        for s in starts:
-            start_states.append(pca_feats[s].tolist())
-        for e in ends:
-            end_states.append(pca_feats[e].tolist())
-
-        # all frames of this skill
-        for i in skill_indices:
-            all_skill_states.append(pca_feats[i].tolist())
-
-        # negative_end_skill: all skill frames except the skill's end frames
-        for i in skill_indices:
-            if i not in ends_set:
-                negative_end_skill.append(pca_feats[i].tolist())
-
-        # negative_end_all: all frames (any label) except the skill's end frames
-        for i in range(n):
-            if i not in ends_set:
-                negative_end_all.append(pca_feats[i].tolist())
-
-        # all_other_states: all frames NOT belonging to this skill
-        for i in range(n):
-            if lines[i] != skill:
-                all_other_states.append(pca_feats[i].tolist())
+    # negative_end_all = negative_end_skill plus all states from other skills
+    negative_end_all = list(negative_end_skill) + list(all_other_states)
 
     return (
-        np.array(start_states),
-        np.array(end_states),
-        np.array(all_skill_states),
-        np.array(negative_end_skill),
-        np.array(negative_end_all),
-        np.array(all_other_states),
+        np.asarray(start_states),
+        np.asarray(end_states),
+        np.asarray(all_skill_states),
+        np.asarray(negative_end_skill),
+        np.asarray(negative_end_all),
+        np.asarray(all_other_states),
     )
 
 def evaluate_ocsvm(X_pos_train, X_pos_val, X_neg_val, nu, gamma):
