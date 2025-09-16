@@ -106,7 +106,11 @@ if __name__ == "__main__":
     results_filename = f"optuna_results_{args.filename}.csv"
     best_filename = f"{args.filename}_best.csv"
 
-    study_file = os.path.join(directory, study_filename)
+    # Create base save dir: <dataset>/optuna/<filename>/
+    base_save_dir = os.path.join(directory, "optuna", args.filename)
+    os.makedirs(base_save_dir, exist_ok=True)
+
+    study_file = os.path.join(base_save_dir, study_filename)
     if os.path.exists(study_file):
         print("Study file found. Resuming the study.")
         study = joblib.load(study_file)
@@ -117,13 +121,13 @@ if __name__ == "__main__":
     study.optimize(
         lambda trial: objective(trial, args),
         n_trials=args.trials,
-        callbacks=[lambda study, trial: save_study_progress(study, directory, results_filename, study_filename)]
+        callbacks=[lambda study, trial: save_study_progress(study, base_save_dir, results_filename, study_filename)]
     )
 
-    save_study_progress(study, directory, results_filename, study_filename)
+    save_study_progress(study, base_save_dir, results_filename, study_filename)
 
-    # Save best trial to filename_best.csv
+    # Save best trial to <dataset>/optuna/<filename>/<filename>_best.csv
     best_trial = study.best_trial
     df_all = study.trials_dataframe()
     df_best = df_all[df_all["number"] == best_trial.number]
-    df_best.to_csv(os.path.join(directory, best_filename), index=False)
+    df_best.to_csv(os.path.join(base_save_dir, best_filename), index=False)
