@@ -1,6 +1,15 @@
 #!/bin/bash
+#SBATCH --job-name=asot_train      # Job name
+#SBATCH --partition=bigbatch                     # Replace with your cluster's GPU partition name
+#SBATCH --output=/home-mscluster/dharvey/HiSD/RLSSOT/train_log.out  # Standard output and error log
+# Load your environment
+
+source ~/.bashrc
+conda activate SOTA
+
 export CUBLAS_WORKSPACE_CONFIG=:4096:8
-# --- Hyperparameters and OT segmentation parameters ---
+
+
 ALPHA_TRAIN=0.6
 ALPHA_EVAL=0.26
 
@@ -17,15 +26,15 @@ EPS_EVAL=0.027
 RADIUS_GW=0.007
 
 # --- Dataset parameters ---
-DATASET="wsws_static/wsws_static_pixels_big"
-FEATURE_NAME="pca_features"
+DATASET="../Craftax/Traces/stone_pickaxe_easy"
+FEATURE_NAME="pca_features_512"
 STD_FEATS=true
 SAVE_DIRECTORY="runs"
-RUN="wsws_static_pixels_big"
+RUN="stone_pickaxe_easy_test"
 VAL_FREQ=5
 
 # --- General parameters ---
-N_EPOCHS=50
+N_EPOCHS=5
 BATCH_SIZE=16
 N_FRAMES=20
 LEARNING_RATE=0.1

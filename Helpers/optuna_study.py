@@ -7,11 +7,11 @@ import joblib
 import os
 import argparse
 
-def save_study_progress(study, save_dir):
+def save_study_progress(study, save_dir, csv_filename, study_filename):
     """Saves the study results to a CSV file and the study object to a pickle file."""
     df = study.trials_dataframe()
-    df.to_csv(os.path.join(save_dir, 'optuna_results.csv'), index=False)
-    joblib.dump(study, os.path.join(save_dir, 'optuna_study.pkl'))
+    df.to_csv(os.path.join(save_dir, csv_filename), index=False)
+    joblib.dump(study, os.path.join(save_dir, study_filename))
 
 def objective(trial, args):
     """Objective function to optimize hyperparameters"""
@@ -41,7 +41,7 @@ def objective(trial, args):
     fixed_params = {
         "dataset": args.dataset,
         "feature-name": args.feature_name,
-        "save-directory": 'Traces' + args.dataset,
+        "save-directory": args.dataset,
         "n-clusters": args.clusters,
         "layers": args.layers,
         "val-freq": 100,
@@ -85,7 +85,7 @@ def objective(trial, args):
     test_miou_full = metrics.get("test_miou_full", 0)
     test_miou_per = metrics.get("test_miou_per", 0)
 
-    return (0.8 * test_miou_full) + (0.2 * test_miou_per)
+    return test_miou_full
 
 # Entry point
 if __name__ == "__main__":
@@ -95,30 +95,35 @@ if __name__ == "__main__":
     parser.add_argument('--feature-name', type=str, default='pca_features', help='Name of the features folder')
     parser.add_argument('--clusters', type=int, default=3, help='Nb of clusters')
     parser.add_argument('--layers', '-ls',  type=str, help='layer sizes for MLP (in, hidden, ..., out)')
-    parser.add_argument('--trials',  default=1600, type=int, help='nb of trials')
+    parser.add_argument('--trials',  default=1500, type=int, help='nb of trials')
+    parser.add_argument('--filename', type=str, required=True, help='Base name used to build output filenames')
     args = parser.parse_args()
 
-    directory = "Traces/" + args.dataset
+    directory = args.dataset
 
-    study_file = os.path.join(directory, 'optuna_study.pkl')
+    # Derive filenames
+    study_filename = f"optuna_study_{args.filename}.pkl"
+    results_filename = f"optuna_results_{args.filename}.csv"
+    best_filename = f"{args.filename}_best.csv"
+
+    study_file = os.path.join(directory, study_filename)
     if os.path.exists(study_file):
         print("Study file found. Resuming the study.")
-        study = joblib.load(os.path.join(directory, 'optuna_study.pkl'))
+        study = joblib.load(study_file)
     else:
         print("No study file found. Starting a new study.")
         study = optuna.create_study(direction="maximize")
 
-
     study.optimize(
         lambda trial: objective(trial, args),
         n_trials=args.trials,
-        callbacks=[lambda study, trial: save_study_progress(study, directory)]
+        callbacks=[lambda study, trial: save_study_progress(study, directory, results_filename, study_filename)]
     )
 
-    save_study_progress(study, directory)
+    save_study_progress(study, directory, results_filename, study_filename)
 
-    # Save best trial to best.csv
+    # Save best trial to filename_best.csv
     best_trial = study.best_trial
     df_all = study.trials_dataframe()
     df_best = df_all[df_all["number"] == best_trial.number]
-    df_best.to_csv(os.path.join(directory, 'best.csv'), index=False)
+    df_best.to_csv(os.path.join(directory, best_filename), index=False)

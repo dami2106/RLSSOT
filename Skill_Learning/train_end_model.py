@@ -21,7 +21,7 @@ from math import isnan
 SEED = 42
 rng = np.random.default_rng(SEED)
 
-dir_ = 'Data/Test'
+dir_ = 'Craftax-Skill-Data/Traces/stone_pickaxe_easy'
 
 # Directory to save trained end models & metadata
 models_dir = os.path.join(dir_, 'end_models')
@@ -69,8 +69,7 @@ skills = get_unique_skills(dir_, files)
 
 for skill in skills:
     start_states, end_states, all_skill_states, negative_end_skill, \
-        negative_end_all, all_other_states = get_start_end_states(dir_, skill, files)
-
+        negative_end_all, all_other_states = get_start_end_states(dir_, skill, features_dirname='pca_features_512')
     positive_states = end_states
     negative_states = negative_end_all
 

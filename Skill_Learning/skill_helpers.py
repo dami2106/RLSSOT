@@ -214,8 +214,8 @@ def load_models(models_dir):
     dict: skill -> { 'model': model, 'threshold': float, 'meta': meta_dict }
     """
     models = {}
-    if not os.path.isdir(models_dir):
-        raise FileNotFoundError(f"Models directory not found: {models_dir}")
+    # if not os.path.isdir(models_dir):
+    #     raise FileNotFoundError(f"Models directory not found: {models_dir}")
 
     for fname in os.listdir(models_dir):
         if not fname.endswith('_clf.joblib'):

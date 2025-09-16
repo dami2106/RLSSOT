@@ -17,11 +17,12 @@ from skill_helpers import *
 from joblib import dump
 import pandas as pd 
 from math import isnan
+from pathlib import Path
 
 SEED = 42
 rng = np.random.default_rng(SEED)
 
-dir_ = 'Data/Test'
+dir_ = 'Craftax-Skill-Data/Traces/stone_pickaxe_easy'
 
 # Directory to save trained start models & metadata
 models_dir = os.path.join(dir_, 'start_models')
@@ -32,7 +33,7 @@ files = os.listdir(os.path.join(dir_, 'groundTruth'))
 def make_clf(C=1.0, seed=SEED):
     base = make_pipeline(
         StandardScaler(),
-        LinearSVC(class_weight="balanced", dual="auto", max_iter=50000, C=C, random_state=seed)
+        LinearSVC(class_weight="balanced", dual="auto", max_iter=100000, C=C, random_state=seed)
     )
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=seed)
     return CalibratedClassifierCV(estimator=base, method="sigmoid", cv=cv)
@@ -69,7 +70,7 @@ skills = get_unique_skills(dir_, files)
 
 for skill in skills:
     start_states, end_states, all_skill_states, negative_end_skill, \
-        negative_end_all, all_other_states = get_start_end_states(dir_, skill, files)
+        negative_end_all, all_other_states = get_start_end_states(dir_, skill, features_dirname='pca_features_512')
 
     positive_states = negative_end_skill
     negative_states = np.concatenate((end_states, all_other_states))

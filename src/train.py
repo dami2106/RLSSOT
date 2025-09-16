@@ -426,9 +426,9 @@ if __name__ == '__main__':
 
     pl.seed_everything(args.seed)
 
-    data_val = RLDataset('Traces', args.dataset, args.n_frames, standardise=args.std_feats, random=False, feature_type=args.feature_name)
-    data_train = RLDataset('Traces', args.dataset, args.n_frames, standardise=args.std_feats, random=True, feature_type=args.feature_name)
-    data_test = RLDataset('Traces', args.dataset, None, standardise=args.std_feats, random=False, feature_type=args.feature_name)
+    data_val = RLDataset('', args.dataset, args.n_frames, standardise=args.std_feats, random=False, feature_type=args.feature_name)
+    data_train = RLDataset('', args.dataset, args.n_frames, standardise=args.std_feats, random=True, feature_type=args.feature_name)
+    data_test = RLDataset('', args.dataset, None, standardise=args.std_feats, random=False, feature_type=args.feature_name)
     #Maybe combine above ^ 
     val_loader = DataLoader(data_val, batch_size=args.batch_size,shuffle=False)
     train_loader = DataLoader(data_train, batch_size=args.batch_size, shuffle=True)

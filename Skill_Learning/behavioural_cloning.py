@@ -71,15 +71,15 @@ class PolicyMLP(nn.Module):
         return self.head(self.backbone(x))
 
 
-dir_ = 'Data/Test'
+dir_ = 'Craftax-Skill-Data/Traces/stone_pickaxe_easy'
 files = os.listdir(os.path.join(dir_, 'groundTruth'))
 
 unique_skills = get_unique_skills(dir_, files)
-skill = "wood"
+skill = "stone"
 # for skill in unique_skills:
 
 print(f"===== TRAINING SKILL {skill} =====")
-episodes = get_bc_data_by_episode(dir_, files, skill, feature_name='pca_features')
+episodes = get_bc_data_by_episode(dir_, files, skill, feature_name='pca_features_512')
 rng = np.random.default_rng(0)
 idx = np.arange(len(episodes))
 rng.shuffle(idx)
@@ -194,6 +194,6 @@ print("========================\n")
 
 
 
-#Save model and scaler to disk
-torch.save(model.state_dict(), f"model_{skill}.pt")
-joblib.dump(scaler, f"scaler_{skill}.pkl")
+# #Save model and scaler to disk
+# torch.save(model.state_dict(), f"model_{skill}.pt")
+# joblib.dump(scaler, f"scaler_{skill}.pkl")
