@@ -1,8 +1,8 @@
 import os
 import json
 import numpy as np
-from sklearn.utils import shuffle
-from sklearn.model_selection import train_test_split, StratifiedKFold
+import pandas as pd
+from joblib import dump
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
@@ -10,96 +10,114 @@ from sklearn.calibration import CalibratedClassifierCV
 from sklearn.metrics import (
     precision_recall_curve,
     precision_recall_fscore_support,
-    classification_report,
     confusion_matrix,
 )
-from skill_helpers import *
-from joblib import dump
-import pandas as pd 
-from math import isnan
+from sklearn.model_selection import GroupShuffleSplit, StratifiedGroupKFold, GroupKFold
+from skill_helpers import *  # uses make_skill_segments, etc.
 
 SEED = 42
-rng = np.random.default_rng(SEED)
-
-dir_ = 'Craftax-Skill-Data/Traces/stone_pickaxe_easy'
+dir_ = 'Craftax/Traces/stone_pickaxe_easy'
 
 # Directory to save trained end models & metadata
 models_dir = os.path.join(dir_, 'end_models')
 os.makedirs(models_dir, exist_ok=True)
 files = os.listdir(os.path.join(dir_, 'groundTruth'))
 
+# ----------------------------
+# Helpers
+# ----------------------------
 
-def make_clf(C=1.0, seed=SEED):
-    base = make_pipeline(
-        StandardScaler(),
-        LinearSVC(class_weight="balanced", dual="auto", max_iter=50000, C=C, random_state=seed)
-    )
-    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=seed)
-    return CalibratedClassifierCV(estimator=base, method="sigmoid", cv=cv)
+def _make_group_cv(y, groups, seed):
+    n_groups = len(np.unique(groups))
+    n_splits = max(2, min(5, n_groups))  # at least 2 folds, at most 5, cannot exceed #groups
+    try:
+        return StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=seed)
+    except Exception:
+        return GroupKFold(n_splits=n_splits)
 
 def best_threshold_from_pr(y_true, p_scores):
-    prec, rec, thr = precision_recall_curve(y_true, p_scores) 
+    """Map max-F1 point back to thresholds correctly (thresholds align with prec[1:], rec[1:])."""
+    prec, rec, thr = precision_recall_curve(y_true, p_scores)
     f1s = 2 * prec * rec / (prec + rec + 1e-12)
-    best_idx = int(np.nanargmax(f1s))
-    if best_idx == 0:
-        best_thr = thr[0] if len(thr) else 0.5
-    elif best_idx - 1 < len(thr):
-        best_thr = thr[best_idx - 1]
-    else:
-        best_thr = thr[-1] if len(thr) else 0.5
-    return float(best_thr), float(f1s[best_idx])
 
-def fit_with_threshold(X, y, C=1.0, seed=SEED):
-    X_tr, X_val, y_tr, y_val = train_test_split(
-        X, y, test_size=0.1, random_state=seed, stratify=y
+    if len(thr) == 0:  # degenerate case
+        best_idx = int(np.nanargmax(f1s))
+        return 0.5, float(f1s[best_idx])
+
+    valid = f1s[1:]
+    best_idx = int(np.nanargmax(valid)) + 1
+    return float(thr[best_idx - 1]), float(f1s[best_idx])
+
+def make_clf(C=1.0, seed=SEED, cv_splits=None):
+    base = make_pipeline(
+        StandardScaler(),
+        LinearSVC(class_weight="balanced", dual="auto", max_iter=100000, C=C, random_state=seed)
     )
-    clf_inner = make_clf(C=C, seed=seed)
+    return CalibratedClassifierCV(estimator=base, method="sigmoid", cv=cv_splits if cv_splits is not None else 5)
+
+
+def fit_with_threshold_grouped(X, y, groups, C=1.0, seed=SEED):
+    """
+    Group-aware inner validation to choose threshold, and group-aware CV for calibration.
+    """
+    # Split off a validation set by episodes for threshold selection
+    gss = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=seed)
+    tr_idx, val_idx = next(gss.split(X, y, groups))
+    X_tr, X_val = X[tr_idx], X[val_idx]
+    y_tr, y_val = y[tr_idx], y[val_idx]
+    g_tr        = groups[tr_idx]
+
+    # Group-aware CV for calibrator
+    cv = _make_group_cv(y_tr, g_tr, seed)
+    cv_splits = list(cv.split(X_tr, y_tr, g_tr))
+
+    clf_inner = make_clf(C=C, seed=seed, cv_splits=cv_splits)
     clf_inner.fit(X_tr, y_tr)
 
     val_proba = clf_inner.predict_proba(X_val)[:, 1]
     thr, val_f1 = best_threshold_from_pr(y_val, val_proba)
-    
-    clf_full = make_clf(C=C, seed=seed)
-    clf_full.fit(X, y)
-    return clf_full, thr, val_f1
 
+    # Refit on all training data with group-aware CV
+    cv_full = list(_make_group_cv(y, groups, seed).split(X, y, groups))
+    clf_full = make_clf(C=C, seed=seed, cv_splits=cv_full)
+    clf_full.fit(X, y)
+
+    return clf_full, float(thr), float(val_f1)
+
+# ----------------------------
+# Train & evaluate per skill
+# ----------------------------
 
 results = {}
 skills = get_unique_skills(dir_, files)
 
 for skill in skills:
-    start_states, end_states, all_skill_states, negative_end_skill, \
-        negative_end_all, all_other_states = get_start_end_states(dir_, skill, features_dirname='pca_features_512')
-    positive_states = end_states
-    negative_states = negative_end_all
+    X, y, groups = build_endability_dataset(dir_, skill, files, features_dirname='pca_features_750')
 
+    # Reproducible permutation
+    rng = np.random.RandomState(SEED)
+    perm = rng.permutation(len(X))
+    X, y, groups = X[perm], y[perm], groups[perm]
 
-    X = np.vstack([positive_states, negative_states])
-    y = np.hstack([
-        np.ones(len(positive_states), dtype=int),
-        np.zeros(len(negative_states), dtype=int)
-    ])
-    X, y = shuffle(X, y, random_state=SEED)
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.1, random_state=SEED, stratify=y
-    )
+    # Group-aware outer split
+    gss = GroupShuffleSplit(n_splits=1, test_size=0.1, random_state=SEED)
+    train_idx, test_idx = next(gss.split(X, y, groups))
+    X_train, X_test = X[train_idx], X[test_idx]
+    y_train, y_test = y[train_idx], y[test_idx]
+    groups_train    = groups[train_idx]
 
     print(f"Skill: {skill}")
     print("train balance:", np.bincount(y_train))
     print("test  balance:",  np.bincount(y_test))
 
-    clf, thr, val_f1 = fit_with_threshold(X_train, y_train, C=1.0, seed=SEED)
+    clf, thr, val_f1 = fit_with_threshold_grouped(X_train, y_train, groups_train, C=1.0, seed=SEED)
 
-    # Inspect probabilities and counts at some thresholds
     proba_test = clf.predict_proba(X_test)[:, 1]
     print("min/max prob:", float(proba_test.min()), float(proba_test.max()))
     for t in [0.5, 0.4, 0.3, 0.2, 0.1]:
-        preds_t = (proba_test >= t).astype(int)
-        print(t, int(preds_t.sum()))
+        print(t, int((proba_test >= t).sum()))
     print("Chosen threshold (from PR/F1 on val):", thr, " (val F1=", f"{val_f1:.4f}", ")")
 
-    # Evaluate at chosen threshold
     y_pred = (proba_test >= thr).astype(int)
     precision, recall, f1, _ = precision_recall_fscore_support(
         y_test, y_pred, average="binary", zero_division=0
@@ -116,8 +134,9 @@ for skill in skills:
     }
 
     # Persist model + metadata
+    os.makedirs(models_dir, exist_ok=True)
     model_path = os.path.join(models_dir, f"{skill}_clf.joblib")
-    meta_path = os.path.join(models_dir, f"{skill}_meta.json")
+    meta_path  = os.path.join(models_dir, f"{skill}_meta.json")
     try:
         dump(clf, model_path)
         with open(meta_path, 'w') as f:
@@ -137,10 +156,9 @@ for skill in skills:
     except Exception as e:
         print(f"[WARN] Failed to save model/metadata for skill {skill}: {e}")
 
-    # print(f"Results: {results[skill]}")
-    # print(classification_report(y_test, y_pred, zero_division=0))
-    # print("=" * 50 + "\n")
-
+# ----------------------------
+# Aggregated reporting
+# ----------------------------
 rows = []
 tot_tn = tot_fp = tot_fn = tot_tp = 0
 
@@ -167,39 +185,28 @@ for skill, res in results.items():
         "tp": int(tp), "fp": int(fp), "fn": int(fn), "tn": int(tn),
     })
 
-# Overall (micro) metrics
 overall_support = tot_tp + tot_fp + tot_fn + tot_tn
 overall_precision = (tot_tp / (tot_tp + tot_fp)) if (tot_tp + tot_fp) else 0.0
 overall_recall    = (tot_tp / (tot_tp + tot_fn)) if (tot_tp + tot_fn) else 0.0
-if (overall_precision + overall_recall) > 0:
-    overall_f1 = 2 * overall_precision * overall_recall / (overall_precision + overall_recall)
-else:
-    overall_f1 = 0.0
+overall_f1 = 2 * overall_precision * overall_recall / (overall_precision + overall_recall) if (overall_precision + overall_recall) else 0.0
 overall_accuracy  = (tot_tp + tot_tn) / overall_support if overall_support else float("nan")
 
-# Macro (mean across skills)
 macro_precision = float(np.mean([r["precision"] for r in rows])) if rows else float("nan")
 macro_recall    = float(np.mean([r["recall"]    for r in rows])) if rows else float("nan")
 macro_f1        = float(np.mean([r["f1"]        for r in rows])) if rows else float("nan")
 macro_accuracy  = float(np.mean([r["accuracy"]  for r in rows])) if rows else float("nan")
 
-# Pretty print
 print("\n" + "="*80)
 print("PER-SKILL METRICS (sorted by F1 desc)")
 print("="*80)
-
-
-df = pd.DataFrame(rows)
-df = df.sort_values("f1", ascending=False)
+df = pd.DataFrame(rows).sort_values("f1", ascending=False)
 disp_cols = ["skill", "pos_support", "neg_support", "threshold",
-                "precision", "recall", "f1", "accuracy", "tp", "fp", "fn"]
-# Round numeric columns for readability
+             "precision", "recall", "f1", "accuracy", "tp", "fp", "fn"]
 for c in ["threshold", "precision", "recall", "f1", "accuracy"]:
     df[c] = df[c].astype(float).round(3)
 print(df[disp_cols].to_string(index=False))
 
-# Save per-skill metrics table & overall summary
-metrics_csv = os.path.join(models_dir, 'per_skill_metrics.csv')
+metrics_csv  = os.path.join(models_dir, 'per_skill_metrics.csv')
 metrics_json = os.path.join(models_dir, 'summary_metrics.json')
 try:
     df.to_csv(metrics_csv, index=False)

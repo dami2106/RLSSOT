@@ -17,6 +17,8 @@ from pathlib import Path
 # Existing helper functions above
 # --------------------------------------------------------------------------------------
 
+
+
 def get_unique_skills(dir_, files):
     unique_skills = set()
     for file in files:
@@ -446,3 +448,129 @@ def compute_class_weights(y, n_classes):
     inv = 1.0 / np.maximum(counts, 1.0)
     inv *= (counts.mean() * 1.0) / inv.mean()
     return torch.tensor(inv, dtype=torch.float32)
+
+
+def build_startability_dataset(dir_: str, skill: str, files, features_dirname='pca_features_512'):
+    """
+    Returns X, y, groups where groups[i] is the episode id (filename) for X[i].
+    Positives: all states of `skill` except each segment's last state.
+    Negatives: end states of `skill` + all states from other skills.
+    """
+    # reuse your existing segmentation logic
+    (start_states, end_states, all_skill_states,
+     negative_end_skill, negative_end_all, all_other_states) = get_start_end_states(
+        dir_, skill, features_dirname=features_dirname
+    )
+
+    # We also need to rebuild groups, so iterate files again and mirror the exact
+    # positive/negative selection while recording episode ids per frame.
+    pos, neg, grp = [], [], []
+
+    gt_dir   = Path(dir_) / 'groundTruth'
+    act_dir  = Path(dir_) / 'actions'
+    feat_dir = Path(dir_) / features_dirname
+
+    for file in files:
+        with open(gt_dir / file, 'r') as f:
+            truths = f.read().splitlines()
+        feats   = np.load(feat_dir / f'{file}.npy')
+        acts    = np.load(act_dir  / f'{file}.npy')
+        segs_for_skill = make_skill_segments(acts, truths)
+
+        for skill_name, segs in segs_for_skill.items():
+            for seg in segs:
+                if skill_name == skill:
+                    # positives: all but last index
+                    if len(seg) > 1:
+                        pos.append(feats[seg[:-1]])
+                        grp.append(np.array([file] * (len(seg) - 1)))
+                    # negatives (end state of this skill)
+                    neg.append(feats[[seg[-1]]])
+                else:
+                    # negatives: all frames from other skills
+                    neg.append(feats[seg])
+
+    X_pos = np.concatenate(pos, axis=0) if len(pos) else np.empty((0, feats.shape[1]))
+    X_neg = np.concatenate(neg, axis=0) if len(neg) else np.empty((0, feats.shape[1]))
+    g_pos = np.concatenate(grp, axis=0) if len(grp) else np.empty((0,), dtype=object)
+
+    # We still need groups for negatives. Reconstruct them similarly:
+    neg_groups = []
+    for file in files:
+        with open(gt_dir / file, 'r') as f:
+            truths = f.read().splitlines()
+        feats   = np.load(feat_dir / f'{file}.npy')
+        acts    = np.load(act_dir  / f'{file}.npy')
+        segs_for_skill = make_skill_segments(acts, truths)
+        for skill_name, segs in segs_for_skill.items():
+            for seg in segs:
+                if skill_name == skill:
+                    neg_groups.append(np.array([file]))              # end state
+                else:
+                    neg_groups.append(np.array([file] * len(seg)))   # other-skill frames
+    g_neg = np.concatenate(neg_groups, axis=0) if len(neg_groups) else np.empty((0,), dtype=object)
+
+    X = np.vstack([X_pos, X_neg])
+    y = np.hstack([np.ones(len(X_pos), dtype=int),
+                   np.zeros(len(X_neg), dtype=int)])
+    groups = np.concatenate([g_pos, g_neg], axis=0)
+
+    return X, y, groups
+
+def build_endability_dataset(dir_: str, skill: str, files, features_dirname='pca_features_512'):
+    """
+    Build (X, y, groups) for END-state prediction of `skill`.
+    Positives: last frame of each `skill` segment (end_states)
+    Negatives: all frames except those last frames of the target skill
+               i.e., negative_end_all = (skill frames except last) + (all other-skill frames)
+    groups: episode id (filename) per frame.
+    """
+    gt_dir   = os.path.join(dir_, 'groundTruth')
+    act_dir  = os.path.join(dir_, 'actions')
+    feat_dir = os.path.join(dir_, features_dirname)
+
+    X_pos, X_neg = []
+    groups_pos, groups_neg = [], []
+
+    for file in files:
+        with open(os.path.join(gt_dir, file), 'r') as f:
+            truths = f.read().splitlines()
+        feats   = np.load(os.path.join(feat_dir, f'{file}.npy'))
+        acts    = np.load(os.path.join(act_dir,  f'{file}.npy'))
+
+        segs_for_skill = make_skill_segments(acts, truths)  # {skill_name: [ [idxs...], ... ]}
+
+        # First pass: collect target skill segments' ends as positives,
+        # and the target skill's "non-end" frames as part of negatives.
+        if skill in segs_for_skill:
+            for seg in segs_for_skill[skill]:
+                # positive = last frame of the segment
+                X_pos.append(feats[seg[-1]][None, :]); groups_pos.append(file)
+                # negative within-skill = all but last
+                if len(seg) > 1:
+                    X_neg.append(feats[seg[:-1]]); groups_neg.extend([file] * (len(seg) - 1))
+
+        # Second pass: all frames from other skills are negatives
+        for other_skill, segs in segs_for_skill.items():
+            if other_skill == skill:
+                continue
+            for seg in segs:
+                X_neg.append(feats[seg]); groups_neg.extend([file] * len(seg))
+
+    if len(X_pos) == 0:
+        X_pos = np.empty((0, feats.shape[1]))
+    else:
+        X_pos = np.concatenate(X_pos, axis=0)
+
+    if len(X_neg) == 0:
+        X_neg = np.empty((0, feats.shape[1]))
+    else:
+        X_neg = np.concatenate(X_neg, axis=0)
+
+    X = np.vstack([X_pos, X_neg])
+    y = np.hstack([
+        np.ones(len(X_pos), dtype=int),
+        np.zeros(len(X_neg), dtype=int)
+    ])
+    groups = np.array(groups_pos + groups_neg, dtype=object)
+    return X, y, groups

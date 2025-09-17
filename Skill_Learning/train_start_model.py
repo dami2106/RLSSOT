@@ -18,11 +18,13 @@ from joblib import dump
 import pandas as pd 
 from math import isnan
 from pathlib import Path
+from sklearn.model_selection import GroupShuffleSplit
+from sklearn.model_selection import GroupShuffleSplit, StratifiedGroupKFold, GroupKFold
 
 SEED = 42
 rng = np.random.default_rng(SEED)
 
-dir_ = 'Craftax-Skill-Data/Traces/stone_pickaxe_easy'
+dir_ = 'Craftax/Traces/stone_pickaxe_easy'
 
 # Directory to save trained start models & metadata
 models_dir = os.path.join(dir_, 'start_models')
@@ -39,59 +41,89 @@ def make_clf(C=1.0, seed=SEED):
     return CalibratedClassifierCV(estimator=base, method="sigmoid", cv=cv)
 
 def best_threshold_from_pr(y_true, p_scores):
-    prec, rec, thr = precision_recall_curve(y_true, p_scores) 
+    prec, rec, thr = precision_recall_curve(y_true, p_scores)
     f1s = 2 * prec * rec / (prec + rec + 1e-12)
-    best_idx = int(np.nanargmax(f1s))
-    if best_idx == 0:
-        best_thr = thr[0] if len(thr) else 0.5
-    elif best_idx - 1 < len(thr):
-        best_thr = thr[best_idx - 1]
-    else:
-        best_thr = thr[-1] if len(thr) else 0.5
-    return float(best_thr), float(f1s[best_idx])
 
-def fit_with_threshold(X, y, C=1.0, seed=SEED):
-    X_tr, X_val, y_tr, y_val = train_test_split(
-        X, y, test_size=0.1, random_state=seed, stratify=y
+    if len(thr) == 0:
+        # degenerate (all scores same); fall back
+        best_idx = int(np.nanargmax(f1s))
+        return 0.5, float(f1s[best_idx])
+
+    # thresholds correspond to points 1..n in (prec, rec)
+    valid = f1s[1:]
+    best_idx = int(np.nanargmax(valid)) + 1  # shift back into full f1s indexing
+    return float(thr[best_idx - 1]), float(f1s[best_idx])
+
+
+def fit_with_threshold_grouped(X, y, groups, C=1.0, seed=SEED):
+    # Inner val split by episode
+    gss = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=seed)
+    tr_idx, val_idx = next(gss.split(X, y, groups))
+    X_tr, X_val = X[tr_idx], X[val_idx]
+    y_tr, y_val = y[tr_idx], y[val_idx]
+    g_tr        = groups[tr_idx]
+
+    # Group-aware CV for calibration
+    try:
+        sgkf = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=seed)
+        cv_splits = list(sgkf.split(X_tr, y_tr, g_tr))
+    except Exception:
+        # fallback if StratifiedGroupKFold isn't available
+        gkf = GroupKFold(n_splits=5)
+        cv_splits = list(gkf.split(X_tr, y_tr, g_tr))
+
+    base = make_pipeline(
+        StandardScaler(),
+        LinearSVC(class_weight="balanced", dual="auto", max_iter=100000, C=C, random_state=seed)
     )
-    clf_inner = make_clf(C=C, seed=seed)
+    # Pass the precomputed (group-aware) splits to the calibrator
+    clf_inner = CalibratedClassifierCV(estimator=base, method="sigmoid", cv=cv_splits)
     clf_inner.fit(X_tr, y_tr)
 
+    # Pick threshold on group-held-out validation
     val_proba = clf_inner.predict_proba(X_val)[:, 1]
     thr, val_f1 = best_threshold_from_pr(y_val, val_proba)
-    
-    clf_full = make_clf(C=C, seed=seed)
+
+    # Refit on ALL training data (no test leakage), still group-aware CV
+    # Recompute splits on the full training set groups
+    try:
+        sgkf_full = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=seed)
+        cv_full = list(sgkf_full.split(X, y, groups))
+    except Exception:
+        gkf_full = GroupKFold(n_splits=5)
+        cv_full = list(gkf_full.split(X, y, groups))
+
+    clf_full = CalibratedClassifierCV(estimator=base, method="sigmoid", cv=cv_full)
     clf_full.fit(X, y)
-    return clf_full, thr, val_f1
+
+    return clf_full, float(thr), float(val_f1)
 
 
 results = {}
 skills = get_unique_skills(dir_, files)
 
 for skill in skills:
-    start_states, end_states, all_skill_states, negative_end_skill, \
-        negative_end_all, all_other_states = get_start_end_states(dir_, skill, features_dirname='pca_features_512')
 
-    positive_states = negative_end_skill
-    negative_states = np.concatenate((end_states, all_other_states))
+    # build dataset WITH groups
+    X, y, groups = build_startability_dataset(dir_, skill, files, features_dirname='pca_features_750')
 
+    # shuffle deterministically just for reproducible ordering (optional)
+    rng = np.random.RandomState(SEED)
+    perm = rng.permutation(len(X))
+    X, y, groups = X[perm], y[perm], groups[perm]
 
-    X = np.vstack([positive_states, negative_states])
-    y = np.hstack([
-        np.ones(len(positive_states), dtype=int),
-        np.zeros(len(negative_states), dtype=int)
-    ])
-    X, y = shuffle(X, y, random_state=SEED)
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.1, random_state=SEED, stratify=y
-    )
+    gss = GroupShuffleSplit(n_splits=1, test_size=0.1, random_state=SEED)
+    train_idx, test_idx = next(gss.split(X, y, groups))
+    X_train, X_test = X[train_idx], X[test_idx]
+    y_train, y_test = y[train_idx], y[test_idx]
+    groups_train    = groups[train_idx]
+    groups_test     = groups[test_idx]
 
     print(f"Skill: {skill}")
     print("train balance:", np.bincount(y_train))
     print("test  balance:",  np.bincount(y_test))
 
-    clf, thr, val_f1 = fit_with_threshold(X_train, y_train, C=1.0, seed=SEED)
+    clf, thr, val_f1 = fit_with_threshold_grouped(X_train, y_train, groups_train, C=1.0, seed=SEED)
 
     # Inspect probabilities and counts at some thresholds
     proba_test = clf.predict_proba(X_test)[:, 1]

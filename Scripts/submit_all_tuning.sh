@@ -14,6 +14,7 @@ declare -A LAYERS_BY_FEATURE=(
   [pca_features_512]="512 256 64"
   [pca_features_750]="750 312 64"
   [pca_features_1000]="1000 432 64"
+  [pca_features_2000]="2000 1024 256"
   [resnet_features]="2048 800 64"
   [clip_features]="512 256 64"
 )
@@ -23,6 +24,7 @@ FEATURES=(
   pca_features_512
   pca_features_750
   pca_features_1000
+  pca_features_2000
   resnet_features
   clip_features
 )
