@@ -529,7 +529,7 @@ def build_endability_dataset(dir_: str, skill: str, files, features_dirname='pca
     act_dir  = os.path.join(dir_, 'actions')
     feat_dir = os.path.join(dir_, features_dirname)
 
-    X_pos, X_neg = []
+    X_pos, X_neg = [], []
     groups_pos, groups_neg = [], []
 
     for file in files:
