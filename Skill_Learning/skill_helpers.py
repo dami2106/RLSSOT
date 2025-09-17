@@ -574,3 +574,124 @@ def build_endability_dataset(dir_: str, skill: str, files, features_dirname='pca
     ])
     groups = np.array(groups_pos + groups_neg, dtype=object)
     return X, y, groups
+
+from joblib import load as joblib_load
+
+def load_pu_models(models_dir: str):
+    """
+    Load (skill, clf, threshold, meta) tuples from <models_dir>.
+    Expects files: <skill>_clf.joblib and <skill>_meta.json
+    Returns: list[dict] with keys: skill, clf, thr, meta
+    """
+    models = []
+    for fname in os.listdir(models_dir):
+        if not fname.endswith("_meta.json"):
+            continue
+        skill = fname[:-10]  # strip "_meta.json"
+        meta_path  = os.path.join(models_dir, f"{skill}_meta.json")
+        model_path = os.path.join(models_dir, f"{skill}_clf.joblib")
+        if not os.path.exists(model_path):
+            continue
+        try:
+            with open(meta_path, "r") as f:
+                meta = json.load(f)
+            thr = float(meta["threshold"])
+            clf = joblib_load(model_path)
+            models.append({"skill": skill, "clf": clf, "thr": thr, "meta": meta})
+        except Exception as e:
+            print(f"[WARN] Skipping {skill}: {e}")
+    return models
+
+
+def applicable_pu_start_models(models, state, *, return_details=False, eps=0.0):
+    """
+    Given a list from load_pu_models(...) and a state feature vector (shape [d] or [1,d]),
+    return/print skills whose probability >= threshold (+eps).
+    - return_details=True returns a list of dicts with scores/margins
+    - eps lets you demand a small margin above threshold (e.g., eps=0.02).
+    """
+    # Accept 1D or 2D input
+    state = np.asarray(state)
+    if state.ndim == 1:
+        X = state.reshape(1, -1)
+    elif state.ndim == 2 and state.shape[0] == 1:
+        X = state
+    else:
+        raise ValueError("`state` must be a single feature vector of shape [d] or [1,d].")
+
+    rows = []
+    for m in models:
+        prob = float(m["clf"].predict_proba(X)[:, 1][0])
+        thr  = float(m["thr"])
+        margin = prob - thr
+        is_applicable = prob >= (thr + eps)
+        rows.append({
+            "skill": m["skill"],
+            "prob": prob,
+            "thr": thr,
+            "margin": margin,
+            "applicable": is_applicable
+        })
+
+    # Sort by confidence margin (best first)
+    rows.sort(key=lambda r: r["margin"], reverse=True)
+
+    # Print list of applicable models
+    applicable = [r for r in rows if r["applicable"]]
+    if applicable:
+        print("Applicable models (prob ≥ threshold):")
+        for r in applicable:
+            print(f"  - {r['skill']}: p={r['prob']:.3f}  thr={r['thr']:.3f}  margin={r['margin']:.3f}")
+    else:
+        print("No applicable models for this state.")
+
+    return rows if return_details else [r["skill"] for r in applicable]
+
+from joblib import load as joblib_load
+
+def end_state_probability_pu(model, state) -> float:
+    """
+    Given a fitted PU skill model (clf) and a single state feature vector,
+    return P(end-state | state) as a float in [0,1].
+    - model: the fitted PU model you trained (the thing you dumped with joblib)
+    - state: shape [d] or [1, d]
+    """
+    x = np.asarray(state)
+    if x.ndim == 1:
+        x = x.reshape(1, -1)
+    elif x.ndim == 2 and x.shape[0] == 1:
+        pass
+    else:
+        raise ValueError("`state` must be a single vector of shape [d] or [1, d].")
+    proba = model.predict_proba(x)[:, 1][0]
+    return float(proba)
+
+def end_state_prob_pu(models_dir: str, skill: str, state) -> dict:
+    """
+    Load a specific skill model + its saved threshold from disk and score a state.
+    Returns a dict with {prob, threshold, is_end, margin}.
+    - models_dir: e.g., 'Craftax/Traces/stone_pickaxe_easy/pu_end_models'
+    - skill: the skill name used in filenames '<skill>_clf.joblib' and '<skill>_meta.json'
+    - state: shape [d] or [1, d]
+    """
+    model_path = os.path.join(models_dir, f"{skill}_clf.joblib")
+    meta_path  = os.path.join(models_dir, f"{skill}_meta.json")
+
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Missing model file: {model_path}")
+    if not os.path.exists(meta_path):
+        raise FileNotFoundError(f"Missing meta file:  {meta_path}")
+
+    clf = joblib_load(model_path)
+    with open(meta_path, "r") as f:
+        meta = json.load(f)
+    thr = float(meta["threshold"])
+
+    p = end_state_probability_pu(clf, state)
+    margin = p - thr
+    return {
+        "prob": p,
+        "threshold": thr,
+        "is_end": bool(p >= thr),
+        "margin": margin
+    }

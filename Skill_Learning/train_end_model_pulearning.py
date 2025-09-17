@@ -31,14 +31,6 @@ files = os.listdir(os.path.join(dir_, 'groundTruth'))
 
 
 
-def _make_group_cv(y, groups, seed):
-    n_groups = len(np.unique(groups))
-    n_splits = max(2, min(5, n_groups))  # at least 2 folds, at most 5, cannot exceed #groups
-    try:
-        return StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=seed)
-    except Exception:
-        return GroupKFold(n_splits=n_splits)
-
 def best_threshold_from_pr(y_true, p_scores):
     """Map max-F1 point back to thresholds correctly (thresholds align with prec[1:], rec[1:])."""
     prec, rec, thr = precision_recall_curve(y_true, p_scores)
