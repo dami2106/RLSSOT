@@ -157,13 +157,22 @@ class PolicyCNN(nn.Module):
         return self.head(x)
         
     
-
+# ...existing code...
+# Replace hardcoded skill with argparse
+parser = argparse.ArgumentParser(description="Train CNN policy for a specific skill")
+parser.add_argument(
+    "--skill",
+    type=str,
+    default="wood",
+    help=f"Skill to train. Available"
+)
+args = parser.parse_args()
 
 dir_ = '../Craftax/Traces/stone_pickaxe_easy'
 files = os.listdir(os.path.join(dir_, 'groundTruth'))
 
 unique_skills = get_unique_skills(dir_, files)
-skill = "wood"
+skill = args.skill
 
 print(f"===== TRAINING SKILL {skill} (CNN) =====")
 episodes = get_bc_images_by_episode(dir_, files, skill, image_dir_name='pixel_obs')  # <-- NEW
