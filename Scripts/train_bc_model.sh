@@ -7,5 +7,5 @@
 source ~/.bashrc
 conda activate SOTA
 
-python Skill_Learning/behavioural_cloning_cnn.py --skill table
+python Skill_Learning/behavioural_cloning_cnn.py --skill wood --study --trials 250 --prune
 # python RLSSOT/Skill_Learning/behavioural_cloning.py

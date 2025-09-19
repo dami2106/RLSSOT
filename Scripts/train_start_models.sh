@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=start_skill_models          # Job name
 #SBATCH --partition=bigbatch                     # Replace with your cluster's GPU partition name
-#SBATCH --output=/home-mscluster/dharvey/HiSD/pu_start_skill_model_pca750.out  # Standard output and error log
+#SBATCH --output=/home-mscluster/dharvey/HiSD/Experiments/pu_start_skill_model_pca750_TUNED.out  # Standard output and error log
 # Load your environment
 
 source ~/.bashrc
