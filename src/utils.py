@@ -10,7 +10,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
+import os
+os.environ["MPLBACKEND"] = "Agg"
+import matplotlib
+matplotlib.use("Agg")
 
 def plot_segmentation_gt(gt, pred, mask, gt_uniq=None, pred_to_gt=None, exclude_cls=None, name=''):
     colors = {}

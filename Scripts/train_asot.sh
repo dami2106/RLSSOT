@@ -1,49 +1,49 @@
-#!/bin/bash
-#SBATCH --job-name=asot_train      # Job name
-#SBATCH --partition=bigbatch                     # Replace with your cluster's GPU partition name
-#SBATCH --output=/home-mscluster/dharvey/HiSD/RLSSOT/train_log.out  # Standard output and error log
-# Load your environment
+# #!/bin/bash
+# #SBATCH --job-name=asot_train      # Job name
+# #SBATCH --partition=bigbatch                     # Replace with your cluster's GPU partition name
+# #SBATCH --output=/home-mscluster/dharvey/HiSD/RLSSOT/train_log.out  # Standard output and error log
+# # Load your environment
 
-source ~/.bashrc
-conda activate SOTA
+# source ~/.bashrc
+# conda activate SOTA
 
-export CUBLAS_WORKSPACE_CONFIG=:4096:8
+# export CUBLAS_WORKSPACE_CONFIG=:4096:8
 
 
-ALPHA_TRAIN=0.6
-ALPHA_EVAL=0.26
+ALPHA_TRAIN=0.11
+ALPHA_EVAL=0.14
 
-UB_FRAMES=true
+UB_FRAMES=false
 UB_ACTIONS=false
 
-LAMBDA_FRAMES_TRAIN=0.06
-LAMBDA_ACTIONS_TRAIN=0.09
-LAMBDA_FRAMES_EVAL=0.08
-LAMBDA_ACTIONS_EVAL=0.09
+LAMBDA_FRAMES_TRAIN=0.1
+LAMBDA_ACTIONS_TRAIN=0.1
+LAMBDA_FRAMES_EVAL=0.03
+LAMBDA_ACTIONS_EVAL=0.1
 
-EPS_TRAIN=0.015
-EPS_EVAL=0.027
-RADIUS_GW=0.007
+EPS_TRAIN=0.022
+EPS_EVAL=0.382
+RADIUS_GW=0.098
 
 # --- Dataset parameters ---
-DATASET="../Craftax/Traces/stone_pickaxe_easy"
-FEATURE_NAME="pca_features_512"
+DATASET="../Craftax/Traces/stone_pick_static/stone_pick_static/stone_pick_static_pixels_big"
+FEATURE_NAME="pca_features"
 STD_FEATS=true
 SAVE_DIRECTORY="runs"
-RUN="stone_pickaxe_easy_test"
+RUN="stone_pickaxe_static"
 VAL_FREQ=5
 
 # --- General parameters ---
-N_EPOCHS=5
-BATCH_SIZE=16
-N_FRAMES=20
-LEARNING_RATE=0.1
+N_EPOCHS=30
+BATCH_SIZE=2
+N_FRAMES=135
+LEARNING_RATE=1e-05
 WEIGHT_DECAY=0.001
 LOG=true
 VISUALIZE=true
 SEED=0
-RHO=0.113
-N_CLUSTERS=2
+RHO=0.182
+N_CLUSTERS=5
 LAYERS="650 300 40"
 
 # --- Build the command ---

@@ -1,1 +1,1 @@
-python sequitur/sequitur.py --predicted-dir paper_runs/minecraft_cobblestone_mapped/version_0 --dataset-dir Traces/minecraft/minecraft_cobblestone_mapped
+python sequitur/sequitur.py --predicted-dir runs/stone_pick_static --dataset-dir ../Craftax/Traces/stone_pick_static
