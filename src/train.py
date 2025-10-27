@@ -48,6 +48,7 @@ class VideoSSL(pl.LightningModule):
         self.dp_threshold = dp_threshold
         self.dp_momentum = dp_momentum
         self.prior_strength = prior_strength
+        self.prior_floor = 1e-6
 
         self.alpha_train = alpha_train
         self.alpha_eval = alpha_eval
@@ -104,7 +105,7 @@ class VideoSSL(pl.LightningModule):
         weights = self.stick_breaking.expected_weights().to(self.clusters.device)
         K = self.stick_breaking.active_count()
         K = max(1, min(self.max_clusters, K))
-        weights = weights[:K]
+        weights = torch.clamp(weights[:K], min=self.prior_floor)
         norm = weights.sum()
         if norm <= 0:
             weights = torch.full_like(weights, 1.0 / K)
@@ -181,7 +182,7 @@ class VideoSSL(pl.LightningModule):
         features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
 
         clusters, weights, K = self._active_components()
-        log_weights = torch.log(weights + num_eps)
+        log_weights = torch.log(torch.clamp(weights, min=self.prior_floor))
         logits = features @ clusters.T / self.temp
         logits = logits + log_weights.view(1, 1, -1)
         codes = torch.softmax(logits, dim=-1)
@@ -250,7 +251,7 @@ class VideoSSL(pl.LightningModule):
         features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
 
         clusters, weights, K = self._active_components()
-        log_weights = torch.log(weights + num_eps)
+        log_weights = torch.log(torch.clamp(weights, min=self.prior_floor))
 
         # log clustering metrics over full epoch
         temp_prior = asot.temporal_prior(T, K, self.rho, features.device)
@@ -328,7 +329,7 @@ class VideoSSL(pl.LightningModule):
         features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
 
         clusters, weights, K = self._active_components()
-        log_weights = torch.log(weights + num_eps)
+        log_weights = torch.log(torch.clamp(weights, min=self.prior_floor))
 
         # log clustering metrics over full epoch
         temp_prior = asot.temporal_prior(T, K, self.rho, features.device)

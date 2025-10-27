@@ -71,6 +71,10 @@ class StickBreakingProcess(nn.Module):
         if counts.sum() <= 0:
             return
 
+        total = counts.sum()
+        if total > 0:
+            counts = counts / total
+
         K = counts.shape[0]
         tail_counts = torch.cumsum(torch.flip(counts, dims=[0]), dim=0)
         tail_counts = torch.flip(tail_counts, dims=[0]) - counts
