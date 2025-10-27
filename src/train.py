@@ -17,6 +17,7 @@ from dataset_loader import RLDataset
 import asot
 from utils import *
 from metrics import ClusteringMetrics, indep_eval_metrics
+from stick_breaking import StickBreakingProcess
 
 import os
 
@@ -32,15 +33,22 @@ class VideoSSL(pl.LightningModule):
     def __init__(self, lr=1e-4, weight_decay=1e-4, layer_sizes=[64, 128, 40], n_clusters=20, alpha_train=0.3, alpha_eval=0.3,
                  n_ot_train=[50, 1], n_ot_eval=[50, 1], step_size=None, train_eps=0.06, eval_eps=0.01, ub_frames=False, ub_actions=True,
                  lambda_frames_train=0.05, lambda_actions_train=0.05, lambda_frames_eval=0.05, lambda_actions_eval=0.01,
-                 temp=0.1, radius_gw=0.04, learn_clusters=True, n_frames=256, rho=0.1, visualize=False):
+                 temp=0.1, radius_gw=0.04, learn_clusters=True, n_frames=256, rho=0.1, visualize=False,
+                 dp_concentration=1.0, dp_threshold=1e-3, dp_momentum=0.5, prior_strength=1.0):
         super().__init__()
         self.lr = lr
         self.weight_decay = weight_decay
-        self.n_clusters = n_clusters
+        self.max_clusters = n_clusters
         self.learn_clusters = learn_clusters
         self.layer_sizes = layer_sizes
 
         self.visualize = visualize
+
+        self.dp_concentration = dp_concentration
+        self.dp_threshold = dp_threshold
+        self.dp_momentum = dp_momentum
+        self.prior_strength = prior_strength
+        self.prior_floor = 1e-6
 
         self.alpha_train = alpha_train
         self.alpha_eval = alpha_eval
@@ -70,7 +78,21 @@ class VideoSSL(pl.LightningModule):
 
         # initialize cluster centers/codebook
         d = self.layer_sizes[-1]
-        self.clusters = nn.parameter.Parameter(data=F.normalize(torch.randn(self.n_clusters, d), dim=-1), requires_grad=learn_clusters)
+        self.clusters = nn.parameter.Parameter(
+            data=F.normalize(torch.randn(self.max_clusters, d), dim=-1),
+            requires_grad=learn_clusters
+        )
+
+        self.stick_breaking = StickBreakingProcess(
+            max_clusters=self.max_clusters,
+            concentration=self.dp_concentration,
+            threshold=self.dp_threshold,
+            momentum=self.dp_momentum,
+        )
+
+        self._prev_active_clusters = None
+        self._epoch_skill_adds = 0
+        self._epoch_skill_removes = 0
 
         # initialize evaluation metrics
         self.mof = ClusteringMetrics(metric='mof')
@@ -78,6 +100,64 @@ class VideoSSL(pl.LightningModule):
         self.miou = ClusteringMetrics(metric='miou')
         self.save_hyperparameters()
         self.test_cache = []
+
+    def _active_components(self):
+        weights = self.stick_breaking.expected_weights().to(self.clusters.device)
+        K = self.stick_breaking.active_count()
+        K = max(1, min(self.max_clusters, K))
+        weights = torch.clamp(weights[:K], min=self.prior_floor)
+        norm = weights.sum()
+        if norm <= 0:
+            weights = torch.full_like(weights, 1.0 / K)
+        else:
+            weights = weights / norm
+        clusters = F.normalize(self.clusters[:K], dim=-1)
+        return clusters, weights, K
+
+    def _collect_metric_snapshot(self, prefix=None):
+        if not hasattr(self, 'trainer') or self.trainer is None:
+            return {}
+        metrics = {}
+        for name, value in self.trainer.callback_metrics.items():
+            if prefix is not None and not name.startswith(prefix):
+                continue
+            if isinstance(value, torch.Tensor):
+                if value.numel() != 1:
+                    continue
+                metrics[name] = float(value.detach().cpu().item())
+            elif isinstance(value, (float, int)):
+                metrics[name] = float(value)
+        return metrics
+
+    def _handle_skill_transitions(self, new_count, stage='train'):
+        prev = self._prev_active_clusters
+        self._prev_active_clusters = new_count
+        if prev is None or new_count == prev:
+            return
+
+        delta = abs(new_count - prev)
+        direction = 'added' if new_count > prev else 'removed'
+        plural = 's' if delta != 1 else ''
+        step = None
+        if hasattr(self, 'trainer') and self.trainer is not None:
+            step = getattr(self.trainer, 'global_step', None)
+        if step is None:
+            step_msg = ''
+        else:
+            step_msg = f' at step {int(step)}'
+        message = (
+            f"[SkillTracker/{stage}] {delta} skill{plural} {direction}{step_msg}. "
+            f"Active skills: {new_count}"
+        )
+        print(message)
+
+        if stage == 'train':
+            if new_count > prev:
+                self._epoch_skill_adds += delta
+                self.log('train_skill_additions', float(delta), prog_bar=False, on_step=True, on_epoch=False)
+            else:
+                self._epoch_skill_removes += delta
+                self.log('train_skill_removals', float(delta), prog_bar=False, on_step=True, on_epoch=False)
 
     def save_figure_to_disk(self, fig, figure_name, global_step):
         """
@@ -101,23 +181,68 @@ class VideoSSL(pl.LightningModule):
         B, T, _ = features_raw.shape
         features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
 
-
-        codes = torch.exp(features @ self.clusters.T[None, ...] / self.temp)
-        codes = codes / codes.sum(dim=-1, keepdim=True)
+        clusters, weights, K = self._active_components()
+        log_weights = torch.log(torch.clamp(weights, min=self.prior_floor))
+        logits = features @ clusters.T / self.temp
+        logits = logits + log_weights.view(1, 1, -1)
+        codes = torch.softmax(logits, dim=-1)
 
 
 
         with torch.no_grad():  # pseudo-labels from OT
-            temp_prior = asot.temporal_prior(T, self.n_clusters, self.rho, features.device)
-            cost_matrix = 1. - features @ self.clusters.T.unsqueeze(0)
+            temp_prior = asot.temporal_prior(T, K, self.rho, features.device)
+            cost_matrix = 1. - features @ clusters.T.unsqueeze(0)
             cost_matrix += temp_prior
+            prior_cost = -log_weights * self.prior_strength
+            cost_matrix = cost_matrix + prior_cost.view(1, 1, -1)
             opt_codes, _ = asot.segment_asot(cost_matrix, mask, eps=self.train_eps, alpha=self.alpha_train, radius=self.radius_gw,
                                              ub_frames=self.ub_frames, ub_actions=self.ub_actions, lambda_frames=self.lambda_frames_train,
                                              lambda_actions=self.lambda_actions_train, n_iters=self.n_ot_train, step_size=self.step_size)
 
         loss_ce = -((opt_codes * torch.log(codes + num_eps)) * mask[..., None]).sum(dim=2).mean()
         self.log('train_loss', loss_ce)
+
+        with torch.no_grad():
+            self.stick_breaking.update(opt_codes, mask=mask)
+            updated_active = self.stick_breaking.active_count()
+
+        self._handle_skill_transitions(updated_active, stage='train')
+        self.log('train_active_clusters', float(updated_active), prog_bar=True, on_step=True, on_epoch=True)
         return loss_ce
+
+    def on_train_epoch_start(self):
+        self._epoch_skill_adds = 0
+        self._epoch_skill_removes = 0
+
+    def on_train_epoch_end(self):
+        active = self.stick_breaking.active_count()
+        transitions = []
+        if self._epoch_skill_adds:
+            transitions.append(f"+{int(self._epoch_skill_adds)}")
+        if self._epoch_skill_removes:
+            transitions.append(f"-{int(self._epoch_skill_removes)}")
+        transition_msg = f" (transitions: {'/'.join(transitions)})" if transitions else ''
+        metrics = self._collect_metric_snapshot(prefix='train_')
+        if metrics:
+            metric_parts = [f"{name}={value:.4f}" for name, value in sorted(metrics.items())]
+            metric_msg = " | " + ", ".join(metric_parts)
+        else:
+            metric_msg = ""
+        print(
+            f"[SkillTracker/train] Epoch {self.current_epoch} summary: "
+            f"active_skills={active}{transition_msg}{metric_msg}"
+        )
+        self.log('train_active_clusters_epoch_end', float(active), prog_bar=False, on_step=False, on_epoch=True)
+
+    def on_fit_end(self):
+        final_active = self.stick_breaking.active_count()
+        metrics = self._collect_metric_snapshot()
+        if metrics:
+            metric_parts = [f"{name}={value:.4f}" for name, value in sorted(metrics.items())]
+            metric_msg = " | final metrics: " + ", ".join(metric_parts)
+        else:
+            metric_msg = ""
+        print(f"[SkillTracker] Training complete. Active skills: {final_active}{metric_msg}")
 
     def validation_step(self, batch, batch_idx):
         features_raw, mask, gt, fname, n_subactions = batch
@@ -125,10 +250,15 @@ class VideoSSL(pl.LightningModule):
         B, T, _ = features_raw.shape
         features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
 
+        clusters, weights, K = self._active_components()
+        log_weights = torch.log(torch.clamp(weights, min=self.prior_floor))
+
         # log clustering metrics over full epoch
-        temp_prior = asot.temporal_prior(T, self.n_clusters, self.rho, features.device)
-        cost_matrix = 1. - features @ self.clusters.T.unsqueeze(0)
+        temp_prior = asot.temporal_prior(T, K, self.rho, features.device)
+        cost_matrix = 1. - features @ clusters.T.unsqueeze(0)
         cost_matrix += temp_prior
+        prior_cost = -log_weights * self.prior_strength
+        cost_matrix = cost_matrix + prior_cost.view(1, 1, -1)
         segmentation, _ = asot.segment_asot(cost_matrix, mask, eps=self.eval_eps, alpha=self.alpha_eval, radius=self.radius_gw,
                                             ub_frames=self.ub_frames, ub_actions=self.ub_actions, lambda_frames=self.lambda_frames_eval,
                                             lambda_actions=self.lambda_actions_eval, n_iters=self.n_ot_eval, step_size=self.step_size)
@@ -142,10 +272,12 @@ class VideoSSL(pl.LightningModule):
         self.log('val_mof_per', metrics['mof'])
         self.log('val_f1_per', metrics['f1'])
         self.log('val_miou_per', metrics['miou'])
+        self.log('val_active_clusters', float(K), prog_bar=False, on_step=False, on_epoch=True)
 
         # log validation loss
-        codes = torch.exp(features @ self.clusters.T / self.temp)
-        codes /= codes.sum(dim=-1, keepdim=True)
+        logits = features @ clusters.T / self.temp
+        logits = logits + log_weights.view(1, 1, -1)
+        codes = torch.softmax(logits, dim=-1)
         pseudo_labels, _ = asot.segment_asot(cost_matrix, mask, eps=self.train_eps, alpha=self.alpha_train, radius=self.radius_gw,
                                              ub_frames=self.ub_frames, ub_actions=self.ub_actions, lambda_frames=self.lambda_frames_train,
                                              lambda_actions=self.lambda_actions_train, n_iters=self.n_ot_train, step_size=self.step_size)
@@ -196,10 +328,15 @@ class VideoSSL(pl.LightningModule):
         B, T, _ = features_raw.shape
         features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
 
+        clusters, weights, K = self._active_components()
+        log_weights = torch.log(torch.clamp(weights, min=self.prior_floor))
+
         # log clustering metrics over full epoch
-        temp_prior = asot.temporal_prior(T, self.n_clusters, self.rho, features.device)
-        cost_matrix = 1. - features @ self.clusters.T.unsqueeze(0)
+        temp_prior = asot.temporal_prior(T, K, self.rho, features.device)
+        cost_matrix = 1. - features @ clusters.T.unsqueeze(0)
         cost_matrix += temp_prior
+        prior_cost = -log_weights * self.prior_strength
+        cost_matrix = cost_matrix + prior_cost.view(1, 1, -1)
         segmentation, _ = asot.segment_asot(cost_matrix, mask, eps=self.eval_eps, alpha=self.alpha_eval, radius=self.radius_gw,
                                             ub_frames=self.ub_frames, ub_actions=self.ub_actions, lambda_frames=self.lambda_frames_eval,
                                             lambda_actions=self.lambda_actions_eval, n_iters=self.n_ot_eval, step_size=self.step_size)
@@ -363,9 +500,11 @@ class VideoSSL(pl.LightningModule):
                 features = F.normalize(self.mlp(features_raw.reshape(-1, features_raw.shape[-1])).reshape(B, T, D), dim=-1)
                 features_full.append(features)
             features_full = torch.cat(features_full, dim=0).reshape(-1, features.shape[2]).cpu().numpy()
-            kmeans = KMeans(n_clusters=K).fit(features_full) #n_init = 10
+            kmeans = KMeans(n_clusters=min(K, self.max_clusters)).fit(features_full) #n_init = 10
             self.mlp.train()
-        self.clusters.data = torch.from_numpy(kmeans.cluster_centers_).to(self.clusters.device)
+        centers = torch.from_numpy(kmeans.cluster_centers_).to(self.clusters.device)
+        self.clusters.data[:centers.shape[0]] = centers
+        self.clusters.data = F.normalize(self.clusters.data, dim=-1)
         return None
 
 
@@ -405,7 +544,11 @@ if __name__ == '__main__':
     parser.add_argument('--k-means', '-km', action='store_false', help='do not initialize clusters with kmeans default = True')
     parser.add_argument('--layers', '-ls', default=[500, 256, 50], nargs='+', type=int, help='layer sizes for MLP (in, hidden, ..., out)')
     parser.add_argument('--rho', type=float, default=0.1, help='Factor for global structure weighting term')
-    parser.add_argument('--n-clusters', '-c', type=int, default=5, help='number of actions/clusters')
+    parser.add_argument('--n-clusters', '-c', type=int, default=5, help='maximum number of actions/clusters (upper bound)')
+    parser.add_argument('--dp-concentration', type=float, default=1.0, help='Dirichlet process concentration parameter')
+    parser.add_argument('--dp-threshold', type=float, default=1e-3, help='minimum stick weight to remain active')
+    parser.add_argument('--dp-momentum', type=float, default=0.5, help='momentum for updating stick-breaking statistics')
+    parser.add_argument('--prior-strength', type=float, default=1.0, help='strength of stick-breaking prior in OT cost')
 
     # system/logging params
     parser.add_argument('--val-freq', '-vf', type=int, default=5, help='validation epoch frequency (epochs)')
@@ -451,7 +594,9 @@ if __name__ == '__main__':
                        ub_frames=args.ub_frames, ub_actions=args.ub_actions, lambda_frames_train=args.lambda_frames_train, lambda_frames_eval=args.lambda_frames_eval,
                        lambda_actions_train=args.lambda_actions_train, lambda_actions_eval=args.lambda_actions_eval, step_size=args.step_size,
                        train_eps=args.eps_train, eval_eps=args.eps_eval, radius_gw=args.radius_gw, n_ot_train=args.n_ot_train, n_ot_eval=args.n_ot_eval,
-                       n_frames=args.n_frames, lr=args.learning_rate, weight_decay=args.weight_decay, rho=args.rho, visualize=args.visualize)
+                       n_frames=args.n_frames, lr=args.learning_rate, weight_decay=args.weight_decay, rho=args.rho, visualize=args.visualize,
+                       dp_concentration=args.dp_concentration, dp_threshold=args.dp_threshold, dp_momentum=args.dp_momentum,
+                       prior_strength=args.prior_strength)
 
     # Conditionally create the TensorBoard logger if logging is enabled.
     if args.log:
